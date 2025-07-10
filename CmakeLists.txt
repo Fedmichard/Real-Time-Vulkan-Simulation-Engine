@@ -1,0 +1,29 @@
+cmake_minimum_required(VERSION 3.26)
+project(real-time-vulkan-simulation-engine)
+
+set(CMAKE_CXX_STANDARD 17)
+
+include_directories(assets)
+include_directories(includes)
+include_directories(shaders)
+
+include_directories(libraries/GLFW/include)
+include_directories(libraries/glm)
+include_directories(libraries/imgui)
+include_directories(libraries/stb_image)
+include_directories(libraries/tinyobjloader)
+include_directories(libraries/vkbootstrap)
+include_directories(libraries/vma)
+include_directories(libraries/volk)
+include_directories(C:/VulkanSDK/1.4.309.0/Include)
+
+link_directories(libraries/GLFW/lib)
+link_directories(C:/VulkanSDK/1.4.309.0/Lib)
+
+add_executable(real-time-vulkan-simulation-engine src/main.cpp)
+
+target_link_libraries(real-time-vulkan-simulation-engine libglfw3dll.a)
+target_link_libraries(real-time-vulkan-simulation-engine vulkan-1.lib)
+target_link_libraries(real-time-vulkan-simulation-engine user32.lib)
+target_link_libraries(real-time-vulkan-simulation-engine gdi32.lib)
+target_link_libraries(real-time-vulkan-simulation-engine shell32.lib)

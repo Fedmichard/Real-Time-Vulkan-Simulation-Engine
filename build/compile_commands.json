@@ -1,0 +1,8 @@
+[
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\src\\main.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\src\\main.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/main.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj"
+}
+]

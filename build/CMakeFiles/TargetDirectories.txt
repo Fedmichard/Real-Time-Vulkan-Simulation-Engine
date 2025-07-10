@@ -1,0 +1,3 @@
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/CMakeFiles/real-time-vulkan-simulation-engine.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/CMakeFiles/edit_cache.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/CMakeFiles/rebuild_cache.dir
