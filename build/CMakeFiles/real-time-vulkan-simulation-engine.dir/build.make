@@ -83,19 +83,138 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.s"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\main.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\main.cpp.s
 
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\src\camera.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\camera.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\camera.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\camera.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\src\camera.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\camera.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\camera.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_descriptors.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_descriptors.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_descriptors.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_descriptors.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_engine.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_engine.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_engine.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_engine.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_engine.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_engine.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_engine.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_images.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_images.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_images.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_images.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_images.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_images.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_images.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_images.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_initializers.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_initializers.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_initializers.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_initializers.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_loader.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_loader.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_loader.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_loader.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_loader.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_loader.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_loader.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_loader.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_pipelines.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_pipelines.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_pipelines.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_pipelines.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_pipelines.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_pipelines.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_pipelines.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\src\vk_pipelines.cpp.s
+
 # Object files for target real-time-vulkan-simulation-engine
 real__time__vulkan__simulation__engine_OBJECTS = \
-"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj"
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj"
 
 # External object files for target real-time-vulkan-simulation-engine
 real__time__vulkan__simulation__engine_EXTERNAL_OBJECTS =
 
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/build.make
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/linkLibs.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/objects1.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable real-time-vulkan-simulation-engine.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable real-time-vulkan-simulation-engine.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\real-time-vulkan-simulation-engine.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -11,7 +11,8 @@ include_directories(libraries/GLFW/include)
 include_directories(libraries/glm)
 include_directories(libraries/imgui)
 include_directories(libraries/stb_image)
-include_directories(libraries/tinyobjloader)
+include_directories(libraries/fastgltf)
+include_directories(libraries/fmt/include)
 include_directories(libraries/vkbootstrap)
 include_directories(libraries/vma)
 include_directories(libraries/volk)
@@ -20,7 +21,24 @@ include_directories(C:/VulkanSDK/1.4.309.0/Include)
 link_directories(libraries/GLFW/lib)
 link_directories(C:/VulkanSDK/1.4.309.0/Lib)
 
-add_executable(real-time-vulkan-simulation-engine src/main.cpp)
+add_executable(real-time-vulkan-simulation-engine
+               src/main.cpp
+               src/camera.cpp
+               src/vk_descriptors.cpp
+               src/vk_engine.cpp
+               src/vk_images.cpp
+               src/vk_initializers.cpp
+               src/vk_loader.cpp
+               src/vk_pipelines.cpp
+               src/camera.h
+               src/vk_descriptors.h
+               src/vk_engine.h
+               src/vk_images.h
+               src/vk_initializers.h
+               src/vk_loader.h
+               src/vk_pipelines.h
+               src/vk_types.h
+)
 
 target_link_libraries(real-time-vulkan-simulation-engine libglfw3dll.a)
 target_link_libraries(real-time-vulkan-simulation-engine vulkan-1.lib)

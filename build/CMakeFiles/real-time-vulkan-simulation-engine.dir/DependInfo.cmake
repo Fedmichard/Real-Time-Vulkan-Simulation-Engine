@@ -8,7 +8,14 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj.d"
   "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/main.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj.d"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj.d"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj.d"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_images.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj.d"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj.d"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_loader.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj.d"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_pipelines.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

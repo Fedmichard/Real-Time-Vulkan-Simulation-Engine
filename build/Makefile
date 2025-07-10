@@ -128,6 +128,30 @@ real-time-vulkan-simulation-engine/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/build
 .PHONY : real-time-vulkan-simulation-engine/fast
 
+src/camera.obj: src/camera.cpp.obj
+.PHONY : src/camera.obj
+
+# target to build an object file
+src/camera.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj
+.PHONY : src/camera.cpp.obj
+
+src/camera.i: src/camera.cpp.i
+.PHONY : src/camera.i
+
+# target to preprocess a source file
+src/camera.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.i
+.PHONY : src/camera.cpp.i
+
+src/camera.s: src/camera.cpp.s
+.PHONY : src/camera.s
+
+# target to generate assembly for a file
+src/camera.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.s
+.PHONY : src/camera.cpp.s
+
 src/main.obj: src/main.cpp.obj
 .PHONY : src/main.obj
 
@@ -152,6 +176,150 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
+src/vk_descriptors.obj: src/vk_descriptors.cpp.obj
+.PHONY : src/vk_descriptors.obj
+
+# target to build an object file
+src/vk_descriptors.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj
+.PHONY : src/vk_descriptors.cpp.obj
+
+src/vk_descriptors.i: src/vk_descriptors.cpp.i
+.PHONY : src/vk_descriptors.i
+
+# target to preprocess a source file
+src/vk_descriptors.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.i
+.PHONY : src/vk_descriptors.cpp.i
+
+src/vk_descriptors.s: src/vk_descriptors.cpp.s
+.PHONY : src/vk_descriptors.s
+
+# target to generate assembly for a file
+src/vk_descriptors.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.s
+.PHONY : src/vk_descriptors.cpp.s
+
+src/vk_engine.obj: src/vk_engine.cpp.obj
+.PHONY : src/vk_engine.obj
+
+# target to build an object file
+src/vk_engine.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj
+.PHONY : src/vk_engine.cpp.obj
+
+src/vk_engine.i: src/vk_engine.cpp.i
+.PHONY : src/vk_engine.i
+
+# target to preprocess a source file
+src/vk_engine.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.i
+.PHONY : src/vk_engine.cpp.i
+
+src/vk_engine.s: src/vk_engine.cpp.s
+.PHONY : src/vk_engine.s
+
+# target to generate assembly for a file
+src/vk_engine.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.s
+.PHONY : src/vk_engine.cpp.s
+
+src/vk_images.obj: src/vk_images.cpp.obj
+.PHONY : src/vk_images.obj
+
+# target to build an object file
+src/vk_images.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj
+.PHONY : src/vk_images.cpp.obj
+
+src/vk_images.i: src/vk_images.cpp.i
+.PHONY : src/vk_images.i
+
+# target to preprocess a source file
+src/vk_images.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.i
+.PHONY : src/vk_images.cpp.i
+
+src/vk_images.s: src/vk_images.cpp.s
+.PHONY : src/vk_images.s
+
+# target to generate assembly for a file
+src/vk_images.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.s
+.PHONY : src/vk_images.cpp.s
+
+src/vk_initializers.obj: src/vk_initializers.cpp.obj
+.PHONY : src/vk_initializers.obj
+
+# target to build an object file
+src/vk_initializers.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj
+.PHONY : src/vk_initializers.cpp.obj
+
+src/vk_initializers.i: src/vk_initializers.cpp.i
+.PHONY : src/vk_initializers.i
+
+# target to preprocess a source file
+src/vk_initializers.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.i
+.PHONY : src/vk_initializers.cpp.i
+
+src/vk_initializers.s: src/vk_initializers.cpp.s
+.PHONY : src/vk_initializers.s
+
+# target to generate assembly for a file
+src/vk_initializers.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.s
+.PHONY : src/vk_initializers.cpp.s
+
+src/vk_loader.obj: src/vk_loader.cpp.obj
+.PHONY : src/vk_loader.obj
+
+# target to build an object file
+src/vk_loader.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj
+.PHONY : src/vk_loader.cpp.obj
+
+src/vk_loader.i: src/vk_loader.cpp.i
+.PHONY : src/vk_loader.i
+
+# target to preprocess a source file
+src/vk_loader.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.i
+.PHONY : src/vk_loader.cpp.i
+
+src/vk_loader.s: src/vk_loader.cpp.s
+.PHONY : src/vk_loader.s
+
+# target to generate assembly for a file
+src/vk_loader.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.s
+.PHONY : src/vk_loader.cpp.s
+
+src/vk_pipelines.obj: src/vk_pipelines.cpp.obj
+.PHONY : src/vk_pipelines.obj
+
+# target to build an object file
+src/vk_pipelines.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj
+.PHONY : src/vk_pipelines.cpp.obj
+
+src/vk_pipelines.i: src/vk_pipelines.cpp.i
+.PHONY : src/vk_pipelines.i
+
+# target to preprocess a source file
+src/vk_pipelines.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.i
+.PHONY : src/vk_pipelines.cpp.i
+
+src/vk_pipelines.s: src/vk_pipelines.cpp.s
+.PHONY : src/vk_pipelines.s
+
+# target to generate assembly for a file
+src/vk_pipelines.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.s
+.PHONY : src/vk_pipelines.cpp.s
+
 # Help Target
 help:
 	@echo The following are some of the valid targets for this Makefile:
@@ -161,9 +329,30 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... real-time-vulkan-simulation-engine
+	@echo ... src/camera.obj
+	@echo ... src/camera.i
+	@echo ... src/camera.s
 	@echo ... src/main.obj
 	@echo ... src/main.i
 	@echo ... src/main.s
+	@echo ... src/vk_descriptors.obj
+	@echo ... src/vk_descriptors.i
+	@echo ... src/vk_descriptors.s
+	@echo ... src/vk_engine.obj
+	@echo ... src/vk_engine.i
+	@echo ... src/vk_engine.s
+	@echo ... src/vk_images.obj
+	@echo ... src/vk_images.i
+	@echo ... src/vk_images.s
+	@echo ... src/vk_initializers.obj
+	@echo ... src/vk_initializers.i
+	@echo ... src/vk_initializers.s
+	@echo ... src/vk_loader.obj
+	@echo ... src/vk_loader.i
+	@echo ... src/vk_loader.s
+	@echo ... src/vk_pipelines.obj
+	@echo ... src/vk_pipelines.i
+	@echo ... src/vk_pipelines.s
 .PHONY : help
 
 
