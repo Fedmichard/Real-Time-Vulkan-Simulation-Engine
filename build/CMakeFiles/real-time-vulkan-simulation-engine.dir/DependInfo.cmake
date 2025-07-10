@@ -8,6 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrap.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj.d"
   "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj.d"
   "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/main.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj.d"
   "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.cpp" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj" "gcc" "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj.d"

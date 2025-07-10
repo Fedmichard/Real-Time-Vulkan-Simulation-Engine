@@ -46,5 +46,11 @@
   "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\src\\vk_pipelines.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\src\\vk_pipelines.cpp",
   "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_pipelines.cpp",
   "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\vkbootstrap\\VkBootstrap.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\vkbootstrap\\VkBootstrap.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrap.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj"
 }
 ]

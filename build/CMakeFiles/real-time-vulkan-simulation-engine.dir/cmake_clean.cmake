@@ -1,4 +1,6 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj"
+  "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj.d"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj.d"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj"

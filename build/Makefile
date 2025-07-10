@@ -128,6 +128,30 @@ real-time-vulkan-simulation-engine/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/build
 .PHONY : real-time-vulkan-simulation-engine/fast
 
+libraries/vkbootstrap/VkBootstrap.obj: libraries/vkbootstrap/VkBootstrap.cpp.obj
+.PHONY : libraries/vkbootstrap/VkBootstrap.obj
+
+# target to build an object file
+libraries/vkbootstrap/VkBootstrap.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj
+.PHONY : libraries/vkbootstrap/VkBootstrap.cpp.obj
+
+libraries/vkbootstrap/VkBootstrap.i: libraries/vkbootstrap/VkBootstrap.cpp.i
+.PHONY : libraries/vkbootstrap/VkBootstrap.i
+
+# target to preprocess a source file
+libraries/vkbootstrap/VkBootstrap.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.i
+.PHONY : libraries/vkbootstrap/VkBootstrap.cpp.i
+
+libraries/vkbootstrap/VkBootstrap.s: libraries/vkbootstrap/VkBootstrap.cpp.s
+.PHONY : libraries/vkbootstrap/VkBootstrap.s
+
+# target to generate assembly for a file
+libraries/vkbootstrap/VkBootstrap.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.s
+.PHONY : libraries/vkbootstrap/VkBootstrap.cpp.s
+
 src/camera.obj: src/camera.cpp.obj
 .PHONY : src/camera.obj
 
@@ -329,6 +353,9 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... real-time-vulkan-simulation-engine
+	@echo ... libraries/vkbootstrap/VkBootstrap.obj
+	@echo ... libraries/vkbootstrap/VkBootstrap.i
+	@echo ... libraries/vkbootstrap/VkBootstrap.s
 	@echo ... src/camera.obj
 	@echo ... src/camera.i
 	@echo ... src/camera.s

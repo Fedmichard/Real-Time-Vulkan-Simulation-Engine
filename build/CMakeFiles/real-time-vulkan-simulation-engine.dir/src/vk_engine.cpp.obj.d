@@ -336,6 +336,9 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
  C:/msys64/mingw64/include/GL/gl.h \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrap.h \
+ C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrapDispatch.h \
  C:/msys64/mingw64/include/c++/14.1.0/chrono \
  C:/msys64/mingw64/include/c++/14.1.0/bits/chrono.h \
  C:/msys64/mingw64/include/c++/14.1.0/ratio \

@@ -1,16 +1,24 @@
 #include "vk_engine.h"
 
+#include <ostream>
+#include <iostream>
+
 int main(int argc, char* argv[]) {
     VulkanEngine engine;
 
-    // initialize window and vulkan
-    engine.init();
+    try {
+        // initialize window and vulkan
+        engine.init();
 
-    // main loop
-    engine.run();
+        // main loop
+        engine.run();
 
-    // uninitialize and free memory
-    engine.cleanup();
+        // uninitialize and free memory
+        engine.cleanup();
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

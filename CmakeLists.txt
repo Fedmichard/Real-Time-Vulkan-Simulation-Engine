@@ -38,6 +38,7 @@ add_executable(real-time-vulkan-simulation-engine
                src/vk_loader.h
                src/vk_pipelines.h
                src/vk_types.h
+               libraries/vkbootstrap/VkBootstrap.cpp
 )
 
 target_link_libraries(real-time-vulkan-simulation-engine libglfw3dll.a)

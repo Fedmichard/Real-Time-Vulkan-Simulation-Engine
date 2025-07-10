@@ -3065,7 +3065,7 @@ struct DispatchTable {
     void freeCommandBuffers(VkCommandPool commandPool, uint32_t commandBufferCount, const VkCommandBuffer* pCommandBuffers) const noexcept {
         fp_vkFreeCommandBuffers(device, commandPool, commandBufferCount, pCommandBuffers);
     }
-    VkResult beginCommandBuffer(VkCommandBuffer commandBuffer, const Vkcommand_buffer_begin_info* pBeginInfo) const noexcept {
+    VkResult beginCommandBuffer(VkCommandBuffer commandBuffer, const VkCommandBufferBeginInfo* pBeginInfo) const noexcept {
         return fp_vkBeginCommandBuffer(commandBuffer, pBeginInfo);
     }
     VkResult endCommandBuffer(VkCommandBuffer commandBuffer) const noexcept {
