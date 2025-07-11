@@ -228,6 +228,7 @@ real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-e
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/build.make
+real-time-vulkan-simulation-engine.exe: libraries/fmt/libfmtd.a
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/linkLibs.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/objects1.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/link.txt

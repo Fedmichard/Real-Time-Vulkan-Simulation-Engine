@@ -12,19 +12,33 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.30.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.30.1/CMakeRCCompiler.cmake"
   "CMakeFiles/3.30.1/CMakeSystem.cmake"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/CMakeLists.txt"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/support/cmake/JoinPaths.cmake"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/support/cmake/fmt-config.cmake.in"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/support/cmake/fmt.pc.in"
+  "C:/msys64/mingw64/share/cmake/Modules/BasicConfigVersion-AnyNewerVersion.cmake.in"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeCInformation.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeCXXInformation.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/CMakeCheckCompilerFlagCommonPatterns.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeCommonLanguageInclude.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeGenericSystem.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeInitializeConfigs.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeLanguageInformation.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/CMakePackageConfigHelpers.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/CMakeParseArguments.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeRCInformation.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInformation.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/CheckCXXCompilerFlag.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/CheckCXXSourceCompiles.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Compiler/GNU-C.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Compiler/GNU-CXX.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Compiler/GNU.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/GNUInstallDirs.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/Internal/CheckCompilerFlag.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/Internal/CheckFlagCommonConfig.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/Internal/CheckSourceCompiles.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-C-ABI.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-C.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Platform/Windows-GNU-CXX-ABI.cmake"
@@ -34,6 +48,7 @@ set(CMAKE_MAKEFILE_DEPENDS
   "C:/msys64/mingw64/share/cmake/Modules/Platform/Windows-windres.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Platform/Windows.cmake"
   "C:/msys64/mingw64/share/cmake/Modules/Platform/WindowsPaths.cmake"
+  "C:/msys64/mingw64/share/cmake/Modules/WriteBasicConfigVersionFile.cmake"
   )
 
 # The corresponding makefile is:
@@ -45,9 +60,14 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
+  "libraries/fmt/fmt-config-version.cmake"
+  "libraries/fmt/fmt.pc"
+  "libraries/fmt/fmt-config.cmake"
+  "libraries/fmt/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/DependInfo.cmake"
+  "libraries/fmt/CMakeFiles/fmt.dir/DependInfo.cmake"
   )

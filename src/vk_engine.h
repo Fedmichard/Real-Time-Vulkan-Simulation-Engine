@@ -5,6 +5,8 @@
 struct FrameData {
     VkCommandPool _commandPool;
     VkCommandBuffer _mainCommandBuffer;
+    VkSemaphore _imageAvailableSemaphore, _renderFinishedSemaphore;
+    VkFence _renderFence;
 };
 
 constexpr unsigned int MAX_FRAMES = 2;
@@ -24,6 +26,10 @@ private:
     // member variables
     FrameData _frames[MAX_FRAMES];
 
+    // queues
+    VkQueue _graphicsQueue;
+    uint32_t _graphicsQueueFamily;
+
     // member functions
     FrameData& getCurrentFrame() { return _frames[_frameNumber % MAX_FRAMES]; };
 
@@ -39,9 +45,6 @@ private:
 	std::vector<VkImage> _swapchainImages;
 	std::vector<VkImageView> _swapchainImageViews;
 	VkExtent2D _swapchainExtent;
-
-    VkQueue _graphicsQueue;
-    uint32_t _graphicsQueueFamily;
 
     // initializations
     void initVulkan();

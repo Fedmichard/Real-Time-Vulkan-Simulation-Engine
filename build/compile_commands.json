@@ -52,5 +52,17 @@
   "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\vkbootstrap\\VkBootstrap.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\vkbootstrap\\VkBootstrap.cpp",
   "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrap.cpp",
   "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fmt",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/fmt.dir/includes_CXX.rsp -g -o CMakeFiles\\fmt.dir\\src\\format.cc.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\fmt\\src\\format.cc",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/src/format.cc",
+  "output": "libraries/fmt/CMakeFiles/fmt.dir/src/format.cc.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fmt",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/fmt.dir/includes_CXX.rsp -g -o CMakeFiles\\fmt.dir\\src\\os.cc.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\fmt\\src\\os.cc",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/src/os.cc",
+  "output": "libraries/fmt/CMakeFiles/fmt.dir/src/os.cc.obj"
 }
 ]
