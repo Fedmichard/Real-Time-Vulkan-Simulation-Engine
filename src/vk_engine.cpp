@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "vk_types.h"
+#include "vk_initializers.h"
 #include "VkBootstrap.h"
 
 #include <chrono>
@@ -71,6 +72,17 @@ void VulkanEngine::draw() {
     // request next image in swap chain
     uint32_t swapchainImageIndex;
     VK_CHECK(vkAcquireNextImageKHR(_device, _swapchain, UINT64_MAX, getCurrentFrame()._imageAvailableSemaphore, VK_NULL_HANDLE, &swapchainImageIndex));
+
+    // starting recording to a command buffer
+    VkCommandBuffer cmd = getCurrentFrame()._mainCommandBuffer;
+
+    vkResetCommandBuffer(cmd, 0);
+    VkCommandBufferBeginInfo beginInfo = vkinit::commandBufferBeginInfo(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+
+    VK_CHECK(vkBeginCommandBuffer(cmd, &beginInfo));
+
+    // draw commands
+    
 }
 
 void VulkanEngine::run() {
