@@ -2,13 +2,6 @@
 
 #include "vk_types.h"
 
-struct FrameData {
-    VkCommandPool _commandPool;
-    VkCommandBuffer _mainCommandBuffer;
-    VkSemaphore _imageAvailableSemaphore, _renderFinishedSemaphore;
-    VkFence _renderFence;
-};
-
 constexpr unsigned int MAX_FRAMES = 2;
 
 class VulkanEngine {
@@ -46,12 +39,23 @@ private:
 	std::vector<VkImageView> _swapchainImageViews;
 	VkExtent2D _swapchainExtent;
 
+    DeletionQueue _mainDeletionQueue; 
+
+    // memory allocator for buffers and images
+    VmaAllocator _allocator;
+
+    AllocatedImage _drawImage;
+    VkExtent2D _drawExtent;
+
     // initializations
     void initVulkan();
     void initSwapchain();
     void createSwapchain(uint32_t width, uint32_t height);
     void initCommands();
     void initSyncStructures();
+
+    // helpers
+    void drawBackground(VkCommandBuffer commandBuffer);
 
     // cleanup
     void destroySwapchain();

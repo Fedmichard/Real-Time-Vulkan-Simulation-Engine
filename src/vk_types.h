@@ -20,6 +20,48 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
+// struct that holds everything we need for an allocated image
+struct AllocatedImage {
+    VkImage image;
+    VkImageView imageView;
+    VmaAllocation allocation; // VkDeviceMemory probably
+    VkExtent3D imageExtent;
+    VkFormat imageFormat;
+};
+
+struct DeletionQueue  {
+    /*
+        double ended queue, meaning you can add to the front and back but we're only using back
+        wrapper around a function, lambda expression, or functor object that takes no args and returns void
+        a queue of functions, lambda expression, etc that will be invoked later
+    */
+	std::deque<std::function<void()>> deletors;
+
+    // the struct holds a function that will push a function onto the queue
+    // && is an rvalue reference
+	void push_function(std::function<void()>&& function) {
+		deletors.push_back(function);
+	}
+
+    // flush invokes every functor in the queue in reverse order
+	void flush() {
+		// reverse iterate the deletion queue to execute all the functions
+		for (auto it = deletors.rbegin(); it != deletors.rend(); it++) {
+			(*it)(); //call functors
+		}
+
+		deletors.clear();
+	}
+};
+
+struct FrameData {
+    VkCommandPool _commandPool;
+    VkCommandBuffer _mainCommandBuffer;
+    VkSemaphore _imageAvailableSemaphore, _renderFinishedSemaphore;
+    VkFence _renderFence;
+    DeletionQueue _deletionQueue;
+};
+
 
 #define VK_CHECK(x)                                                     \
     do {                                                                \

@@ -1590,10 +1590,13 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/_mingw_stat64.h \
   C:/msys64/mingw64/include/_timeval.h \
   C:/msys64/mingw64/include/assert.h \
+  C:/msys64/mingw64/include/c++/14.1.0/algorithm \
   C:/msys64/mingw64/include/c++/14.1.0/array \
+  C:/msys64/mingw64/include/c++/14.1.0/atomic \
   C:/msys64/mingw64/include/c++/14.1.0/backward/auto_ptr.h \
   C:/msys64/mingw64/include/c++/14.1.0/backward/binders.h \
   C:/msys64/mingw64/include/c++/14.1.0/bit \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/algorithmfwd.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/align.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/alloc_traits.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/allocated_ptr.h \
@@ -1645,17 +1648,21 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/c++/14.1.0/bits/specfun.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/std_abs.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/std_function.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/std_mutex.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/std_thread.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_algo.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_algobase.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_bvector.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_construct.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_deque.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_function.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_heap.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator_base_funcs.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator_base_types.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_pair.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_raw_storage_iter.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_relops.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_tempbuf.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_uninitialized.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h \
@@ -1665,6 +1672,8 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/c++/14.1.0/bits/string_view.tcc \
   C:/msys64/mingw64/include/c++/14.1.0/bits/stringfwd.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/this_thread_sleep.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/uniform_int_dist.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/unique_lock.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/unique_ptr.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/unordered_map.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator.h \
@@ -1704,12 +1713,15 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/c++/14.1.0/iterator \
   C:/msys64/mingw64/include/c++/14.1.0/limits \
   C:/msys64/mingw64/include/c++/14.1.0/memory \
+  C:/msys64/mingw64/include/c++/14.1.0/mutex \
   C:/msys64/mingw64/include/c++/14.1.0/new \
   C:/msys64/mingw64/include/c++/14.1.0/optional \
   C:/msys64/mingw64/include/c++/14.1.0/pstl/execution_defs.h \
+  C:/msys64/mingw64/include/c++/14.1.0/pstl/glue_algorithm_defs.h \
   C:/msys64/mingw64/include/c++/14.1.0/pstl/glue_memory_defs.h \
   C:/msys64/mingw64/include/c++/14.1.0/pstl/pstl_config.h \
   C:/msys64/mingw64/include/c++/14.1.0/ratio \
+  C:/msys64/mingw64/include/c++/14.1.0/shared_mutex \
   C:/msys64/mingw64/include/c++/14.1.0/span \
   C:/msys64/mingw64/include/c++/14.1.0/stdexcept \
   C:/msys64/mingw64/include/c++/14.1.0/stdlib.h \
@@ -1734,6 +1746,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/c++/14.1.0/type_traits \
   C:/msys64/mingw64/include/c++/14.1.0/typeinfo \
   C:/msys64/mingw64/include/c++/14.1.0/unordered_map \
+  C:/msys64/mingw64/include/c++/14.1.0/utility \
   C:/msys64/mingw64/include/c++/14.1.0/vector \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/atomic_word.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++allocator.h \
@@ -2492,9 +2505,11 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h:
+
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_loader.h:
 
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h:
+C:/msys64/mingw64/include/c++/14.1.0/utility:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/this_thread_sleep.h:
 
@@ -2652,6 +2667,8 @@ C:/VulkanSDK/1.4.309.0/Include/glm/detail/_vectorize.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/new_allocator.h:
 
+C:/msys64/mingw64/include/c++/14.1.0/atomic:
+
 C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_encode.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/uintrintrin.h:
@@ -2803,6 +2820,8 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveintrin.h:
 C:/msys64/mingw64/include/fileapi.h:
 
 C:/msys64/mingw64/include/concurrencysal.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/stl_relops.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/movdirintrin.h:
 
@@ -3567,6 +3586,8 @@ C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec3.inl:
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.cpp:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/shared_mutex:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fxsrintrin.h:
 

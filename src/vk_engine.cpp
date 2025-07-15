@@ -3,6 +3,9 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
+#define VMA_IMPLEMENTATION
+#include "vk_mem_alloc.h"
+
 #include "vk_types.h"
 #include "vk_initializers.h"
 #include "vk_images.h"
@@ -10,7 +13,6 @@
 
 #include <chrono>
 #include <thread>
-
 
 constexpr bool bUseValidationLayers = true;
 
@@ -46,14 +48,17 @@ void VulkanEngine::cleanup() {
     if (_isInitialized) {
         vkDeviceWaitIdle(_device);
 
+        _mainDeletionQueue.flush();
         for (int i = 0; i < MAX_FRAMES; i++) {
             vkDestroyCommandPool(_device, _frames[i]._commandPool, nullptr);
 
             vkDestroyFence(_device, _frames[i]._renderFence, nullptr);
             vkDestroySemaphore(_device, _frames[i]._imageAvailableSemaphore, nullptr);
             vkDestroySemaphore(_device, _frames[i]._renderFinishedSemaphore, nullptr);
+
+            _frames[i]._deletionQueue.flush();
         }
-        
+
         destroySwapchain();
 
         vkDestroyDevice(_device, nullptr); 
@@ -72,6 +77,7 @@ void VulkanEngine::cleanup() {
 void VulkanEngine::draw() {
     // cpu will wait for fence to enter signaled state and then unsignal it (it will be signaled again once rendering is finished)
     VK_CHECK(vkWaitForFences(_device, 1, &getCurrentFrame()._renderFence, VK_TRUE, UINT64_MAX));
+    getCurrentFrame()._deletionQueue.flush();
     VK_CHECK(vkResetFences(_device, 1, &getCurrentFrame()._renderFence));
 
     // request next image in swap chain
@@ -88,26 +94,18 @@ void VulkanEngine::draw() {
     VK_CHECK(vkBeginCommandBuffer(cmd, &beginInfo));
 
     // transition the image into one that can be drawn to
-    vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
 
-    // clear the background
-    VkClearColorValue clearValue;
-    float flash = std::abs(std::sin(_frameNumber / 120.0f));
-    clearValue = { { 0.0f, 0.0f, flash, 1.0f } };
+    drawBackground(cmd);
 
-    /* abstract later */
-    VkImageSubresourceRange clearRange;
-    clearRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    clearRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
-    clearRange.baseArrayLayer = 0;
-    clearRange.levelCount = VK_REMAINING_MIP_LEVELS;
-    clearRange.baseMipLevel = 0;
-
-    // clear the image first (acts as background later)
-    vkCmdClearColorImage(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
-
-    // make the swapchain image into something presentable
-    vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+    // transition the _drawImage.image for transfer src
+    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+    // transition _swapchainImages into transfer dst
+    vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+    // copy drawimage into swapchain image
+    vkutil::copyImageToImage(cmd, _drawImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
+    // now set swapchain image for presentation
+    vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
 	//finalize the command buffer (we can no longer add commands, but it can now be executed)
 	VK_CHECK(vkEndCommandBuffer(cmd));
@@ -222,6 +220,78 @@ void VulkanEngine::initVulkan() {
 
     _graphicsQueue = device.get_queue(vkb::QueueType::graphics).value();
     _graphicsQueueFamily = device.get_queue_index(vkb::QueueType::graphics).value();
+
+    // create memory allocator
+    VmaAllocatorCreateInfo allocatorInfo{};
+    allocatorInfo.physicalDevice = _physicalDevice;
+    allocatorInfo.device = _device;
+    allocatorInfo.instance = _instance;
+    allocatorInfo.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
+    vmaCreateAllocator(&allocatorInfo, &_allocator);
+
+    // destroy allocator
+    _mainDeletionQueue.push_function([&]() {
+        vmaDestroyAllocator(_allocator);
+    });
+
+    // creating an image that will use a much higher precision format that we will draw to and then transfer to swap chain with low latency
+    VkExtent3D drawImageExtent;
+    drawImageExtent.width = _windowExtent.width;
+    drawImageExtent.height = _windowExtent.height;
+    drawImageExtent.depth = 1;
+
+    // hard coding draw format to VK_FORMAT_R16G16B16A16_SFLOAT from VK_FORMAT_B8G8R8A8_UNORM
+    _drawImage.imageFormat = VK_FORMAT_R16G16B16A16_SFLOAT;
+    _drawImage.imageExtent = drawImageExtent;
+
+    VkImageUsageFlags drawImageUsages{};
+	drawImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+	drawImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	drawImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
+	drawImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
+
+    // image create info
+    /* abstract later */
+    VkImageCreateInfo imgInfo{};
+    imgInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    imgInfo.imageType = VK_IMAGE_TYPE_2D;
+    imgInfo.format = _drawImage.imageFormat;
+    imgInfo.extent = _drawImage.imageExtent;
+    imgInfo.mipLevels = 1; // no mipmapping yet
+    imgInfo.arrayLayers = 1;
+    imgInfo.samples = VK_SAMPLE_COUNT_1_BIT; // no multisampling yet
+    imgInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // used for optimal gpu reading
+    imgInfo.usage = drawImageUsages;
+
+    // allocation info for gpu
+    VmaAllocationCreateInfo imgAllocInfo{};
+    imgAllocInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY; 
+    imgAllocInfo.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    // create the image and allocate it on the gpu 
+    vmaCreateImage(_allocator, &imgInfo, &imgAllocInfo, &_drawImage.image, &_drawImage.allocation, nullptr);
+
+    // image view create info
+    /* abstract later */
+    VkImageViewCreateInfo imgViewInfo{};
+    imgViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    imgViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    imgViewInfo.image = _drawImage.image;
+    imgViewInfo.format = _drawImage.imageFormat;
+    imgViewInfo.subresourceRange.baseMipLevel = 0;
+    imgViewInfo.subresourceRange.levelCount = 1;
+    imgViewInfo.subresourceRange.baseArrayLayer = 0;
+    imgViewInfo.subresourceRange.layerCount = 1;
+    imgViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+    // create image view
+    VK_CHECK(vkCreateImageView(_device, &imgViewInfo, nullptr, &_drawImage.imageView)); 
+
+    // add to deletion queues
+    _mainDeletionQueue.push_function([=]() {
+        vkDestroyImageView(_device, _drawImage.imageView, nullptr);
+        vmaDestroyImage(_allocator, _drawImage.image, _drawImage.allocation);
+    });
 }
 
 void VulkanEngine::createSwapchain(uint32_t width, uint32_t height) {
@@ -305,6 +375,24 @@ void createSurface(VkInstance& instance, GLFWwindow*& window, VkSurfaceKHR* surf
     if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
         throw std::runtime_error("failed to create window surface!");
     }
+}
+
+void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer) {
+    // clear the background
+    VkClearColorValue clearValue;
+    float flash = std::abs(std::sin(_frameNumber / 120.0f));
+    clearValue = { { 0.0f, 0.0f, flash, 1.0f } };
+
+    /* abstract later */
+    VkImageSubresourceRange clearRange;
+    clearRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    clearRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
+    clearRange.baseArrayLayer = 0;
+    clearRange.levelCount = VK_REMAINING_MIP_LEVELS;
+    clearRange.baseMipLevel = 0;
+
+    // clear the image first (acts as background later)
+    vkCmdClearColorImage(commandBuffer, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
 }
 
 /**********************************
