@@ -144,6 +144,7 @@ void VulkanEngine::draw() {
     submit.commandBufferInfoCount = 1;
     submit.pCommandBufferInfos = &cmdInfo;
 
+    // submit draw commands to graphics queue
     VK_CHECK(vkQueueSubmit2(_graphicsQueue, 1, &submit, getCurrentFrame()._renderFence));
 
     // prepare present
@@ -155,6 +156,7 @@ void VulkanEngine::draw() {
     presentInfo.pWaitSemaphores = &getCurrentFrame()._renderFinishedSemaphore;
     presentInfo.pImageIndices = &swapchainImageIndex;
 
+    // present
     VK_CHECK(vkQueuePresentKHR(_graphicsQueue, &presentInfo));
 
     _frameNumber++;
