@@ -142,7 +142,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_bvector.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/vector.tcc \
- C:/msys64/mingw64/include/c++/14.1.0/span \
  C:/msys64/mingw64/include/c++/14.1.0/array \
  C:/msys64/mingw64/include/c++/14.1.0/compare \
  C:/msys64/mingw64/include/c++/14.1.0/functional \
@@ -156,6 +155,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/deque \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_deque.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/deque.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/span \
  C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
  C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
  C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
@@ -333,6 +333,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4_precision.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.h \
  C:/msys64/mingw64/include/c++/14.1.0/ostream \
  C:/msys64/mingw64/include/c++/14.1.0/ios \
  C:/msys64/mingw64/include/c++/14.1.0/bits/basic_ios.h \

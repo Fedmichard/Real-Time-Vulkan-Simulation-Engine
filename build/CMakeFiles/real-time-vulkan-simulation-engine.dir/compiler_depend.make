@@ -1100,6 +1100,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/fra
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
@@ -1797,9 +1798,11 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_images.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_pipelines.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_images.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_images.cpp \
@@ -2325,10 +2328,13 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/c++/14.1.0/bits/allocator.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/atomic_base.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/atomic_lockfree_defines.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/basic_ios.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/basic_ios.tcc \
   C:/msys64/mingw64/include/c++/14.1.0/bits/basic_string.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/basic_string.tcc \
   C:/msys64/mingw64/include/c++/14.1.0/bits/char_traits.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/charconv.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/codecvt.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/concept_check.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/cpp_type_traits.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/cxxabi_forced.h \
@@ -2339,6 +2345,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/c++/14.1.0/bits/exception.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/exception_defines.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/exception_ptr.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/fstream.tcc \
   C:/msys64/mingw64/include/c++/14.1.0/bits/functexcept.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/functional_hash.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/hash_bytes.h \
@@ -2346,8 +2353,11 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/c++/14.1.0/bits/hashtable_policy.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/invoke.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/ios_base.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/istream.tcc \
   C:/msys64/mingw64/include/c++/14.1.0/bits/locale_classes.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/locale_classes.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.tcc \
   C:/msys64/mingw64/include/c++/14.1.0/bits/localefwd.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/memory_resource.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/memoryfwd.h \
@@ -2355,6 +2365,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/c++/14.1.0/bits/nested_exception.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/new_allocator.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/node_handle.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/ostream.tcc \
   C:/msys64/mingw64/include/c++/14.1.0/bits/ostream_insert.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/postypes.h \
   C:/msys64/mingw64/include/c++/14.1.0/bits/predefined_ops.h \
@@ -2406,6 +2417,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/c++/14.1.0/cstdlib \
   C:/msys64/mingw64/include/c++/14.1.0/cstring \
   C:/msys64/mingw64/include/c++/14.1.0/cwchar \
+  C:/msys64/mingw64/include/c++/14.1.0/cwctype \
   C:/msys64/mingw64/include/c++/14.1.0/debug/assertions.h \
   C:/msys64/mingw64/include/c++/14.1.0/debug/debug.h \
   C:/msys64/mingw64/include/c++/14.1.0/deque \
@@ -2417,14 +2429,18 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/c++/14.1.0/ext/numeric_traits.h \
   C:/msys64/mingw64/include/c++/14.1.0/ext/string_conversions.h \
   C:/msys64/mingw64/include/c++/14.1.0/ext/type_traits.h \
+  C:/msys64/mingw64/include/c++/14.1.0/fstream \
   C:/msys64/mingw64/include/c++/14.1.0/functional \
   C:/msys64/mingw64/include/c++/14.1.0/initializer_list \
+  C:/msys64/mingw64/include/c++/14.1.0/ios \
   C:/msys64/mingw64/include/c++/14.1.0/iosfwd \
+  C:/msys64/mingw64/include/c++/14.1.0/istream \
   C:/msys64/mingw64/include/c++/14.1.0/iterator \
   C:/msys64/mingw64/include/c++/14.1.0/limits \
   C:/msys64/mingw64/include/c++/14.1.0/memory \
   C:/msys64/mingw64/include/c++/14.1.0/new \
   C:/msys64/mingw64/include/c++/14.1.0/optional \
+  C:/msys64/mingw64/include/c++/14.1.0/ostream \
   C:/msys64/mingw64/include/c++/14.1.0/pstl/execution_defs.h \
   C:/msys64/mingw64/include/c++/14.1.0/pstl/glue_memory_defs.h \
   C:/msys64/mingw64/include/c++/14.1.0/pstl/pstl_config.h \
@@ -2453,10 +2469,14 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/c++/14.1.0/unordered_map \
   C:/msys64/mingw64/include/c++/14.1.0/vector \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/atomic_word.h \
+  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/basic_file.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++allocator.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++config.h \
+  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++io.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++locale.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_base.h \
+  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_inline.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/error_constants.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/gthr-default.h \
   C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/gthr.h \
@@ -2496,14 +2516,26 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/include/time.h \
   C:/msys64/mingw64/include/vadefs.h \
   C:/msys64/mingw64/include/wchar.h \
+  C:/msys64/mingw64/include/wctype.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_pipelines.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
+
+C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++io.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/basic_file.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/fstream:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/fstream.tcc:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/codecvt.h:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h:
 

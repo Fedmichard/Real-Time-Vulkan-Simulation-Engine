@@ -142,7 +142,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_bvector.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/vector.tcc \
- C:/msys64/mingw64/include/c++/14.1.0/span \
  C:/msys64/mingw64/include/c++/14.1.0/array \
  C:/msys64/mingw64/include/c++/14.1.0/compare \
  C:/msys64/mingw64/include/c++/14.1.0/functional \
@@ -156,6 +155,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/deque \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_deque.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/deque.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/span \
  C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
  C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
  C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
@@ -332,4 +332,23 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: \
  C:/VulkanSDK/1.4.309.0/Include/glm/detail/compute_common.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4_precision.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp \
- C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp \
+ C:/msys64/mingw64/include/c++/14.1.0/fstream \
+ C:/msys64/mingw64/include/c++/14.1.0/istream \
+ C:/msys64/mingw64/include/c++/14.1.0/ios \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/basic_ios.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.h \
+ C:/msys64/mingw64/include/c++/14.1.0/cwctype \
+ C:/msys64/mingw64/include/wctype.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_base.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_inline.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/basic_ios.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/ostream \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/ostream.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/istream.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/codecvt.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/basic_file.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++io.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/fstream.tcc \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.h
