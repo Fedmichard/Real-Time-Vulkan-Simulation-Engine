@@ -441,8 +441,8 @@ void VulkanEngine::initBackgroundPipelines() {
 
     VkShaderModule computeDrawShader;
 
-    if (!vkutil::loadShaderModule("../../shaders/gradient.comp.spv", _device, &computeDrawShader)) {
-        fmt::print("Error When building the comute shader \n");
+    if (!vkutil::loadShaderModule("../shaders/gradient.comp.spv", _device, &computeDrawShader)) {
+        fmt::print("Error When building the compute shader \n");
     }
 
     VkPipelineShaderStageCreateInfo stageInfo{};
@@ -480,8 +480,14 @@ void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer, VkImage image) 
     clearRange.levelCount = VK_REMAINING_MIP_LEVELS;
     clearRange.baseMipLevel = 0;
 
-    // clear the image first (acts as background later)
-    vkCmdClearColorImage(commandBuffer, image, VK_IMAGE_LAYOUT_GENERAL, &clearValue, 1, &clearRange);
+    // bind the gradient drawing compute pipeline
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, _gradientPipeline);
+
+    // bind the descriptor set containing the draw image for the compute pipeline
+    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, _gradientPipelineLayout, 0, 1, &_drawImageDescriptorSet, 0, nullptr);
+
+    // execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
+	vkCmdDispatch(commandBuffer, std::ceil(_drawExtent.width / 16.0), std::ceil(_drawExtent.height / 16.0), 1);
 }
 
 /**********************************
