@@ -114,8 +114,12 @@ void VulkanEngine::draw() {
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     // copy drawimage into swapchain image
     vkutil::copyImageToImage(cmd, _drawImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
+    // now that we copied from our draw image into swapchain image we transition it again so we can draw it correct format for imgui
+    vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    // draw imgui onto swapchain image
+    drawImgui(cmd, _swapchainImageViews[swapchainImageIndex]);
     // now set swapchain image for presentation
-    vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+    vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
 	//finalize the command buffer (we can no longer add commands, but it can now be executed)
 	VK_CHECK(vkEndCommandBuffer(cmd));
@@ -179,8 +183,22 @@ void VulkanEngine::run() {
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
-        //some imgui UI to test
-        ImGui::ShowDemoWindow();
+
+        if (ImGui::Begin("background")) {
+			
+			ComputeEffect& selected = backgroundEffects[currentBackgroundIndex];
+		
+			ImGui::Text("Selected effect: ", selected.name);
+		
+			ImGui::SliderInt("Effect Index", &currentBackgroundIndex, 0, backgroundEffects.size() - 1);
+		
+			ImGui::InputFloat4("data1",(float*)& selected.data.data1);
+			ImGui::InputFloat4("data2",(float*)& selected.data.data2);
+			ImGui::InputFloat4("data3",(float*)& selected.data.data3);
+			ImGui::InputFloat4("data4",(float*)& selected.data.data4);
+		}
+
+		ImGui::End();
 
         //make imgui calculate internal draw structures
         ImGui::Render();
@@ -426,23 +444,33 @@ void VulkanEngine::initPipelines() {
 
 // create background gradient pipeline
 void VulkanEngine::initBackgroundPipelines() {
+    // global for all pipelines
     VkPipelineLayoutCreateInfo computePipelineLayoutInfo{};
     computePipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     computePipelineLayoutInfo.setLayoutCount = 1;
     computePipelineLayoutInfo.pSetLayouts = &_drawImageDescriptorLayout;
 
+    // adding push constants
+    VkPushConstantRange pushConstant{};
+    pushConstant.offset = 0;
+    pushConstant.size = sizeof(ComputePushConstants);
+    pushConstant.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
+
+    computePipelineLayoutInfo.pushConstantRangeCount = 1;
+    computePipelineLayoutInfo.pPushConstantRanges = &pushConstant;
+
     VK_CHECK(vkCreatePipelineLayout(_device, &computePipelineLayoutInfo, nullptr, &_gradientPipelineLayout));
 
-    VkShaderModule computeDrawShader;
-
-    if (!vkutil::loadShaderModule("../shaders/gradient.comp.spv", _device, &computeDrawShader)) {
+    // different gradients
+    VkShaderModule gradientShader;
+    if (!vkutil::loadShaderModule("../shaders/gradient.comp.spv", _device, &gradientShader)) {
         fmt::print("Error When building the compute shader \n");
     }
 
     VkPipelineShaderStageCreateInfo stageInfo{};
     stageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     stageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-    stageInfo.module = computeDrawShader;
+    stageInfo.module = gradientShader;
     stageInfo.pName = "main";
 
     VkComputePipelineCreateInfo computePipelineCreateInfo{};
@@ -450,12 +478,43 @@ void VulkanEngine::initBackgroundPipelines() {
     computePipelineCreateInfo.layout = _gradientPipelineLayout;
     computePipelineCreateInfo.stage = stageInfo;
 
-    VK_CHECK(vkCreateComputePipelines(_device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &_gradientPipeline));
+    ComputeEffect gradient;
+    gradient.layout = _gradientPipelineLayout;
+    gradient.name = "gradient";
+    gradient.data = {};
 
-    vkDestroyShaderModule(_device, computeDrawShader, nullptr);
+    // default gradient data
+    gradient.data.data1 = glm::vec4(1, 0, 0, 1);
+    gradient.data.data2 = glm::vec4(0, 0, 1, 1);
+
+    VK_CHECK(vkCreateComputePipelines(_device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &gradient.pipeline));
+
+    VkShaderModule skyShader;
+    if (!vkutil::loadShaderModule("../shaders/sky.comp.spv", _device, &skyShader)) {
+        fmt::print("Error when building the compute shader \n");
+    }
+
+    computePipelineCreateInfo.stage.module = skyShader;
+
+    ComputeEffect sky;
+    sky.layout = _gradientPipelineLayout;
+    sky.name = "sky";
+    sky.data = {};
+    
+    //default sky parameters
+    sky.data.data1 = glm::vec4(0.1, 0.2, 0.4 ,0.97);
+
+    VK_CHECK(vkCreateComputePipelines(_device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &sky.pipeline));
+    
+    backgroundEffects.push_back(gradient);
+    backgroundEffects.push_back(sky);
+
+    vkDestroyShaderModule(_device, gradientShader, nullptr);
+    vkDestroyShaderModule(_device, skyShader, nullptr);
     _mainDeletionQueue.push_function([&]() {
         vkDestroyPipelineLayout(_device, _gradientPipelineLayout, nullptr);
-        vkDestroyPipeline(_device, _gradientPipeline, nullptr);
+        vkDestroyPipeline(_device, gradient.pipeline, nullptr);
+        vkDestroyPipeline(_device, sky.pipeline, nullptr);
     });
 }
 
@@ -574,16 +633,19 @@ void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer, VkImage image) 
     clearRange.levelCount = VK_REMAINING_MIP_LEVELS;
     clearRange.baseMipLevel = 0;
 
+    ComputeEffect& effect = backgroundEffects[currentBackgroundIndex];
+
     // bind the gradient drawing compute pipeline
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, _gradientPipeline);
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, backgroundEffects[currentBackgroundIndex].pipeline);
 
     // bind the descriptor set containing the draw image for the compute pipeline
     vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, _gradientPipelineLayout, 0, 1, &_drawImageDescriptorSet, 0, nullptr);
 
+    vkCmdPushConstants(commandBuffer, _gradientPipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(ComputePushConstants), &effect.data);
+
     // execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
 	vkCmdDispatch(commandBuffer, std::ceil(_drawExtent.width / 16.0), std::ceil(_drawExtent.height / 16.0), 1);
 }
-
 
 void VulkanEngine::immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function) {
     // we don't use semaphores since we're not synchronizing with swapchain (which requires 2 queue families)
@@ -614,6 +676,26 @@ void VulkanEngine::immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& fu
     VK_CHECK(vkQueueSubmit2(_graphicsQueue, 1, &submitInfo, _immFence));
 
     VK_CHECK(vkWaitForFences(_device, 1, &_immFence, VK_TRUE, UINT64_MAX));
+}
+
+void VulkanEngine::drawImgui(VkCommandBuffer cmd, VkImageView targetImageView) {
+    VkRenderingAttachmentInfo colorAttachment{};
+    colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    colorAttachment.imageView = targetImageView;
+    colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.loadOp = nullptr ? VK_ATTACHMENT_LOAD_OP_CLEAR : VK_ATTACHMENT_LOAD_OP_LOAD;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
+    VkRenderingInfo renderInfo{};
+    renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+    renderInfo.renderArea = VkRect2D{ VkOffset2D{ 0, 0}, _swapchainExtent };
+    renderInfo.layerCount = 1;
+    renderInfo.colorAttachmentCount = 1;
+    renderInfo.pColorAttachments = &colorAttachment;
+
+    vkCmdBeginRendering(cmd, &renderInfo);
+    ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), cmd);
+    vkCmdEndRendering(cmd);
 }
 
 /**********************************

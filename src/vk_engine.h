@@ -63,6 +63,10 @@ private:
     VkCommandPool _immPool;
     VkCommandBuffer _immBuffer;
 
+    // array of compute pipelines we will be drawing and the push constants (data1, data2,...)
+    std::vector<ComputeEffect> backgroundEffects;
+    int currentBackgroundIndex{0};
+
     // initializations
     void initVulkan();
     void initSwapchain();
@@ -77,6 +81,7 @@ private:
     // helpers
     void drawBackground(VkCommandBuffer commandBuffer, VkImage image);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
+    void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
 
     // cleanup
     void destroySwapchain();
