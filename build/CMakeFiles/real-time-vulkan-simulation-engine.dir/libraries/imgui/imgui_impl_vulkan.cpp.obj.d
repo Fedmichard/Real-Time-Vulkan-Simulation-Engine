@@ -1,0 +1,58 @@
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj: \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_vulkan.cpp \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui.h \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imconfig.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
+ C:/msys64/mingw64/include/float.h C:/msys64/mingw64/include/crtdefs.h \
+ C:/msys64/mingw64/include/corecrt.h C:/msys64/mingw64/include/_mingw.h \
+ C:/msys64/mingw64/include/_mingw_mac.h \
+ C:/msys64/mingw64/include/_mingw_secapi.h \
+ C:/msys64/mingw64/include/vadefs.h \
+ C:/msys64/mingw64/include/sdks/_mingw_ddk.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
+ C:/msys64/mingw64/include/stdarg.h \
+ C:/msys64/mingw64/include/_mingw_stdarg.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
+ C:/msys64/mingw64/include/stddef.h C:/msys64/mingw64/include/string.h \
+ C:/msys64/mingw64/include/sec_api/string_s.h \
+ C:/msys64/mingw64/include/assert.h \
+ C:/msys64/mingw64/include/c++/14.1.0/stdlib.h \
+ C:/msys64/mingw64/include/c++/14.1.0/cstdlib \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++config.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/os_defines.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+ C:/msys64/mingw64/include/c++/14.1.0/pstl/pstl_config.h \
+ C:/msys64/mingw64/include/stdlib.h \
+ C:/msys64/mingw64/include/corecrt_wstdlib.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+ C:/msys64/mingw64/include/limits.h \
+ C:/msys64/mingw64/include/sec_api/stdlib_s.h \
+ C:/msys64/mingw64/include/malloc.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
+ C:/msys64/mingw64/include/errno.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/std_abs.h \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_vulkan.h \
+ C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
+ C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
+ C:/msys64/mingw64/include/stdint.h \
+ C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codecs_common.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std_encode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_encode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std_decode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_decode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_decode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_encode.h \
+ C:/msys64/mingw64/include/stdio.h \
+ C:/msys64/mingw64/include/corecrt_stdio_config.h \
+ C:/msys64/mingw64/include/_mingw_off_t.h \
+ C:/msys64/mingw64/include/swprintf.inl \
+ C:/msys64/mingw64/include/sec_api/stdio_s.h

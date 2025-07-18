@@ -58,6 +58,11 @@ private:
     VkDescriptorSet _drawImageDescriptorSet;
     VkDescriptorSetLayout _drawImageDescriptorLayout;
 
+    // immediate submit structures
+    VkFence _immFence;
+    VkCommandPool _immPool;
+    VkCommandBuffer _immBuffer;
+
     // initializations
     void initVulkan();
     void initSwapchain();
@@ -67,9 +72,11 @@ private:
     void initDescriptors();
     void initPipelines();
     void initBackgroundPipelines();
+    void initImgui();
 
     // helpers
     void drawBackground(VkCommandBuffer commandBuffer, VkImage image);
+    void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
 
     // cleanup
     void destroySwapchain();

@@ -10,6 +10,9 @@
 #include "vk_initializers.h"
 #include "vk_images.h"
 #include "vk_pipelines.h"
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
 #include "VkBootstrap.h"
 
 #include <chrono>
@@ -42,6 +45,7 @@ void VulkanEngine::init() {
     initSyncStructures(); // init all our fences and semaphores
     initDescriptors(); // init all our descriptors
     initPipelines(); // init all our pipelines
+    initImgui(); // init gui
     
     // everything was successful
     _isInitialized = true;
@@ -171,6 +175,16 @@ void VulkanEngine::draw() {
 void VulkanEngine::run() {
     while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
+        
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+        //some imgui UI to test
+        ImGui::ShowDemoWindow();
+
+        //make imgui calculate internal draw structures
+        ImGui::Render();
+
         draw();
     }
 }
@@ -308,15 +322,15 @@ void VulkanEngine::initSwapchain() {
 
 void VulkanEngine::initCommands() {
     // command pool specifically for commands going into a graphics queue
-    VkCommandPoolCreateInfo commandPool{};
-    commandPool.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+    VkCommandPoolCreateInfo commandPoolInfo{};
+    commandPoolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
     // VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT allows the command buffers to be reset and reused individually
-    commandPool.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
-    commandPool.queueFamilyIndex = _graphicsQueueFamily;
+    commandPoolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+    commandPoolInfo.queueFamilyIndex = _graphicsQueueFamily;
 
     // create each command buffer for each frame in flight
     for (int i = 0; i < MAX_FRAMES; i++) {
-        VK_CHECK(vkCreateCommandPool(_device, &commandPool, nullptr, &_frames[i]._commandPool));
+        VK_CHECK(vkCreateCommandPool(_device, &commandPoolInfo, nullptr, &_frames[i]._commandPool));
 
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -326,13 +340,28 @@ void VulkanEngine::initCommands() {
 
         VK_CHECK(vkAllocateCommandBuffers(_device, &allocInfo, &_frames[i]._mainCommandBuffer));
     }
+
+    // create command pool for immediate GPU commands
+    VK_CHECK(vkCreateCommandPool(_device, &commandPoolInfo, nullptr, &_immPool));
+
+    VkCommandBufferAllocateInfo immCmdInfo{};
+    immCmdInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+    immCmdInfo.commandPool = _immPool;
+    immCmdInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+    immCmdInfo.commandBufferCount = 1;
+
+    VK_CHECK(vkAllocateCommandBuffers(_device, &immCmdInfo, &_immBuffer));
+
+    _mainDeletionQueue.push_function([&]() {
+        vkDestroyCommandPool(_device, _immPool, nullptr);
+    });
 }
 
 void VulkanEngine::initSyncStructures() {
+    // for drawing
     VkFenceCreateInfo fenceCreateInfo{};
     fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
-    // start the fence signaled so we're not stuck waiting
-    fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+    fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT; // start the fence signaled so we're not stuck waiting
 
     VkSemaphoreCreateInfo semaphoreCreateInfo{};
     semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -343,6 +372,12 @@ void VulkanEngine::initSyncStructures() {
         VK_CHECK(vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr, &_frames[i]._imageAvailableSemaphore));
         VK_CHECK(vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr, &_frames[i]._renderFinishedSemaphore));
     }
+
+    // for imgui
+    VK_CHECK(vkCreateFence(_device, &fenceCreateInfo, nullptr, &_immFence));
+    _mainDeletionQueue.push_function([&]() {
+        vkDestroyFence(_device, _immFence, nullptr);
+    });
 }
 
 void VulkanEngine::initDescriptors() {
@@ -389,6 +424,100 @@ void VulkanEngine::initPipelines() {
     initBackgroundPipelines();
 }
 
+// create background gradient pipeline
+void VulkanEngine::initBackgroundPipelines() {
+    VkPipelineLayoutCreateInfo computePipelineLayoutInfo{};
+    computePipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    computePipelineLayoutInfo.setLayoutCount = 1;
+    computePipelineLayoutInfo.pSetLayouts = &_drawImageDescriptorLayout;
+
+    VK_CHECK(vkCreatePipelineLayout(_device, &computePipelineLayoutInfo, nullptr, &_gradientPipelineLayout));
+
+    VkShaderModule computeDrawShader;
+
+    if (!vkutil::loadShaderModule("../shaders/gradient.comp.spv", _device, &computeDrawShader)) {
+        fmt::print("Error When building the compute shader \n");
+    }
+
+    VkPipelineShaderStageCreateInfo stageInfo{};
+    stageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    stageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
+    stageInfo.module = computeDrawShader;
+    stageInfo.pName = "main";
+
+    VkComputePipelineCreateInfo computePipelineCreateInfo{};
+    computePipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+    computePipelineCreateInfo.layout = _gradientPipelineLayout;
+    computePipelineCreateInfo.stage = stageInfo;
+
+    VK_CHECK(vkCreateComputePipelines(_device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &_gradientPipeline));
+
+    vkDestroyShaderModule(_device, computeDrawShader, nullptr);
+    _mainDeletionQueue.push_function([&]() {
+        vkDestroyPipelineLayout(_device, _gradientPipelineLayout, nullptr);
+        vkDestroyPipeline(_device, _gradientPipeline, nullptr);
+    });
+}
+
+void VulkanEngine::initImgui() {
+    // 1. Create descriptor pool for IMGUI
+    // the different descriptor pool types and how many (really big tbh)
+    VkDescriptorPoolSize poolSizes[] = { { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+        { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+        { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+        { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+        { VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+        { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+        { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+        { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+        { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+        { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+        { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 } };
+
+    VkDescriptorPoolCreateInfo poolInfo{};
+    poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+    poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+    poolInfo.maxSets = 1000;
+    poolInfo.poolSizeCount = static_cast<uint32_t>(std::size(poolSizes));
+    poolInfo.pPoolSizes = poolSizes;
+
+    VkDescriptorPool imguiPool;
+    VK_CHECK(vkCreateDescriptorPool(_device, &poolInfo, nullptr, &imguiPool));
+
+    // initialize imgui library
+    ImGui::CreateContext();
+
+    // intializes for glfw
+    ImGui_ImplGlfw_InitForVulkan(_window, true);
+
+    // initializes for vulkan
+    ImGui_ImplVulkan_InitInfo initInfo{};
+	initInfo.Instance = _instance;
+	initInfo.PhysicalDevice = _physicalDevice;
+	initInfo.Device = _device;
+	initInfo.Queue = _graphicsQueue;
+	initInfo.DescriptorPool = imguiPool;
+	initInfo.MinImageCount = 3;
+	initInfo.ImageCount = 3;
+	initInfo.UseDynamicRendering = true;
+
+	//dynamic rendering parameters for imgui to use
+	initInfo.PipelineRenderingCreateInfo = { .sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO };
+	initInfo.PipelineRenderingCreateInfo.colorAttachmentCount = 1;
+	initInfo.PipelineRenderingCreateInfo.pColorAttachmentFormats = &_swapchainImageFormat;
+	
+
+	initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+
+	ImGui_ImplVulkan_Init(&initInfo);
+
+	// add the destroy the imgui created structures
+	_mainDeletionQueue.push_function([=]() {
+		ImGui_ImplVulkan_Shutdown();
+		vkDestroyDescriptorPool(_device, imguiPool, nullptr);
+	});
+}
+
 /**********************************
 *        Helper Functions
 **********************************/
@@ -430,41 +559,6 @@ void VulkanEngine::createSwapchain(uint32_t width, uint32_t height) {
     _swapchainImageViews = swapchain.get_image_views().value();
 }
 
-// create background gradient pipeline
-void VulkanEngine::initBackgroundPipelines() {
-    VkPipelineLayoutCreateInfo computePipelineLayoutInfo{};
-    computePipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    computePipelineLayoutInfo.setLayoutCount = 1;
-    computePipelineLayoutInfo.pSetLayouts = &_drawImageDescriptorLayout;
-
-    VK_CHECK(vkCreatePipelineLayout(_device, &computePipelineLayoutInfo, nullptr, &_gradientPipelineLayout));
-
-    VkShaderModule computeDrawShader;
-
-    if (!vkutil::loadShaderModule("../shaders/gradient.comp.spv", _device, &computeDrawShader)) {
-        fmt::print("Error When building the compute shader \n");
-    }
-
-    VkPipelineShaderStageCreateInfo stageInfo{};
-    stageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    stageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-    stageInfo.module = computeDrawShader;
-    stageInfo.pName = "main";
-
-    VkComputePipelineCreateInfo computePipelineCreateInfo{};
-    computePipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-    computePipelineCreateInfo.layout = _gradientPipelineLayout;
-    computePipelineCreateInfo.stage = stageInfo;
-
-    VK_CHECK(vkCreateComputePipelines(_device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &_gradientPipeline));
-
-    vkDestroyShaderModule(_device, computeDrawShader, nullptr);
-    _mainDeletionQueue.push_function([&]() {
-        vkDestroyPipelineLayout(_device, _gradientPipelineLayout, nullptr);
-        vkDestroyPipeline(_device, _gradientPipeline, nullptr);
-    });
-}
-
 // draw our background
 void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer, VkImage image) {
     // clear the background
@@ -488,6 +582,38 @@ void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer, VkImage image) 
 
     // execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
 	vkCmdDispatch(commandBuffer, std::ceil(_drawExtent.width / 16.0), std::ceil(_drawExtent.height / 16.0), 1);
+}
+
+
+void VulkanEngine::immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function) {
+    // we don't use semaphores since we're not synchronizing with swapchain (which requires 2 queue families)
+    VK_CHECK(vkResetFences(_device, 1, &_immFence)); // reset the fence into the unsignaled state immediately since we signal it upon create
+    VK_CHECK(vkResetCommandBuffer(_immBuffer, 0));
+
+    VkCommandBuffer cmd = _immBuffer;
+
+    VkCommandBufferBeginInfo beginInfo{};
+    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+    beginInfo.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+    
+    VK_CHECK(vkBeginCommandBuffer(cmd, &beginInfo));
+
+    function(cmd);
+
+    VK_CHECK(vkEndCommandBuffer(cmd));
+
+    VkCommandBufferSubmitInfo cmdInfo{};
+    cmdInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_SUBMIT_INFO;
+    cmdInfo.commandBuffer = cmd;
+
+    VkSubmitInfo2 submitInfo{};
+    submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO_2;
+    submitInfo.commandBufferInfoCount = 1;
+    submitInfo.pCommandBufferInfos = &cmdInfo;
+
+    VK_CHECK(vkQueueSubmit2(_graphicsQueue, 1, &submitInfo, _immFence));
+
+    VK_CHECK(vkWaitForFences(_device, 1, &_immFence, VK_TRUE, UINT64_MAX));
 }
 
 /**********************************

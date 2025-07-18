@@ -54,6 +54,48 @@
   "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj"
 },
 {
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\imgui\\imgui.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\imgui\\imgui.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\imgui\\imgui_impl_glfw.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\imgui\\imgui_impl_glfw.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_glfw.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\imgui\\imgui_impl_vulkan.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\imgui\\imgui_impl_vulkan.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_vulkan.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\imgui\\imgui_widgets.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\imgui\\imgui_widgets.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_widgets.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\imgui\\imgui_tables.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\imgui\\imgui_tables.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_tables.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\imgui\\imgui_draw.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\imgui\\imgui_draw.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_draw.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj"
+},
+{
+  "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build",
+  "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp -g -o CMakeFiles\\real-time-vulkan-simulation-engine.dir\\libraries\\imgui\\imgui_demo.cpp.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\imgui\\imgui_demo.cpp",
+  "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_demo.cpp",
+  "output": "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj"
+},
+{
   "directory": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fmt",
   "command": "C:\\msys64\\mingw64\\bin\\g++.exe  @CMakeFiles/fmt.dir/includes_CXX.rsp -g -o CMakeFiles\\fmt.dir\\src\\format.cc.obj -c C:\\Users\\franc\\Documents\\Personal_Projects\\Real-Time-Vulkan-Simulation-Engine\\libraries\\fmt\\src\\format.cc",
   "file": "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/src/format.cc",

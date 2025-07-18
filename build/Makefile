@@ -186,6 +186,174 @@ fmt/fast:
 	$(MAKE) $(MAKESILENT) -f libraries\fmt\CMakeFiles\fmt.dir\build.make libraries/fmt/CMakeFiles/fmt.dir/build
 .PHONY : fmt/fast
 
+libraries/imgui/imgui.obj: libraries/imgui/imgui.cpp.obj
+.PHONY : libraries/imgui/imgui.obj
+
+# target to build an object file
+libraries/imgui/imgui.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj
+.PHONY : libraries/imgui/imgui.cpp.obj
+
+libraries/imgui/imgui.i: libraries/imgui/imgui.cpp.i
+.PHONY : libraries/imgui/imgui.i
+
+# target to preprocess a source file
+libraries/imgui/imgui.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.i
+.PHONY : libraries/imgui/imgui.cpp.i
+
+libraries/imgui/imgui.s: libraries/imgui/imgui.cpp.s
+.PHONY : libraries/imgui/imgui.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.s
+.PHONY : libraries/imgui/imgui.cpp.s
+
+libraries/imgui/imgui_demo.obj: libraries/imgui/imgui_demo.cpp.obj
+.PHONY : libraries/imgui/imgui_demo.obj
+
+# target to build an object file
+libraries/imgui/imgui_demo.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj
+.PHONY : libraries/imgui/imgui_demo.cpp.obj
+
+libraries/imgui/imgui_demo.i: libraries/imgui/imgui_demo.cpp.i
+.PHONY : libraries/imgui/imgui_demo.i
+
+# target to preprocess a source file
+libraries/imgui/imgui_demo.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.i
+.PHONY : libraries/imgui/imgui_demo.cpp.i
+
+libraries/imgui/imgui_demo.s: libraries/imgui/imgui_demo.cpp.s
+.PHONY : libraries/imgui/imgui_demo.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui_demo.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.s
+.PHONY : libraries/imgui/imgui_demo.cpp.s
+
+libraries/imgui/imgui_draw.obj: libraries/imgui/imgui_draw.cpp.obj
+.PHONY : libraries/imgui/imgui_draw.obj
+
+# target to build an object file
+libraries/imgui/imgui_draw.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj
+.PHONY : libraries/imgui/imgui_draw.cpp.obj
+
+libraries/imgui/imgui_draw.i: libraries/imgui/imgui_draw.cpp.i
+.PHONY : libraries/imgui/imgui_draw.i
+
+# target to preprocess a source file
+libraries/imgui/imgui_draw.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.i
+.PHONY : libraries/imgui/imgui_draw.cpp.i
+
+libraries/imgui/imgui_draw.s: libraries/imgui/imgui_draw.cpp.s
+.PHONY : libraries/imgui/imgui_draw.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui_draw.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.s
+.PHONY : libraries/imgui/imgui_draw.cpp.s
+
+libraries/imgui/imgui_impl_glfw.obj: libraries/imgui/imgui_impl_glfw.cpp.obj
+.PHONY : libraries/imgui/imgui_impl_glfw.obj
+
+# target to build an object file
+libraries/imgui/imgui_impl_glfw.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj
+.PHONY : libraries/imgui/imgui_impl_glfw.cpp.obj
+
+libraries/imgui/imgui_impl_glfw.i: libraries/imgui/imgui_impl_glfw.cpp.i
+.PHONY : libraries/imgui/imgui_impl_glfw.i
+
+# target to preprocess a source file
+libraries/imgui/imgui_impl_glfw.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.i
+.PHONY : libraries/imgui/imgui_impl_glfw.cpp.i
+
+libraries/imgui/imgui_impl_glfw.s: libraries/imgui/imgui_impl_glfw.cpp.s
+.PHONY : libraries/imgui/imgui_impl_glfw.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui_impl_glfw.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.s
+.PHONY : libraries/imgui/imgui_impl_glfw.cpp.s
+
+libraries/imgui/imgui_impl_vulkan.obj: libraries/imgui/imgui_impl_vulkan.cpp.obj
+.PHONY : libraries/imgui/imgui_impl_vulkan.obj
+
+# target to build an object file
+libraries/imgui/imgui_impl_vulkan.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj
+.PHONY : libraries/imgui/imgui_impl_vulkan.cpp.obj
+
+libraries/imgui/imgui_impl_vulkan.i: libraries/imgui/imgui_impl_vulkan.cpp.i
+.PHONY : libraries/imgui/imgui_impl_vulkan.i
+
+# target to preprocess a source file
+libraries/imgui/imgui_impl_vulkan.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.i
+.PHONY : libraries/imgui/imgui_impl_vulkan.cpp.i
+
+libraries/imgui/imgui_impl_vulkan.s: libraries/imgui/imgui_impl_vulkan.cpp.s
+.PHONY : libraries/imgui/imgui_impl_vulkan.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui_impl_vulkan.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.s
+.PHONY : libraries/imgui/imgui_impl_vulkan.cpp.s
+
+libraries/imgui/imgui_tables.obj: libraries/imgui/imgui_tables.cpp.obj
+.PHONY : libraries/imgui/imgui_tables.obj
+
+# target to build an object file
+libraries/imgui/imgui_tables.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj
+.PHONY : libraries/imgui/imgui_tables.cpp.obj
+
+libraries/imgui/imgui_tables.i: libraries/imgui/imgui_tables.cpp.i
+.PHONY : libraries/imgui/imgui_tables.i
+
+# target to preprocess a source file
+libraries/imgui/imgui_tables.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.i
+.PHONY : libraries/imgui/imgui_tables.cpp.i
+
+libraries/imgui/imgui_tables.s: libraries/imgui/imgui_tables.cpp.s
+.PHONY : libraries/imgui/imgui_tables.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui_tables.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.s
+.PHONY : libraries/imgui/imgui_tables.cpp.s
+
+libraries/imgui/imgui_widgets.obj: libraries/imgui/imgui_widgets.cpp.obj
+.PHONY : libraries/imgui/imgui_widgets.obj
+
+# target to build an object file
+libraries/imgui/imgui_widgets.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj
+.PHONY : libraries/imgui/imgui_widgets.cpp.obj
+
+libraries/imgui/imgui_widgets.i: libraries/imgui/imgui_widgets.cpp.i
+.PHONY : libraries/imgui/imgui_widgets.i
+
+# target to preprocess a source file
+libraries/imgui/imgui_widgets.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.i
+.PHONY : libraries/imgui/imgui_widgets.cpp.i
+
+libraries/imgui/imgui_widgets.s: libraries/imgui/imgui_widgets.cpp.s
+.PHONY : libraries/imgui/imgui_widgets.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui_widgets.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.s
+.PHONY : libraries/imgui/imgui_widgets.cpp.s
+
 libraries/vkbootstrap/VkBootstrap.obj: libraries/vkbootstrap/VkBootstrap.cpp.obj
 .PHONY : libraries/vkbootstrap/VkBootstrap.obj
 
@@ -416,6 +584,27 @@ help:
 	@echo ... rebuild_cache
 	@echo ... fmt
 	@echo ... real-time-vulkan-simulation-engine
+	@echo ... libraries/imgui/imgui.obj
+	@echo ... libraries/imgui/imgui.i
+	@echo ... libraries/imgui/imgui.s
+	@echo ... libraries/imgui/imgui_demo.obj
+	@echo ... libraries/imgui/imgui_demo.i
+	@echo ... libraries/imgui/imgui_demo.s
+	@echo ... libraries/imgui/imgui_draw.obj
+	@echo ... libraries/imgui/imgui_draw.i
+	@echo ... libraries/imgui/imgui_draw.s
+	@echo ... libraries/imgui/imgui_impl_glfw.obj
+	@echo ... libraries/imgui/imgui_impl_glfw.i
+	@echo ... libraries/imgui/imgui_impl_glfw.s
+	@echo ... libraries/imgui/imgui_impl_vulkan.obj
+	@echo ... libraries/imgui/imgui_impl_vulkan.i
+	@echo ... libraries/imgui/imgui_impl_vulkan.s
+	@echo ... libraries/imgui/imgui_tables.obj
+	@echo ... libraries/imgui/imgui_tables.i
+	@echo ... libraries/imgui/imgui_tables.s
+	@echo ... libraries/imgui/imgui_widgets.obj
+	@echo ... libraries/imgui/imgui_widgets.i
+	@echo ... libraries/imgui/imgui_widgets.s
 	@echo ... libraries/vkbootstrap/VkBootstrap.obj
 	@echo ... libraries/vkbootstrap/VkBootstrap.i
 	@echo ... libraries/vkbootstrap/VkBootstrap.s

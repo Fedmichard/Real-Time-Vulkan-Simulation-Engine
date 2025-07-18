@@ -203,6 +203,111 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootst
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.s"
 	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\vkbootstrap\VkBootstrap.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\vkbootstrap\VkBootstrap.cpp.s
 
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_glfw.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_glfw.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_glfw.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_glfw.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_glfw.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_glfw.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_glfw.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_glfw.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_vulkan.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_12) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_vulkan.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_vulkan.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_vulkan.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_vulkan.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_vulkan.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_impl_vulkan.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_impl_vulkan.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_widgets.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_13) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_widgets.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_widgets.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_widgets.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_widgets.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_widgets.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_widgets.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_widgets.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_tables.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_14) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_tables.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_tables.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_tables.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_tables.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_tables.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_tables.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_tables.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_draw.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_15) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_draw.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_draw.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_draw.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_draw.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_draw.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_draw.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_draw.cpp.s
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/flags.make
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/includes_CXX.rsp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_demo.cpp
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj: CMakeFiles/real-time-vulkan-simulation-engine.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_16) "Building CXX object CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj -MF CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_demo.cpp.obj.d -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_demo.cpp.obj -c C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_demo.cpp
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.i"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_demo.cpp > CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_demo.cpp.i
+
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.s"
+	C:\msys64\mingw64\bin\g++.exe $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\imgui\imgui_demo.cpp -o CMakeFiles\real-time-vulkan-simulation-engine.dir\libraries\imgui\imgui_demo.cpp.s
+
 # Object files for target real-time-vulkan-simulation-engine
 real__time__vulkan__simulation__engine_OBJECTS = \
 "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj" \
@@ -213,7 +318,14 @@ real__time__vulkan__simulation__engine_OBJECTS = \
 "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj" \
 "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj" \
 "CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj" \
-"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj"
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj" \
+"CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj"
 
 # External object files for target real-time-vulkan-simulation-engine
 real__time__vulkan__simulation__engine_EXTERNAL_OBJECTS =
@@ -227,12 +339,19 @@ real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-e
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootstrap.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_widgets.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj
+real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/build.make
 real-time-vulkan-simulation-engine.exe: libraries/fmt/libfmtd.a
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/linkLibs.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/objects1.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable real-time-vulkan-simulation-engine.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=$(CMAKE_PROGRESS_17) "Linking CXX executable real-time-vulkan-simulation-engine.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\real-time-vulkan-simulation-engine.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

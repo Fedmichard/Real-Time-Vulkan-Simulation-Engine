@@ -41,6 +41,13 @@ add_executable(real-time-vulkan-simulation-engine
                src/vk_pipelines.h
                src/vk_types.h
                libraries/vkbootstrap/VkBootstrap.cpp
+               libraries/imgui/imgui.cpp
+               libraries/imgui/imgui_impl_glfw.cpp
+               libraries/imgui/imgui_impl_vulkan.cpp
+               libraries/imgui/imgui_widgets.cpp
+               libraries/imgui/imgui_tables.cpp
+               libraries/imgui/imgui_draw.cpp
+               libraries/imgui/imgui_demo.cpp
 )
 
 target_link_libraries(real-time-vulkan-simulation-engine libglfw3dll.a)
