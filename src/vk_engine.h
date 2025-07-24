@@ -49,8 +49,7 @@ private:
     AllocatedImage _drawImage;
     VkExtent2D _drawExtent;
 
-    // compute pipeline
-    VkPipeline _gradientPipeline;
+    // compute pipeline layout
     VkPipelineLayout _gradientPipelineLayout;
 
     // allocate descriptor sets

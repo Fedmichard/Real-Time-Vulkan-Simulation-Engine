@@ -2,6 +2,175 @@
 #include <fstream>
 #include "vk_initializers.h"
 
+void PipelineBuilder::clear() {
+    // clear all of the structs we need back to 0 with their correct stype
+    _inputAssembly = {};
+    _inputAssembly.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+
+    _rasterizer = {};
+    _rasterizer.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+
+    _colorBlendAttachment = {}; 
+
+    _multisampling = {};
+    _multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+
+    _pipelineLayout = {}; 
+
+    _depthStencil = {};
+    _depthStencil.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+
+    _renderInfo = {};
+    _renderInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO; // Note: This is for dynamic rendering (Vulkan 1.3+)
+
+    _shaderStages.clear();
+}
+
+VkPipeline PipelineBuilder::buildPipeline(VkDevice device) {
+    // view port state, we're not using multiple viewports or scissors
+    VkPipelineViewportStateCreateInfo viewportState{};
+    viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportState.viewportCount = 1;
+    viewportState.scissorCount = 1;
+
+    // we're not using color blending yet since we don't need transparent objects
+    VkPipelineColorBlendStateCreateInfo colorBlending{};
+    colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    colorBlending.logicOpEnable = VK_FALSE;
+    colorBlending.logicOp = VK_LOGIC_OP_COPY;
+    colorBlending.attachmentCount = 1;
+    colorBlending.pAttachments = &_colorBlendAttachment;
+
+    // we're currently not using any vertex buffers so we keep this empty;
+    VkPipelineVertexInputStateCreateInfo _vertexInputInfo = {};
+    _vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+
+    VkGraphicsPipelineCreateInfo pipelineInfo{};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+    pipelineInfo.pNext = &_renderInfo; // used for dynamic rendering aka no renderpass/framebuffer
+    pipelineInfo.stageCount = static_cast<uint32_t>(_shaderStages.size()); // will be used later for vertex/fragment shader
+    pipelineInfo.pStages = _shaderStages.data();
+    pipelineInfo.pVertexInputState = &_vertexInputInfo;
+    pipelineInfo.pInputAssemblyState = &_inputAssembly;
+    pipelineInfo.pViewportState = &viewportState;
+    pipelineInfo.pRasterizationState = &_rasterizer;
+    pipelineInfo.pMultisampleState = &_multisampling;
+    pipelineInfo.pColorBlendState = &colorBlending;
+    pipelineInfo.pDepthStencilState = &_depthStencil;
+    pipelineInfo.layout = _pipelineLayout;
+
+    // add dynamic states
+    std::vector<VkDynamicState> dynamicStates = {
+            VK_DYNAMIC_STATE_VIEWPORT,
+            VK_DYNAMIC_STATE_SCISSOR
+        };
+    VkPipelineDynamicStateCreateInfo dynamicInfo{};
+    dynamicInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
+    dynamicInfo.pDynamicStates = dynamicStates.data();   
+
+    pipelineInfo.pDynamicState = &dynamicInfo;
+
+    VkPipeline newPipeline;
+    if (vkCreateGraphicsPipelines(device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &newPipeline) != VK_SUCCESS) {
+        fmt::println("failed to create pipeline");
+        return VK_NULL_HANDLE;
+    } else {
+        return newPipeline;
+    }
+}
+
+// the shader programs that will be used during rendering, these are our programmable states
+void PipelineBuilder::setShaders(VkShaderModule vertexShader, VkShaderModule fragmentShader) {
+    _shaderStages.clear();
+
+    VkPipelineShaderStageCreateInfo vertex;
+    vertex.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    vertex.stage = VK_SHADER_STAGE_VERTEX_BIT;
+    vertex.module = vertexShader;
+    vertex.pName = "main";
+
+    VkPipelineShaderStageCreateInfo fragment;
+    fragment.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+    fragment.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
+    fragment.module = fragmentShader;
+    fragment.pName = "main";
+
+    _shaderStages.push_back(vertex);
+    _shaderStages.push_back(fragment);
+}
+
+/* input assembly state */
+// describes what kind of geometry will be drawn from the vertices and if primitive restart should be enabled
+void PipelineBuilder::setInputTopology(VkPrimitiveTopology topology) {
+    _inputAssembly.topology = topology;
+    // we are not going to use primitive restart on the entire tutorial so leave
+    // it on false
+    _inputAssembly.primitiveRestartEnable = VK_FALSE;
+}
+
+/* following is for rasterizer state */
+// Polygon mode determines how fragments are generated for geometry
+void PipelineBuilder::setPolygonMode(VkPolygonMode mode) {
+    _rasterizer.polygonMode = mode;
+    _rasterizer.lineWidth = 1.0f;
+}
+
+// saves gpu processing time by avoiding work on things that won't be visible
+void PipelineBuilder::setCullMode(VkCullModeFlags cullMode, VkFrontFace frontFace) {
+    _rasterizer.cullMode = cullMode;
+    _rasterizer.frontFace = frontFace;
+}
+
+/* multisampling*/
+// anti-aliasing
+void PipelineBuilder::setMultisamplingNone() {
+    _multisampling.sampleShadingEnable = VK_FALSE;
+    _multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    _multisampling.minSampleShading = 1.0f;
+    _multisampling.pSampleMask = nullptr;
+    // no alpha to coverage either
+    _multisampling.alphaToCoverageEnable = VK_FALSE;
+    _multisampling.alphaToOneEnable = VK_FALSE;
+}
+
+/* color blending attachment */
+// blending disabled for now
+void PipelineBuilder::disableBlending() {
+    // default write mask
+    _colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    // no blending
+    _colorBlendAttachment.blendEnable = VK_FALSE;
+}
+
+/* render info */
+// format relating to renderpass/framebuffer
+void PipelineBuilder::setColorAttachmentFormat(VkFormat format) {
+    _colorAttachmentformat = format;
+    // connect the format to the renderInfo  structure
+    _renderInfo.colorAttachmentCount = 1;
+    _renderInfo.pColorAttachmentFormats = &_colorAttachmentformat;
+}
+
+/* render info */
+// depth format for renderpass attachment (depth testing)
+void PipelineBuilder::setDepthFormat(VkFormat format) {
+    _renderInfo.depthAttachmentFormat = format;
+}
+
+/* depth testing */
+// disabled for now
+void PipelineBuilder::disableDepthtest() {
+    _depthStencil.depthTestEnable = VK_FALSE;
+    _depthStencil.depthWriteEnable = VK_FALSE;
+    _depthStencil.depthCompareOp = VK_COMPARE_OP_NEVER;
+    _depthStencil.depthBoundsTestEnable = VK_FALSE;
+    _depthStencil.stencilTestEnable = VK_FALSE;
+    _depthStencil.front = {};
+    _depthStencil.back = {};
+    _depthStencil.minDepthBounds = 0.f;
+    _depthStencil.maxDepthBounds = 1.f;
+}
+
 bool vkutil::loadShaderModule(const char* filePath, VkDevice device, VkShaderModule* outShaderModule) {
     // We open with 2 flags ate and binary
     // ate: start reading at the end of the file
