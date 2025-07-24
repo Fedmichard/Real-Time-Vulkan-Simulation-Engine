@@ -66,6 +66,10 @@ private:
     std::vector<ComputeEffect> backgroundEffects;
     int currentBackgroundIndex{0};
 
+    // draw pipeline
+    VkPipeline _trianglePipeline;
+    VkPipelineLayout _trianglePipelineLayout;
+
     // initializations
     void initVulkan();
     void initSwapchain();
@@ -76,11 +80,13 @@ private:
     void initPipelines();
     void initBackgroundPipelines();
     void initImgui();
+    void initTrianglePipeline();
 
     // helpers
     void drawBackground(VkCommandBuffer commandBuffer, VkImage image);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
+    void drawGeometry(VkCommandBuffer cmd);
 
     // cleanup
     void destroySwapchain();

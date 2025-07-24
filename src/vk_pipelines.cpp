@@ -65,6 +65,7 @@ VkPipeline PipelineBuilder::buildPipeline(VkDevice device) {
             VK_DYNAMIC_STATE_SCISSOR
         };
     VkPipelineDynamicStateCreateInfo dynamicInfo{};
+    dynamicInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     dynamicInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
     dynamicInfo.pDynamicStates = dynamicStates.data();   
 

@@ -85,7 +85,6 @@ void VulkanEngine::draw() {
     // cpu will wait for fence to enter signaled state and then unsignal it (it will be signaled again once rendering is finished)
     VK_CHECK(vkWaitForFences(_device, 1, &getCurrentFrame()._renderFence, VK_TRUE, UINT64_MAX));
     getCurrentFrame()._deletionQueue.flush();
-    VK_CHECK(vkResetFences(_device, 1, &getCurrentFrame()._renderFence));
 
     // request next image in swap chain
     uint32_t swapchainImageIndex;
@@ -99,6 +98,8 @@ void VulkanEngine::draw() {
 
     _drawExtent.width = _drawImage.imageExtent.width;
     _drawExtent.height = _drawImage.imageExtent.height;
+    
+    VK_CHECK(vkResetFences(_device, 1, &getCurrentFrame()._renderFence));
 
     // now we can record draw commands into buffer
     VK_CHECK(vkBeginCommandBuffer(cmd, &beginInfo));
@@ -108,6 +109,11 @@ void VulkanEngine::draw() {
 
     drawBackground(cmd, _drawImage.image);
 
+    // transition to draw geometry
+    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+
+    drawGeometry(cmd);
+
     // transition the _drawImage.image for transfer src
     vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
     // transition _swapchainImages into transfer dst
@@ -116,8 +122,9 @@ void VulkanEngine::draw() {
     vkutil::copyImageToImage(cmd, _drawImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
     // now that we copied from our draw image into swapchain image we transition it again so we can draw it correct format for imgui
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-    // draw imgui onto swapchain image
+
     drawImgui(cmd, _swapchainImageViews[swapchainImageIndex]);
+
     // now set swapchain image for presentation
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
 
@@ -440,6 +447,7 @@ void VulkanEngine::initDescriptors() {
 
 void VulkanEngine::initPipelines() {
     initBackgroundPipelines();
+    initTrianglePipeline();
 }
 
 // create background gradient pipeline
@@ -577,6 +585,56 @@ void VulkanEngine::initImgui() {
 	});
 }
 
+void VulkanEngine::initTrianglePipeline() {
+    // create pipeline
+    VkPipelineLayoutCreateInfo trianglePipelineLayoutInfo{};
+    trianglePipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+
+	VK_CHECK(vkCreatePipelineLayout(_device, &trianglePipelineLayoutInfo, nullptr, &_trianglePipelineLayout));
+
+    // vertex and fragment shader stages
+	VkShaderModule triangleVertShader;
+	if (!vkutil::loadShaderModule("../shaders/triangle.vert.spv", _device, &triangleVertShader)) {
+		fmt::print("Error when building the triangle vertex shader module");
+	}
+	else {
+		fmt::print("Triangle vertex shader succesfully loaded");
+	}
+
+    VkShaderModule triangleFragShader;
+	if (!vkutil::loadShaderModule("../shaders/triangle.frag.spv", _device, &triangleFragShader)) {
+		fmt::print("Error when building the triangle fragment shader module");
+	}
+	else {
+		fmt::print("Triangle fragment shader succesfully loaded");
+	}
+
+    // create pipeline now
+    PipelineBuilder pipelineBuilder;
+    pipelineBuilder._pipelineLayout = _trianglePipelineLayout; // pipeline layout we just created
+    pipelineBuilder.setShaders(triangleVertShader, triangleFragShader); // shader stages
+    pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST); // draw triangles - input assembly
+    pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL); // fill with fragments - rasterization
+    pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE); // no backface culling - rasterization
+    pipelineBuilder.setMultisamplingNone(); // no multisampling
+    pipelineBuilder.disableBlending(); // no blending
+    pipelineBuilder.disableDepthtest(); // no depth tests
+    pipelineBuilder.setColorAttachmentFormat(_drawImage.imageFormat); 
+    pipelineBuilder.setDepthFormat(VK_FORMAT_UNDEFINED); 
+
+    // build pipeline
+    _trianglePipeline = pipelineBuilder.buildPipeline(_device);
+
+    // clean structures
+    vkDestroyShaderModule(_device, triangleVertShader, nullptr);
+    vkDestroyShaderModule(_device, triangleFragShader, nullptr);
+
+    _mainDeletionQueue.push_function([&]() {
+        vkDestroyPipelineLayout(_device, _trianglePipelineLayout, nullptr);
+        vkDestroyPipeline(_device, _trianglePipeline, nullptr);
+    });
+}
+
 /**********************************
 *        Helper Functions
 **********************************/
@@ -698,6 +756,48 @@ void VulkanEngine::drawImgui(VkCommandBuffer cmd, VkImageView targetImageView) {
     vkCmdEndRendering(cmd);
 }
 
+void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
+    VkRenderingAttachmentInfo colorAttachment{};
+    colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    colorAttachment.imageView = _drawImage.imageView;
+    colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
+	VkRenderingInfo renderInfo{};
+    renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+    renderInfo.renderArea = VkRect2D { VkOffset2D { 0, 0 }, _drawExtent };
+    renderInfo.layerCount = 1;
+    renderInfo.colorAttachmentCount = 1;
+    renderInfo.pColorAttachments = &colorAttachment;
+
+    // begin dynamic rendering
+	vkCmdBeginRendering(cmd, &renderInfo);
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _trianglePipeline);
+
+        //set dynamic viewport and scissor
+        VkViewport viewport = {};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = _drawExtent.width;
+        viewport.height = _drawExtent.height;
+        viewport.minDepth = 0.f;
+        viewport.maxDepth = 1.f;
+
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+        VkRect2D scissor = {};
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
+        scissor.extent.width = _drawExtent.width;
+        scissor.extent.height = _drawExtent.height;
+
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
+
+        //launch a draw command to draw 3 vertices
+        vkCmdDraw(cmd, 3, 1, 0, 0);
+	vkCmdEndRendering(cmd);
+}
 /**********************************
 *          Deallocation
 **********************************/
