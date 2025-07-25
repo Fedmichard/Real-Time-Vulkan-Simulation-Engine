@@ -448,6 +448,7 @@ void VulkanEngine::initDescriptors() {
 void VulkanEngine::initPipelines() {
     initBackgroundPipelines();
     initTrianglePipeline();
+    initMeshPipeline();
 }
 
 // create background gradient pipeline
@@ -635,6 +636,105 @@ void VulkanEngine::initTrianglePipeline() {
     });
 }
 
+void VulkanEngine::initMeshPipeline() {
+    VkPipelineLayoutCreateInfo pipelineInfo{};
+    pipelineInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+
+    VkPushConstantRange bufferRange{};
+    bufferRange.offset = 0;
+    bufferRange.size = sizeof(GPUDrawPushConstants);
+    bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+    
+    pipelineInfo.pushConstantRangeCount = 1;
+    pipelineInfo.pPushConstantRanges = &bufferRange;
+    
+    VK_CHECK(vkCreatePipelineLayout(_device, &pipelineInfo, nullptr, &_meshPipelineLayout));
+
+    VkShaderModule triangleVertShader;
+    if (!vkutil::loadShaderModule("../shaders/triangle_mesh.vert.spv", _device, &triangleVertShader)) {
+        fmt::print("error when building the triangle fragment vertex module");
+    } else {
+        fmt::print("triangle vertex shader loaded successfully!");
+    }
+
+    VkShaderModule triangleFragShader;
+    if (!vkutil::loadShaderModule("../shaders/triangle.frag.spv", _device, &triangleFragShader)) {
+        fmt::print("error when building the triangle fragment vertex module");
+    } else {
+        fmt::print("triangle vertex shader loaded successfully!");
+    }
+    
+    PipelineBuilder pipelineBuilder;
+    //use the triangle layout we created
+    pipelineBuilder._pipelineLayout = _meshPipelineLayout;
+    //connecting the vertex and pixel shaders to the pipeline
+	pipelineBuilder.setShaders(triangleVertShader, triangleFragShader);
+	//it will draw triangles
+	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	//filled triangles
+	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
+	//no backface culling
+	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+	//no multisampling
+	pipelineBuilder.setMultisamplingNone();
+	//no blending
+	pipelineBuilder.disableBlending();
+
+	pipelineBuilder.disableDepthtest();
+
+	//connect the image format we will draw into, from draw image
+	pipelineBuilder.setColorAttachmentFormat(_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(VK_FORMAT_UNDEFINED);
+
+	//finally build the pipeline
+	_meshPipeline = pipelineBuilder.buildPipeline(_device);
+
+	//clean structures
+	vkDestroyShaderModule(_device, triangleFragShader, nullptr);
+	vkDestroyShaderModule(_device, triangleVertShader, nullptr);
+
+	_mainDeletionQueue.push_function([&]() {
+		vkDestroyPipelineLayout(_device, _meshPipelineLayout, nullptr);
+		vkDestroyPipeline(_device, _meshPipeline, nullptr);
+	});
+}
+
+// init a default triangle
+void VulkanEngine::initDefaultData() {
+	std::vector<Vertex> rectVertices;
+    rectVertices.resize(4);
+
+	rectVertices[0].position = { 0.5, -0.5, 0 };
+	rectVertices[1].position = { 0.5, 0.5, 0 };
+	rectVertices[2].position = { -0.5, -0.5, 0 };
+	rectVertices[3].position = { -0.5, 0.5, 0 };
+
+	rectVertices[0].color = { 0, 0, 0, 1 };
+	rectVertices[1].color = { 0.5, 0.5, 0.5, 1 };
+	rectVertices[2].color = { 1, 0, 0, 1 };
+	rectVertices[3].color = { 0, 1, 0, 1 };
+
+	std::vector<uint32_t> rectIndices;
+    rectIndices.resize(6);
+
+	rectIndices[0] = 0;
+	rectIndices[1] = 1;
+	rectIndices[2] = 2;
+
+	rectIndices[3] = 2;
+	rectIndices[4] = 1;
+	rectIndices[5] = 3;
+
+	rectangle = uploadMesh(rectIndices, rectVertices);
+
+	//delete the rectangle data on engine shutdown
+	_mainDeletionQueue.push_function([&](){
+		destroyBuffer(rectangle.indexBuffer);
+		destroyBuffer(rectangle.vertexBuffer);
+	});
+
+}
+
 /**********************************
 *        Helper Functions
 **********************************/
@@ -796,6 +896,17 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
 
         //launch a draw command to draw 3 vertices
         vkCmdDraw(cmd, 3, 1, 0, 0);
+
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _meshPipeline);
+
+        GPUDrawPushConstants push_constants;
+        push_constants.worldMatrix = glm::mat4{ 1.f };
+        push_constants.vertexBuffer = rectangle.vertexBufferAddress;
+
+        vkCmdPushConstants(cmd, _meshPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &push_constants);
+        vkCmdBindIndexBuffer(cmd, rectangle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
 	vkCmdEndRendering(cmd);
 }
 

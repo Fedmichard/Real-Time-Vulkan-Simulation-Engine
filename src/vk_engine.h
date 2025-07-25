@@ -71,6 +71,13 @@ private:
     FrameData& getCurrentFrame() { return _frames[_frameNumber % MAX_FRAMES]; };
     AllocatedBuffer createBuffer(size_t allocSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage);
 
+    // mesh pipeline
+    VkPipeline _meshPipeline;
+    VkPipelineLayout _meshPipelineLayout;
+
+    // rectangle mesh
+    GPUMeshBuffers rectangle;
+
     // initializations
     void initVulkan();
     void initSwapchain();
@@ -82,6 +89,7 @@ private:
     void initBackgroundPipelines();
     void initImgui();
     void initTrianglePipeline();
+    void initMeshPipeline();
 
     // helpers
     void drawBackground(VkCommandBuffer commandBuffer, VkImage image);
@@ -89,6 +97,7 @@ private:
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
     GPUMeshBuffers uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices);
+    void initDefaultData(); // default vertex and index 
 
     // cleanup
     void destroySwapchain();
