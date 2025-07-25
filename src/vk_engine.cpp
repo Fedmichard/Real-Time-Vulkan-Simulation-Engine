@@ -115,7 +115,7 @@ void VulkanEngine::draw() {
     drawGeometry(cmd);
 
     // transition the _drawImage.image for transfer src
-    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
     // transition _swapchainImages into transfer dst
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     // copy drawimage into swapchain image
@@ -584,7 +584,7 @@ void VulkanEngine::initImgui() {
 		vkDestroyDescriptorPool(_device, imguiPool, nullptr);
 	});
 }
-
+   
 void VulkanEngine::initTrianglePipeline() {
     // create pipeline
     VkPipelineLayoutCreateInfo trianglePipelineLayoutInfo{};
@@ -607,7 +607,7 @@ void VulkanEngine::initTrianglePipeline() {
 	}
 	else {
 		fmt::print("Triangle fragment shader succesfully loaded");
-	}
+	}    
 
     // create pipeline now
     PipelineBuilder pipelineBuilder;
@@ -620,7 +620,7 @@ void VulkanEngine::initTrianglePipeline() {
     pipelineBuilder.disableBlending(); // no blending
     pipelineBuilder.disableDepthtest(); // no depth tests
     pipelineBuilder.setColorAttachmentFormat(_drawImage.imageFormat); 
-    pipelineBuilder.setDepthFormat(VK_FORMAT_UNDEFINED); 
+    pipelineBuilder.setDepthFormat(VK_FORMAT_UNDEFINED);
 
     // build pipeline
     _trianglePipeline = pipelineBuilder.buildPipeline(_device);
@@ -798,6 +798,75 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
         vkCmdDraw(cmd, 3, 1, 0, 0);
 	vkCmdEndRendering(cmd);
 }
+
+AllocatedBuffer VulkanEngine::createBuffer(size_t allocSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage) {
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = allocSize;
+    bufferInfo.usage = bufferUsage;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    VmaAllocationCreateInfo vmaallocInfo{};
+    vmaallocInfo.usage = memoryUsage; // helps vma decide what type of memory is needed. CPU-GPU; CPU ONLY; GPU ONLY; GPU-CPU;
+    vmaallocInfo.flags = VMA_ALLOCATION_CREATE_MAPPED_BIT; // maps memory to buffer
+
+    AllocatedBuffer newBuffer;
+
+    VK_CHECK(vmaCreateBuffer(_allocator, &bufferInfo, &vmaallocInfo, &newBuffer.buffer, &newBuffer.allocation, &newBuffer.info));
+
+    return newBuffer;
+}
+
+GPUMeshBuffers VulkanEngine::uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices) {
+	const size_t vertexBufferSize = sizeof(vertices[0]) * vertices.size();
+	const size_t indexBufferSize = sizeof(indices[0]) * indices.size();
+
+    // holds mesh resources
+	GPUMeshBuffers newSurface;
+    
+    // create staging buffer that holds vertex and index buffer
+    AllocatedBuffer staging = createBuffer(vertexBufferSize + indexBufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VMA_MEMORY_USAGE_CPU_ONLY);
+
+	//create vertex buffer
+	newSurface.vertexBuffer = createBuffer(vertexBufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
+		VMA_MEMORY_USAGE_GPU_ONLY);
+
+	//find the adress of the vertex buffer
+	VkBufferDeviceAddressInfo deviceAdressInfo{ .sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO,.buffer = newSurface.vertexBuffer.buffer };
+	newSurface.vertexBufferAddress = vkGetBufferDeviceAddress(_device, &deviceAdressInfo);
+
+	//create index buffer
+	newSurface.indexBuffer = createBuffer(indexBufferSize, VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+		VMA_MEMORY_USAGE_GPU_ONLY);
+
+    void* data = staging.allocation->GetMappedData(); // pointer to memory location on gpu
+
+    // copy from host to memory location
+    memcpy(data, vertices.data(), vertexBufferSize);
+    memcpy(data, indices.data(), indexBufferSize);
+
+    // copy from staging buffer to newsurface mesh buffers (index + vertex)
+    immediateSubmit([&](VkCommandBuffer cmd) {
+        VkBufferCopy vertexCopy{};
+        vertexCopy.dstOffset = 0;
+		vertexCopy.srcOffset = 0;
+		vertexCopy.size = vertexBufferSize;
+
+		vkCmdCopyBuffer(cmd, staging.buffer, newSurface.vertexBuffer.buffer, 1, &vertexCopy);
+
+		VkBufferCopy indexCopy{ 0 };
+		indexCopy.dstOffset = 0;
+		indexCopy.srcOffset = vertexBufferSize;
+		indexCopy.size = indexBufferSize;
+
+		vkCmdCopyBuffer(cmd, staging.buffer, newSurface.indexBuffer.buffer, 1, &indexCopy);
+    });
+
+    destroyBuffer(staging);
+
+    return newSurface;
+}
+
 /**********************************
 *          Deallocation
 **********************************/
@@ -808,4 +877,8 @@ void VulkanEngine::destroySwapchain() {
     }
 
     vkDestroySwapchainKHR(_device, _swapchain, nullptr);
+}
+
+void VulkanEngine::destroyBuffer(const AllocatedBuffer& buffer) {
+    vmaDestroyBuffer(_allocator, buffer.buffer, buffer.allocation);
 }

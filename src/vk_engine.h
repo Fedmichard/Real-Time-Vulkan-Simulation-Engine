@@ -24,9 +24,6 @@ private:
     VkQueue _graphicsQueue;
     uint32_t _graphicsQueueFamily;
 
-    // member functions
-    FrameData& getCurrentFrame() { return _frames[_frameNumber % MAX_FRAMES]; };
-
     // vulkan initial handles
     VkInstance _instance;
 	VkDebugUtilsMessengerEXT _debugMessenger;
@@ -70,6 +67,10 @@ private:
     VkPipeline _trianglePipeline;
     VkPipelineLayout _trianglePipelineLayout;
 
+    // member functions
+    FrameData& getCurrentFrame() { return _frames[_frameNumber % MAX_FRAMES]; };
+    AllocatedBuffer createBuffer(size_t allocSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage);
+
     // initializations
     void initVulkan();
     void initSwapchain();
@@ -87,9 +88,11 @@ private:
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
+    GPUMeshBuffers uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices);
 
     // cleanup
     void destroySwapchain();
+    void destroyBuffer(const AllocatedBuffer& buffer);
 
 public:
     // initializes engine

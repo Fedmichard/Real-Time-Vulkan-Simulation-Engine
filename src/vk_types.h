@@ -46,6 +46,35 @@ struct AllocatedImage {
     VkFormat imageFormat;
 };
 
+// struct that holds everything we need for an allocated buffer
+struct AllocatedBuffer {
+    VkBuffer buffer;
+    VmaAllocation allocation;
+    VmaAllocationInfo info;
+};
+
+// for meshes
+struct Vertex {
+	glm::vec3 position;
+	float uvX;
+	glm::vec3 normal;
+	float uvY;
+	glm::vec4 color;
+};
+
+// holds the resources needed for a mesh
+struct GPUMeshBuffers {
+    AllocatedBuffer indexBuffer;
+    AllocatedBuffer vertexBuffer;
+    VkDeviceAddress vertexBufferAddress;
+};
+
+// push constants for our mesh object draws
+struct GPUDrawPushConstants {
+    glm::mat4 worldMatrix;
+    VkDeviceAddress vertexBuffer;
+};
+
 struct DeletionQueue  {
     /*
         double ended queue, meaning you can add to the front and back but we're only using back

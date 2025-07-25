@@ -42,7 +42,7 @@ VkPipeline PipelineBuilder::buildPipeline(VkDevice device) {
     colorBlending.pAttachments = &_colorBlendAttachment;
 
     // we're currently not using any vertex buffers so we keep this empty;
-    VkPipelineVertexInputStateCreateInfo _vertexInputInfo = {};
+    VkPipelineVertexInputStateCreateInfo _vertexInputInfo{};
     _vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
     VkGraphicsPipelineCreateInfo pipelineInfo{};
@@ -63,7 +63,8 @@ VkPipeline PipelineBuilder::buildPipeline(VkDevice device) {
     std::vector<VkDynamicState> dynamicStates = {
             VK_DYNAMIC_STATE_VIEWPORT,
             VK_DYNAMIC_STATE_SCISSOR
-        };
+    };
+    
     VkPipelineDynamicStateCreateInfo dynamicInfo{};
     dynamicInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
     dynamicInfo.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
@@ -80,17 +81,21 @@ VkPipeline PipelineBuilder::buildPipeline(VkDevice device) {
     }
 }
 
+/***********************************************************************************************
+ * Helper Functions
+***********************************************************************************************/
+
 // the shader programs that will be used during rendering, these are our programmable states
 void PipelineBuilder::setShaders(VkShaderModule vertexShader, VkShaderModule fragmentShader) {
     _shaderStages.clear();
 
-    VkPipelineShaderStageCreateInfo vertex;
+    VkPipelineShaderStageCreateInfo vertex{};
     vertex.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     vertex.stage = VK_SHADER_STAGE_VERTEX_BIT;
     vertex.module = vertexShader;
     vertex.pName = "main";
 
-    VkPipelineShaderStageCreateInfo fragment;
+    VkPipelineShaderStageCreateInfo fragment{};
     fragment.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
     fragment.stage = VK_SHADER_STAGE_FRAGMENT_BIT;
     fragment.module = fragmentShader;
@@ -134,15 +139,6 @@ void PipelineBuilder::setMultisamplingNone() {
     _multisampling.alphaToOneEnable = VK_FALSE;
 }
 
-/* color blending attachment */
-// blending disabled for now
-void PipelineBuilder::disableBlending() {
-    // default write mask
-    _colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-    // no blending
-    _colorBlendAttachment.blendEnable = VK_FALSE;
-}
-
 /* render info */
 // format relating to renderpass/framebuffer
 void PipelineBuilder::setColorAttachmentFormat(VkFormat format) {
@@ -170,6 +166,15 @@ void PipelineBuilder::disableDepthtest() {
     _depthStencil.back = {};
     _depthStencil.minDepthBounds = 0.f;
     _depthStencil.maxDepthBounds = 1.f;
+}
+
+/* color blending attachment */
+// blending disabled for now
+void PipelineBuilder::disableBlending() {
+    // default write mask
+    _colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    // no blending
+    _colorBlendAttachment.blendEnable = VK_FALSE;
 }
 
 bool vkutil::loadShaderModule(const char* filePath, VkDevice device, VkShaderModule* outShaderModule) {
