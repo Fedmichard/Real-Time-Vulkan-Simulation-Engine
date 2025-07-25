@@ -46,6 +46,7 @@ void VulkanEngine::init() {
     initDescriptors(); // init all our descriptors
     initPipelines(); // init all our pipelines
     initImgui(); // init gui
+    initDefaultData(); // maybe?
     
     // everything was successful
     _isInitialized = true;
@@ -925,7 +926,7 @@ AllocatedBuffer VulkanEngine::createBuffer(size_t allocSize, VkBufferUsageFlags 
 
     VK_CHECK(vmaCreateBuffer(_allocator, &bufferInfo, &vmaallocInfo, &newBuffer.buffer, &newBuffer.allocation, &newBuffer.info));
 
-    return newBuffer;
+	return newBuffer;
 }
 
 GPUMeshBuffers VulkanEngine::uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices) {
