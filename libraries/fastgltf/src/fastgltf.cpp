@@ -734,7 +734,7 @@ fg::Error fg::Parser::generateMeshIndices(fastgltf::Asset& asset) const {
 			fastgltf::span<std::uint32_t> indices { reinterpret_cast<std::uint32_t*>(generatedIndices.bytes.data()),
 													generatedIndices.bytes.size() / sizeof(std::uint32_t) };
 			for (std::size_t i = 0; i < positionAccessor.count; ++i) {
-				indices[i] = static_cast<std::uint32_t>(i);
+				indices[i] = i;
 			}
 
 			auto bufferIdx = asset.buffers.size();
@@ -2590,45 +2590,6 @@ fg::Error fg::Parser::parseMaterials(simdjson::dom::array& materials, Asset& ass
                 }
             }
 
-			if (hasBit(config.extensions, Extensions::MSFT_packing_normalRoughnessMetallic)) {
-				dom::object normalRoughnessMetallic;
-				if (extensionsObject[extensions::MSFT_packing_normalRoughnessMetallic].get_object().get(normalRoughnessMetallic) == SUCCESS) {
-					TextureInfo textureInfo = {};
-					if (auto error = parseTextureInfo(normalRoughnessMetallic, "normalRoughnessMetallicTexture", &textureInfo, config.extensions); error == Error::None) {
-						material.packedNormalMetallicRoughnessTexture = std::move(textureInfo);
-					} else if (error != Error::MissingField) {
-						return error;
-					}
-				}
-			}
-
-			if (hasBit(config.extensions, Extensions::MSFT_packing_occlusionRoughnessMetallic)) {
-				dom::object occlusionRoughnessMetallic;
-				if (extensionsObject[extensions::MSFT_packing_occlusionRoughnessMetallic].get_object().get(occlusionRoughnessMetallic) == SUCCESS) {
-					auto packedTextures = std::make_unique<MaterialPackedTextures>();
-					TextureInfo textureInfo = {};
-					if (auto error = parseTextureInfo(occlusionRoughnessMetallic, "occlusionRoughnessMetallicTexture", &textureInfo, config.extensions); error == Error::None) {
-						packedTextures->occlusionRoughnessMetallicTexture = std::move(textureInfo);
-					} else if (error != Error::MissingField) {
-						return error;
-					}
-
-					if (auto error = parseTextureInfo(occlusionRoughnessMetallic, "roughnessMetallicOcclusionTexture", &textureInfo, config.extensions); error == Error::None) {
-						packedTextures->roughnessMetallicOcclusionTexture = std::move(textureInfo);
-					} else if (error != Error::MissingField) {
-						return error;
-					}
-
-					if (auto error = parseTextureInfo(occlusionRoughnessMetallic, "normalTexture", &textureInfo, config.extensions); error == Error::None) {
-						packedTextures->normalTexture = std::move(textureInfo);
-					} else if (error != Error::MissingField) {
-						return error;
-					}
-
-					material.packedOcclusionRoughnessMetallicTextures = std::move(packedTextures);
-				}
-			}
-
 #if FASTGLTF_ENABLE_DEPRECATED_EXT
             if (hasBit(config.extensions, Extensions::KHR_materials_pbrSpecularGlossiness)) {
                 dom::object specularGlossinessObject;
@@ -3250,6 +3211,10 @@ bool fg::GltfDataBuffer::loadFromFile(const fs::path& path, std::uint64_t byteOf
     file.read(reinterpret_cast<char*>(bufferPointer), static_cast<std::streamsize>(dataSize));
     std::memset(bufferPointer + dataSize, 0, allocatedSize - dataSize);
     return true;
+}
+
+std::size_t fg::GltfDataBuffer::getBufferSize() const noexcept {
+    return dataSize;
 }
 #pragma endregion
 

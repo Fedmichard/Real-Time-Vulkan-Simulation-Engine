@@ -334,6 +334,41 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.h \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_loader.h \
+ C:/msys64/mingw64/include/c++/14.1.0/filesystem \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/fs_fwd.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/chrono.h \
+ C:/msys64/mingw64/include/c++/14.1.0/ratio \
+ C:/msys64/mingw64/include/c++/14.1.0/ctime \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/parse_numbers.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/fs_path.h \
+ C:/msys64/mingw64/include/c++/14.1.0/locale \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.h \
+ C:/msys64/mingw64/include/c++/14.1.0/cwctype \
+ C:/msys64/mingw64/include/wctype.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_base.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_inline.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets_nonio.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/time_members.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/messages_members.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/codecvt.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets_nonio.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_conv.h \
+ C:/msys64/mingw64/include/c++/14.1.0/iomanip \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/quoted_string.h \
+ C:/msys64/mingw64/include/c++/14.1.0/sstream \
+ C:/msys64/mingw64/include/c++/14.1.0/istream \
+ C:/msys64/mingw64/include/c++/14.1.0/ios \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/basic_ios.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/basic_ios.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/ostream \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/ostream.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/istream.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/sstream.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/codecvt \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/fs_dir.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/fs_ops.h \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
  C:/msys64/mingw64/include/GL/gl.h \
  C:/msys64/mingw64/include/c++/14.1.0/utility \
@@ -345,21 +380,43 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/bits/uniform_int_dist.h \
  C:/msys64/mingw64/include/c++/14.1.0/pstl/glue_algorithm_defs.h \
  C:/msys64/mingw64/include/c++/14.1.0/mutex \
- C:/msys64/mingw64/include/c++/14.1.0/bits/chrono.h \
- C:/msys64/mingw64/include/c++/14.1.0/ratio \
- C:/msys64/mingw64/include/c++/14.1.0/ctime \
- C:/msys64/mingw64/include/c++/14.1.0/bits/parse_numbers.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/std_mutex.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/unique_lock.h \
  C:/msys64/mingw64/include/c++/14.1.0/shared_mutex \
  C:/msys64/mingw64/include/c++/14.1.0/atomic \
+ C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp \
+ C:/msys64/mingw64/include/c++/14.1.0/climits \
+ C:/msys64/mingw64/include/c++/14.1.0/cfloat \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
+ C:/msys64/mingw64/include/float.h \
+ C:/VulkanSDK/1.4.309.0/Include/glm/fwd.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/trigonometric.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_trigonometric.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/packing.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_packing.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/integer.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_integer.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_constants.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_constants.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_transform.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_transform.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.inl \
+ C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.hpp \
+ C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.inl \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.h \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_images.h \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_pipelines.h \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui.h \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imconfig.h \
- C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
- C:/msys64/mingw64/include/float.h \
  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
  C:/msys64/mingw64/include/stdarg.h \
  C:/msys64/mingw64/include/_mingw_stdarg.h \

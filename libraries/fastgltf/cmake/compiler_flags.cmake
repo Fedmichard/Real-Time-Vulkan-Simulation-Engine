@@ -12,7 +12,8 @@ macro(fastgltf_compiler_flags TARGET)
             target_compile_options(${TARGET} PRIVATE $<$<CONFIG:RELEASE>:-O3>)
 
             # Issue with MinGW: https://github.com/simdjson/simdjson/issues/1963
-            target_compile_options(${TARGET} PUBLIC $<$<CONFIG:DEBUG>:-Og>)
+            # Commented out to potentially resolve "target specific option mismatch" with GCC 14.1.0 in Debug builds.
+            # target_compile_options(${TARGET} PUBLIC $<$<CONFIG:DEBUG>:-Og>)
 
             # https://github.com/simdjson/simdjson/blob/master/doc/basics.md#performance-tips
             target_compile_options(${TARGET} PRIVATE $<$<CONFIG:RELEASE>:-DNDEBUG>)
@@ -25,7 +26,8 @@ macro(fastgltf_enable_debug_inlining TARGET)
         if (MSVC)
             target_compile_options(${TARGET} PRIVATE $<$<CONFIG:DEBUG>:/Ob2>)
         elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-            target_compile_options(${TARGET} PRIVATE $<$<CONFIG:DEBUG>:-finline-functions>)
+            # Commented out to potentially resolve "inlining failed: target specific option mismatch" in Debug builds.
+            # target_compile_options(${TARGET} PRIVATE $<$<CONFIG:DEBUG>:-finline-functions>)
         endif()
     endif()
 endmacro()

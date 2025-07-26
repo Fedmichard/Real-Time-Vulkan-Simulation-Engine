@@ -2,6 +2,7 @@
 
 #include "vk_types.h"
 #include "vk_descriptors.h"
+#include "vk_loader.h"
 
 constexpr unsigned int MAX_FRAMES = 2;
 
@@ -76,7 +77,10 @@ private:
     VkPipelineLayout _meshPipelineLayout;
 
     // rectangle mesh
-    GPUMeshBuffers rectangle;
+    GPUMeshBuffers _rectangleMesh;
+
+    // test meshes
+    std::vector<std::shared_ptr<MeshAsset>> testMeshes;
 
     // initializations
     void initVulkan();
@@ -96,7 +100,6 @@ private:
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
-    GPUMeshBuffers uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices);
     void initDefaultData(); // default vertex and index 
 
     // cleanup
@@ -115,4 +118,7 @@ public:
 
     // main loop
     void run();
+
+    // public functions needed
+    GPUMeshBuffers uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices);
 };

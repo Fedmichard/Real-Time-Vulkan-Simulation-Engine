@@ -12,6 +12,9 @@ set(CMAKE_MAKEFILE_DEPENDS
   "CMakeFiles/3.30.1/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.30.1/CMakeRCCompiler.cmake"
   "CMakeFiles/3.30.1/CMakeSystem.cmake"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/CMakeLists.txt"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/cmake/add_source_directory.cmake"
+  "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/cmake/compiler_flags.cmake"
   "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/CMakeLists.txt"
   "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/support/cmake/JoinPaths.cmake"
   "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/support/cmake/fmt-config.cmake.in"
@@ -64,10 +67,13 @@ set(CMAKE_MAKEFILE_PRODUCTS
   "libraries/fmt/fmt.pc"
   "libraries/fmt/fmt-config.cmake"
   "libraries/fmt/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "libraries/fastgltf/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/DependInfo.cmake"
   "libraries/fmt/CMakeFiles/fmt.dir/DependInfo.cmake"
+  "libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/DependInfo.cmake"
+  "libraries/fastgltf/CMakeFiles/fastgltf.dir/DependInfo.cmake"
   )

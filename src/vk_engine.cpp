@@ -6,6 +6,11 @@
 #define VMA_IMPLEMENTATION
 #include "vk_mem_alloc.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+
 #include "vk_types.h"
 #include "vk_initializers.h"
 #include "vk_images.h"
@@ -597,18 +602,18 @@ void VulkanEngine::initTrianglePipeline() {
     // vertex and fragment shader stages
 	VkShaderModule triangleVertShader;
 	if (!vkutil::loadShaderModule("../shaders/triangle.vert.spv", _device, &triangleVertShader)) {
-		fmt::print("Error when building the triangle vertex shader module");
+		fmt::println("Error when building the triangle vertex shader module");
 	}
 	else {
-		fmt::print("Triangle vertex shader succesfully loaded");
+		fmt::println("Triangle vertex shader succesfully loaded");
 	}
 
     VkShaderModule triangleFragShader;
 	if (!vkutil::loadShaderModule("../shaders/triangle.frag.spv", _device, &triangleFragShader)) {
-		fmt::print("Error when building the triangle fragment shader module");
+		fmt::println("Error when building the triangle fragment shader module");
 	}
 	else {
-		fmt::print("Triangle fragment shader succesfully loaded");
+		fmt::println("Triangle fragment shader succesfully loaded");
 	}    
 
     // create pipeline now
@@ -653,16 +658,16 @@ void VulkanEngine::initMeshPipeline() {
 
     VkShaderModule triangleVertShader;
     if (!vkutil::loadShaderModule("../shaders/triangle_mesh.vert.spv", _device, &triangleVertShader)) {
-        fmt::print("error when building the triangle fragment vertex module");
+        fmt::println("error when building the triangle fragment vertex module");
     } else {
-        fmt::print("triangle vertex shader loaded successfully!");
+        fmt::println("triangle vertex shader loaded successfully!");
     }
 
     VkShaderModule triangleFragShader;
     if (!vkutil::loadShaderModule("../shaders/triangle.frag.spv", _device, &triangleFragShader)) {
-        fmt::print("error when building the triangle fragment vertex module");
+        fmt::println("error when building the triangle fragment vertex module");
     } else {
-        fmt::print("triangle vertex shader loaded successfully!");
+        fmt::println("triangle fragment shader loaded successfully!");
     }
     
     PipelineBuilder pipelineBuilder;
@@ -726,14 +731,16 @@ void VulkanEngine::initDefaultData() {
 	rectIndices[4] = 1;
 	rectIndices[5] = 3;
 
-	rectangle = uploadMesh(rectIndices, rectVertices);
+	_rectangleMesh = uploadMesh(rectIndices, rectVertices);
 
 	//delete the rectangle data on engine shutdown
 	_mainDeletionQueue.push_function([&](){
-		destroyBuffer(rectangle.indexBuffer);
-		destroyBuffer(rectangle.vertexBuffer);
+		destroyBuffer(_rectangleMesh.indexBuffer);
+		destroyBuffer(_rectangleMesh.vertexBuffer);
 	});
 
+    // init data
+    testMeshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
 }
 
 /**********************************
@@ -874,6 +881,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
 
     // begin dynamic rendering
 	vkCmdBeginRendering(cmd, &renderInfo);
+        // launch a draw command to draw 3 vertices for hard coded triangle
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _trianglePipeline);
 
         //set dynamic viewport and scissor
@@ -895,19 +903,32 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
 
         vkCmdSetScissor(cmd, 0, 1, &scissor);
 
-        //launch a draw command to draw 3 vertices
         vkCmdDraw(cmd, 3, 1, 0, 0);
 
+        // pipeline for vertex buffer draws
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _meshPipeline);
 
-        GPUDrawPushConstants push_constants;
-        push_constants.worldMatrix = glm::mat4{ 1.f };
-        push_constants.vertexBuffer = rectangle.vertexBufferAddress;
+        GPUDrawPushConstants pushConstants;
+        pushConstants.worldMatrix = glm::mat4{ 1.f };
 
-        vkCmdPushConstants(cmd, _meshPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &push_constants);
-        vkCmdBindIndexBuffer(cmd, rectangle.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
-
+        pushConstants.vertexBuffer = _rectangleMesh.vertexBufferAddress;
+        vkCmdPushConstants(cmd, _meshPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+        vkCmdBindIndexBuffer(cmd, _rectangleMesh.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
         vkCmdDrawIndexed(cmd, 6, 1, 0, 0, 0);
+
+        // draw cube
+        glm::mat4 view = glm::translate(glm::vec3{ 0,0,-5 });
+        // camera projection
+        glm::mat4 projection = glm::perspective(glm::radians(70.f), (float)_drawExtent.width / (float)_drawExtent.height, 10000.f, 0.1f);
+        // invert the Y direction on projection matrix so that we are more similar
+        // to opengl and gltf axis
+	    projection[1][1] *= -1;
+
+	    pushConstants.worldMatrix = projection * view;
+        pushConstants.vertexBuffer = testMeshes[2]->meshBuffers.vertexBufferAddress;
+        vkCmdPushConstants(cmd, _meshPipelineLayout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+	    vkCmdBindIndexBuffer(cmd, testMeshes[2]->meshBuffers.indexBuffer.buffer, 0, VK_INDEX_TYPE_UINT32);
+	    vkCmdDrawIndexed(cmd, testMeshes[2]->surfaces[0].count, 1, testMeshes[2]->surfaces[0].startIndex, 0, 0);
 	vkCmdEndRendering(cmd);
 }
 
@@ -955,7 +976,7 @@ GPUMeshBuffers VulkanEngine::uploadMesh(std::vector<uint32_t> indices, std::vect
 
     // copy from host to memory location
     memcpy(data, vertices.data(), vertexBufferSize);
-    memcpy(data, indices.data(), indexBufferSize);
+    memcpy(static_cast<char*>(data) + vertexBufferSize, indices.data(), indexBufferSize); // FIX: Add offset here
 
     // copy from staging buffer to newsurface mesh buffers (index + vertex)
     immediateSubmit([&](VkCommandBuffer cmd) {
@@ -968,7 +989,7 @@ GPUMeshBuffers VulkanEngine::uploadMesh(std::vector<uint32_t> indices, std::vect
 
 		VkBufferCopy indexCopy{ 0 };
 		indexCopy.dstOffset = 0;
-		indexCopy.srcOffset = vertexBufferSize;
+		indexCopy.srcOffset = vertexBufferSize; // we stored everything in staging buffer so add offset of vertex buffer to get index
 		indexCopy.size = indexBufferSize;
 
 		vkCmdCopyBuffer(cmd, staging.buffer, newSurface.indexBuffer.buffer, 1, &indexCopy);

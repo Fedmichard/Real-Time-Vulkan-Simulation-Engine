@@ -64,16 +64,36 @@ CMAKE_BINARY_DIR = C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-S
 # The main recursive "all" target.
 all: CMakeFiles/real-time-vulkan-simulation-engine.dir/all
 all: libraries/fmt/all
+all: libraries/fastgltf/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
 preinstall: libraries/fmt/preinstall
+preinstall: libraries/fastgltf/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
 clean: CMakeFiles/real-time-vulkan-simulation-engine.dir/clean
 clean: libraries/fmt/clean
+clean: libraries/fastgltf/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory libraries/fastgltf
+
+# Recursive "all" directory target.
+libraries/fastgltf/all: libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all
+libraries/fastgltf/all: libraries/fastgltf/CMakeFiles/fastgltf.dir/all
+.PHONY : libraries/fastgltf/all
+
+# Recursive "preinstall" directory target.
+libraries/fastgltf/preinstall:
+.PHONY : libraries/fastgltf/preinstall
+
+# Recursive "clean" directory target.
+libraries/fastgltf/clean: libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/clean
+libraries/fastgltf/clean: libraries/fastgltf/CMakeFiles/fastgltf.dir/clean
+.PHONY : libraries/fastgltf/clean
 
 #=============================================================================
 # Directory level rules for directory libraries/fmt
@@ -95,14 +115,16 @@ libraries/fmt/clean: libraries/fmt/CMakeFiles/fmt.dir/clean
 
 # All Build rule for target.
 CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/fmt/CMakeFiles/fmt.dir/all
+CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all
+CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/fastgltf/CMakeFiles/fastgltf.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20 "Built target real-time-vulkan-simulation-engine"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25 "Built target real-time-vulkan-simulation-engine"
 .PHONY : CMakeFiles/real-time-vulkan-simulation-engine.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/real-time-vulkan-simulation-engine.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles 20
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles 25
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/real-time-vulkan-simulation-engine.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles 0
 .PHONY : CMakeFiles/real-time-vulkan-simulation-engine.dir/rule
@@ -123,7 +145,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/clean:
 libraries/fmt/CMakeFiles/fmt.dir/all:
 	$(MAKE) $(MAKESILENT) -f libraries\fmt\CMakeFiles\fmt.dir\build.make libraries/fmt/CMakeFiles/fmt.dir/depend
 	$(MAKE) $(MAKESILENT) -f libraries\fmt\CMakeFiles\fmt.dir\build.make libraries/fmt/CMakeFiles/fmt.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=1,2,3 "Built target fmt"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=6,7,8 "Built target fmt"
 .PHONY : libraries/fmt/CMakeFiles/fmt.dir/all
 
 # Build rule for subdir invocation for target.
@@ -141,6 +163,58 @@ fmt: libraries/fmt/CMakeFiles/fmt.dir/rule
 libraries/fmt/CMakeFiles/fmt.dir/clean:
 	$(MAKE) $(MAKESILENT) -f libraries\fmt\CMakeFiles\fmt.dir\build.make libraries/fmt/CMakeFiles/fmt.dir/clean
 .PHONY : libraries/fmt/CMakeFiles/fmt.dir/clean
+
+#=============================================================================
+# Target rules for target libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir
+
+# All Build rule for target.
+libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all:
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf_simdjson.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/depend
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf_simdjson.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=4,5 "Built target fastgltf_simdjson"
+.PHONY : libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all
+
+# Build rule for subdir invocation for target.
+libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles 0
+.PHONY : libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/rule
+
+# Convenience name for target.
+fastgltf_simdjson: libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/rule
+.PHONY : fastgltf_simdjson
+
+# clean rule for target.
+libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/clean:
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf_simdjson.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/clean
+.PHONY : libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/clean
+
+#=============================================================================
+# Target rules for target libraries/fastgltf/CMakeFiles/fastgltf.dir
+
+# All Build rule for target.
+libraries/fastgltf/CMakeFiles/fastgltf.dir/all: libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf.dir/depend
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=1,2,3 "Built target fastgltf"
+.PHONY : libraries/fastgltf/CMakeFiles/fastgltf.dir/all
+
+# Build rule for subdir invocation for target.
+libraries/fastgltf/CMakeFiles/fastgltf.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles 5
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 libraries/fastgltf/CMakeFiles/fastgltf.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles 0
+.PHONY : libraries/fastgltf/CMakeFiles/fastgltf.dir/rule
+
+# Convenience name for target.
+fastgltf: libraries/fastgltf/CMakeFiles/fastgltf.dir/rule
+.PHONY : fastgltf
+
+# clean rule for target.
+libraries/fastgltf/CMakeFiles/fastgltf.dir/clean:
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf.dir/clean
+.PHONY : libraries/fastgltf/CMakeFiles/fastgltf.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

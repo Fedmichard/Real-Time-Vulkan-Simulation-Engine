@@ -12,3 +12,11 @@ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/bu
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fmt/CMakeFiles/install.dir
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fmt/CMakeFiles/install/local.dir
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fmt/CMakeFiles/install/strip.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/fastgltf.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/edit_cache.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/rebuild_cache.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/list_install_components.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/install.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/install/local.dir
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/build/libraries/fastgltf/CMakeFiles/install/strip.dir

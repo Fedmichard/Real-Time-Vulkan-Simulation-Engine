@@ -348,6 +348,8 @@ real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-e
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_demo.cpp.obj
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/build.make
 real-time-vulkan-simulation-engine.exe: libraries/fmt/libfmtd.a
+real-time-vulkan-simulation-engine.exe: libraries/fastgltf/libfastgltf.a
+real-time-vulkan-simulation-engine.exe: libraries/fastgltf/libfastgltf_simdjson.a
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/linkLibs.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/objects1.rsp
 real-time-vulkan-simulation-engine.exe: CMakeFiles/real-time-vulkan-simulation-engine.dir/link.txt

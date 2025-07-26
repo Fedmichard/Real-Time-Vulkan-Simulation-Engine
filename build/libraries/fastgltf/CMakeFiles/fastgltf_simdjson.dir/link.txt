@@ -1,0 +1,2 @@
+C:\msys64\mingw64\bin\ar.exe qc libfastgltf_simdjson.a CMakeFiles/fastgltf_simdjson.dir/deps/simdjson/simdjson.cpp.obj
+C:\msys64\mingw64\bin\ranlib.exe libfastgltf_simdjson.a

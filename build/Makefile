@@ -186,6 +186,32 @@ fmt/fast:
 	$(MAKE) $(MAKESILENT) -f libraries\fmt\CMakeFiles\fmt.dir\build.make libraries/fmt/CMakeFiles/fmt.dir/build
 .PHONY : fmt/fast
 
+#=============================================================================
+# Target rules for targets named fastgltf_simdjson
+
+# Build rule for target.
+fastgltf_simdjson: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 fastgltf_simdjson
+.PHONY : fastgltf_simdjson
+
+# fast build rule for target.
+fastgltf_simdjson/fast:
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf_simdjson.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/build
+.PHONY : fastgltf_simdjson/fast
+
+#=============================================================================
+# Target rules for targets named fastgltf
+
+# Build rule for target.
+fastgltf: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 fastgltf
+.PHONY : fastgltf
+
+# fast build rule for target.
+fastgltf/fast:
+	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf.dir/build
+.PHONY : fastgltf/fast
+
 libraries/imgui/imgui.obj: libraries/imgui/imgui.cpp.obj
 .PHONY : libraries/imgui/imgui.obj
 
@@ -582,6 +608,8 @@ help:
 	@echo ... install/strip
 	@echo ... list_install_components
 	@echo ... rebuild_cache
+	@echo ... fastgltf
+	@echo ... fastgltf_simdjson
 	@echo ... fmt
 	@echo ... real-time-vulkan-simulation-engine
 	@echo ... libraries/imgui/imgui.obj

@@ -123,8 +123,10 @@ concept Element = std::is_arithmetic_v<typename ElementTraits<ElementType>::comp
 
 namespace internal {
 
-template <typename DestType, typename SourceType>
-constexpr DestType convertComponent(const SourceType& source, bool normalized) {
+template <typename SourceType, typename DestType, std::size_t Index>
+constexpr DestType convertComponent(const std::byte* bytes, bool normalized) {
+	auto source = reinterpret_cast<const SourceType*>(bytes)[Index];
+
 	if (normalized) {
 		if constexpr (std::is_floating_point_v<SourceType> && std::is_integral_v<DestType>) {
 			// float -> int conversion
@@ -146,11 +148,6 @@ constexpr DestType convertComponent(const SourceType& source, bool normalized) {
 	}
 
 	return static_cast<DestType>(source);
-}
-
-template <typename SourceType, typename DestType, std::size_t Index>
-constexpr DestType convertComponent(const std::byte* bytes, bool normalized) {
-	return convertComponent<DestType>(reinterpret_cast<const SourceType*>(bytes)[Index], normalized);
 }
 
 template <typename ElementType, typename SourceType, std::size_t... I>
