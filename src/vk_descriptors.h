@@ -29,7 +29,7 @@ struct DescriptorAllocator {
 };
 
 // descriptor allocator 2.0
-struct DescriptorAllocatorGrowable {
+struct DescriptorAllocator2 {
 public:
 	struct PoolSizeRatio {
 		VkDescriptorType type;

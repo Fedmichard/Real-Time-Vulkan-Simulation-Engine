@@ -31,8 +31,12 @@ VkDescriptorSetLayout DescriptorLayoutBuilder::build(VkDevice device, void* pNex
     return descriptorSetLayout;
 }
 
+/*******************************************************************************************************************
+                                                    OLD
+*******************************************************************************************************************/
 void DescriptorAllocator::initPool(VkDevice device, uint32_t maxSets, std::vector<PoolSizeRatio> poolRatios) {
     std::vector<VkDescriptorPoolSize> poolSizes; // one pool size for each descriptor set we'll have
+    
     for (PoolSizeRatio ratio : poolRatios) {
         VkDescriptorPoolSize pool;
         pool.type = ratio.type; // particular descriptor type
@@ -70,4 +74,88 @@ VkDescriptorSet DescriptorAllocator::allocate(VkDevice device, VkDescriptorSetLa
     VK_CHECK(vkAllocateDescriptorSets(device, &allocInfo, &descriptorSet));
 
     return descriptorSet;
+}
+
+/*******************************************************************************************************************
+                                                    NEW
+*******************************************************************************************************************/
+// get pool from our ready pools
+VkDescriptorPool DescriptorAllocator2::getPool(VkDevice device) {       
+    VkDescriptorPool newPool;
+
+    // if we have a ready pool, grab the one from the back and remove it from the ready pools vector
+    if (readyPools.size() != 0) {
+        newPool = readyPools.back();
+        readyPools.pop_back();
+    // else create a new pool
+    } else {
+	    //need to create a new pool
+	    newPool = createPool(device, setsPerPool, ratios);
+
+        // max sets per pool (this is essentially a vector.resize() for our class)
+	    setsPerPool = setsPerPool * 1.5;
+	    if (setsPerPool > 4092) {
+		    setsPerPool = 4092;
+	    }
+    }   
+
+    return newPool;
+}
+
+VkDescriptorPool DescriptorAllocator2::createPool(VkDevice device, uint32_t setCount, std::vector<PoolSizeRatio> poolRatios) {
+	std::vector<VkDescriptorPoolSize> poolSizes;
+
+	for (PoolSizeRatio ratio : poolRatios) {
+		poolSizes.push_back(VkDescriptorPoolSize{
+			.type = ratio.type,
+			.descriptorCount = uint32_t(ratio.ratio * setCount)
+		});
+	}
+
+	VkDescriptorPoolCreateInfo poolInfo = {};
+	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+	poolInfo.flags = 0;
+	poolInfo.maxSets = setCount;
+	poolInfo.poolSizeCount = (uint32_t)poolSizes.size();
+	poolInfo.pPoolSizes = poolSizes.data();
+
+	VkDescriptorPool newPool;
+	vkCreateDescriptorPool(device, &poolInfo, nullptr, &newPool);
+    return newPool;
+}
+
+void DescriptorAllocator2::init(VkDevice device, uint32_t maxSets, std::vector<PoolSizeRatio> poolRatios) {
+    ratios.clear();
+    
+    for (auto r : poolRatios) {
+        ratios.push_back(r);
+    }
+	
+    VkDescriptorPool newPool = createPool(device, maxSets, poolRatios);
+
+    setsPerPool = maxSets * 1.5; //grow it next allocation
+
+    readyPools.push_back(newPool);
+}
+
+void DescriptorAllocator2::clearPools(VkDevice device) { 
+    for (auto p : readyPools) {
+        vkResetDescriptorPool(device, p, 0);
+    }
+    for (auto p : fullPools) {
+        vkResetDescriptorPool(device, p, 0);
+        readyPools.push_back(p);
+    }
+    fullPools.clear();
+}
+
+void DescriptorAllocator2::destroyPools(VkDevice device) {
+	for (auto p : readyPools) {
+		vkDestroyDescriptorPool(device, p, nullptr);
+	}
+    readyPools.clear();
+	for (auto p : fullPools) {
+		vkDestroyDescriptorPool(device,p,nullptr);
+    }
+    fullPools.clear();
 }
