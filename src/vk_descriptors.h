@@ -27,3 +27,28 @@ struct DescriptorAllocator {
 
     VkDescriptorSet allocate(VkDevice device, VkDescriptorSetLayout layout);
 };
+
+// descriptor allocator 2.0
+struct DescriptorAllocatorGrowable {
+public:
+	struct PoolSizeRatio {
+		VkDescriptorType type;
+		float ratio;
+	};
+
+	void init(VkDevice device, uint32_t initialSets, std::vector<PoolSizeRatio> poolRatios);
+	void clearPools(VkDevice device);
+	void destroyPools(VkDevice device);
+
+    VkDescriptorSet allocate(VkDevice device, VkDescriptorSetLayout layout, void* pNext = nullptr);
+
+private:
+	VkDescriptorPool getPool(VkDevice device);
+	VkDescriptorPool createPool(VkDevice device, uint32_t setCount, std::vector<PoolSizeRatio> poolRatios);
+
+	std::vector<PoolSizeRatio> ratios;
+	std::vector<VkDescriptorPool> fullPools;
+	std::vector<VkDescriptorPool> readyPools;
+	uint32_t setsPerPool;
+
+};

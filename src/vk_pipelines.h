@@ -26,9 +26,16 @@ public:
     void setPolygonMode(VkPolygonMode mode);
     void setCullMode(VkCullModeFlags cullMode, VkFrontFace frontFace);
     void setMultisamplingNone();
-    void disableBlending();
     void setColorAttachmentFormat(VkFormat format);
     void setDepthFormat(VkFormat format);
+
+    // enable features
+    void enableDepthTest(bool depthWriteEnable, VkCompareOp op);
+    void enableBlendingAdditive();
+    void enableBlendingAlpha();
+     
+    // disable features
+    void disableBlending();
     void disableDepthtest();
 };
 

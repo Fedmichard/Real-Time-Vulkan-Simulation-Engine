@@ -155,7 +155,7 @@ void PipelineBuilder::setDepthFormat(VkFormat format) {
 }
 
 /* depth testing */
-// disabled for now
+// disable depth test
 void PipelineBuilder::disableDepthtest() {
     _depthStencil.depthTestEnable = VK_FALSE;
     _depthStencil.depthWriteEnable = VK_FALSE;
@@ -168,13 +168,51 @@ void PipelineBuilder::disableDepthtest() {
     _depthStencil.maxDepthBounds = 1.f;
 }
 
-/* color blending attachment */
-// blending disabled for now
+/// enable depth test
+void PipelineBuilder::enableDepthTest(bool depthWriteEnable, VkCompareOp op) {
+    _depthStencil.depthTestEnable = VK_TRUE;
+    _depthStencil.depthWriteEnable = depthWriteEnable;
+    _depthStencil.depthCompareOp = op;
+    _depthStencil.depthBoundsTestEnable = VK_FALSE;
+    _depthStencil.stencilTestEnable = VK_FALSE;
+    _depthStencil.front = {};
+    _depthStencil.back = {};
+    _depthStencil.minDepthBounds = 0.0f;
+    _depthStencil.maxDepthBounds = 1.0f;
+}
+
+// disable color blending attachment
 void PipelineBuilder::disableBlending() {
     // default write mask
     _colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     // no blending
     _colorBlendAttachment.blendEnable = VK_FALSE;
+}
+
+// additive blending - adds the colors
+void PipelineBuilder::enableBlendingAdditive() {
+    // outColor = srcColor.rgb * srcColor.a + dstColor.rgb * 1.0
+    _colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    _colorBlendAttachment.blendEnable = VK_TRUE;
+    _colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    _colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
+    _colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    _colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    _colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    _colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
+}
+
+// alpha blending - mix the colors
+void PipelineBuilder::enableBlendingAlpha() {
+    // outColor = srcColor.rgb * srcColor.a + dstColor.rgb * (1.0 - srcColor.a)
+    _colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+    _colorBlendAttachment.blendEnable = VK_TRUE;
+    _colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;
+    _colorBlendAttachment.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    _colorBlendAttachment.colorBlendOp = VK_BLEND_OP_ADD;
+    _colorBlendAttachment.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
+    _colorBlendAttachment.dstAlphaBlendFactor = VK_BLEND_FACTOR_ZERO;
+    _colorBlendAttachment.alphaBlendOp = VK_BLEND_OP_ADD;
 }
 
 bool vkutil::loadShaderModule(const char* filePath, VkDevice device, VkShaderModule* outShaderModule) {

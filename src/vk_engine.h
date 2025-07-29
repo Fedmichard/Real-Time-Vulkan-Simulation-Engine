@@ -10,7 +10,6 @@ class VulkanEngine {
 private:
     bool _isInitialized { false };
     int _frameNumber { 0 };
-    bool _stopRendering { false };
     VkExtent2D _windowExtent{ 1700, 900 };
 
     // glfw window
@@ -45,7 +44,9 @@ private:
     // memory allocator for buffers and images
     VmaAllocator _allocator;
     AllocatedImage _drawImage;
+    AllocatedImage _depthImage;
     VkExtent2D _drawExtent;
+    float renderScale = 1.0f;
 
     // compute pipeline layout
     VkPipelineLayout _gradientPipelineLayout;
@@ -82,6 +83,9 @@ private:
     // test meshes
     std::vector<std::shared_ptr<MeshAsset>> testMeshes;
 
+    // imGui
+    int _rotation { 180 };
+
     // initializations
     void initVulkan();
     void initSwapchain();
@@ -92,15 +96,17 @@ private:
     void initPipelines();
     void initBackgroundPipelines();
     void initImgui();
-    void initTrianglePipeline();
     void initMeshPipeline();
 
     // helpers
+    void initWindow(GLFWwindow** window, int width, int height);
+    void createSurface(VkInstance& instance, GLFWwindow*& window, VkSurfaceKHR* surface);
     void drawBackground(VkCommandBuffer commandBuffer, VkImage image);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
     void initDefaultData(); // default vertex and index 
+    void recreateSwapChain(); // for resizing
 
     // cleanup
     void destroySwapchain();
@@ -120,5 +126,6 @@ public:
     void run();
 
     // public functions needed
+    bool resizeReuqested { false };
     GPUMeshBuffers uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices);
 };
