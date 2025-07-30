@@ -159,3 +159,32 @@ void DescriptorAllocator2::destroyPools(VkDevice device) {
     }
     fullPools.clear();
 }
+
+VkDescriptorSet DescriptorAllocator2::allocate(VkDevice device, VkDescriptorSetLayout layout, void* pNext) {
+    //get or create a pool to allocate from
+    VkDescriptorPool poolToUse = getPool(device);
+
+	VkDescriptorSetAllocateInfo allocInfo = {};
+	allocInfo.pNext = pNext;
+	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+	allocInfo.descriptorPool = poolToUse;
+	allocInfo.descriptorSetCount = 1;
+	allocInfo.pSetLayouts = &layout;
+
+	VkDescriptorSet ds;
+	VkResult result = vkAllocateDescriptorSets(device, &allocInfo, &ds);
+
+    //allocation failed. Try again
+    if (result == VK_ERROR_OUT_OF_POOL_MEMORY || result == VK_ERROR_FRAGMENTED_POOL) {
+
+        fullPools.push_back(poolToUse);
+    
+        poolToUse = getPool(device);
+        allocInfo.descriptorPool = poolToUse;
+
+       VK_CHECK( vkAllocateDescriptorSets(device, &allocInfo, &ds));
+    }
+  
+    readyPools.push_back(poolToUse);
+    return ds;
+}
