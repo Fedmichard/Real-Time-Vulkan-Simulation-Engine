@@ -333,6 +333,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4_precision.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.h \
  C:/msys64/mingw64/include/c++/14.1.0/fstream \
  C:/msys64/mingw64/include/c++/14.1.0/istream \
  C:/msys64/mingw64/include/c++/14.1.0/ios \

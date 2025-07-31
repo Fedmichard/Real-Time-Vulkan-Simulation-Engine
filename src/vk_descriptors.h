@@ -1,6 +1,9 @@
 #pragma once
 
-#include "vk_types.h"
+// #include "vk_types.h"
+#include <vulkan/vulkan.h>
+#include <vector>
+#include <deque>
 
 // build a descriptor set layout
 struct DescriptorLayoutBuilder {
@@ -11,21 +14,6 @@ struct DescriptorLayoutBuilder {
     void addBinding(uint32_t binding, VkDescriptorType type, VkShaderStageFlags shaderStageFlag); // add a binding to our vector
     void clear();
     VkDescriptorSetLayout build(VkDevice device, void* pNext = nullptr, VkDescriptorSetLayoutCreateFlags flags = 0);
-};
-
-struct DescriptorAllocator {
-    VkDescriptorPool pool;
-
-    struct PoolSizeRatio{
-        VkDescriptorType type;
-        float ratio;
-    };
-
-    void initPool(VkDevice device, uint32_t maxSets, std::vector<PoolSizeRatio> poolRatios);
-    void clearDescriptors(VkDevice device);
-    void destroyPool(VkDevice device);
-
-    VkDescriptorSet allocate(VkDevice device, VkDescriptorSetLayout layout);
 };
 
 // descriptor allocator 2.0
@@ -54,9 +42,13 @@ private:
 };
 
 struct DescriptorWriter {
+    // each descriptor within a set that we may have
     std::deque<VkDescriptorImageInfo> imageInfos;
     std::deque<VkDescriptorBufferInfo> bufferInfos;
-    std::vector<VkWriteDescriptorSet> writes;
+
+    // once we've allocated a descriptor set we need to update it's contents now
+    // updates each binding
+    std::vector<VkWriteDescriptorSet> descriptorWrites;
 
     void writeImage(int binding,VkImageView image,VkSampler sampler , VkImageLayout layout, VkDescriptorType type);
     void writeBuffer(int binding,VkBuffer buffer,size_t size, size_t offset,VkDescriptorType type); 

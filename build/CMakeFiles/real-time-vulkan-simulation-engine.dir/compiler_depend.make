@@ -2002,6 +2002,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/main.cpp \
@@ -3504,6 +3505,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj: C
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
@@ -4303,6 +4305,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_pipelines.cpp.obj: C:/U
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_pipelines.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h

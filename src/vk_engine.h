@@ -11,6 +11,8 @@ private:
     bool _isInitialized { false };
     int _frameNumber { 0 };
     VkExtent2D _windowExtent{ 1700, 900 };
+    int _rotation { 180 }; // imGui
+    
 
     // glfw window
     struct GLFWwindow* _window { nullptr };
@@ -52,39 +54,50 @@ private:
     VkPipelineLayout _gradientPipelineLayout;
 
     // allocate descriptor sets
-    DescriptorAllocator _globalDescriptorAllocator;
+    DescriptorAllocator2 _descriptorAllocator; // NEW
+    DescriptorWriter _descriptorWriter; // NEW
     VkDescriptorSet _drawImageDescriptorSet;
     VkDescriptorSetLayout _drawImageDescriptorLayout;
+
+    // scene data
+    GPUSceneData sceneData;
+
+    VkDescriptorSetLayout _gpuSceneDataDescriptorLayout;
 
     // immediate submit structures
     VkFence _immFence;
     VkCommandPool _immPool;
     VkCommandBuffer _immBuffer;
 
-    // array of compute pipelines we will be drawing and the push constants (data1, data2,...)
-    std::vector<ComputeEffect> backgroundEffects;
-    int currentBackgroundIndex{0};
-
-    // draw pipeline
-    VkPipeline _trianglePipeline;
-    VkPipelineLayout _trianglePipelineLayout;
-
     // member functions
     FrameData& getCurrentFrame() { return _frames[_frameNumber % MAX_FRAMES]; };
     AllocatedBuffer createBuffer(size_t allocSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage);
+    // create images
+    AllocatedImage createImage(VkExtent3D extent, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+    AllocatedImage createImage(void* data, VkExtent3D extent, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+    void destroyImage(const AllocatedImage& img);
+
+    // array of compute pipelines we will be drawing and the push constants (data1, data2,...)
+    std::vector<ComputeEffect> backgroundEffects;
+    int currentBackgroundIndex{0};
 
     // mesh pipeline
     VkPipeline _meshPipeline;
     VkPipelineLayout _meshPipelineLayout;
 
-    // rectangle mesh
-    GPUMeshBuffers _rectangleMesh;
-
     // test meshes
     std::vector<std::shared_ptr<MeshAsset>> testMeshes;
 
-    // imGui
-    int _rotation { 180 };
+    // text images
+    AllocatedImage _whiteImage;
+	AllocatedImage _blackImage;
+	AllocatedImage _greyImage;
+	AllocatedImage _errorCheckerboardImage;
+
+    VkSampler _defaultSamplerLinear;
+	VkSampler _defaultSamplerNearest;
+
+    VkDescriptorSetLayout _singleImageDescriptorLayout;
 
     // initializations
     void initVulkan();

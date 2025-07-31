@@ -332,4 +332,5 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: \
  C:/VulkanSDK/1.4.309.0/Include/glm/detail/compute_common.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4_precision.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp \
- C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp
+ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.h

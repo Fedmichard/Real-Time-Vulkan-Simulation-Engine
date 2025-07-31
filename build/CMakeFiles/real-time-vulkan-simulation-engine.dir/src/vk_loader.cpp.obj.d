@@ -333,6 +333,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4_precision.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.h \
  C:/msys64/mingw64/include/c++/14.1.0/filesystem \
  C:/msys64/mingw64/include/c++/14.1.0/bits/fs_fwd.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/chrono.h \
@@ -370,7 +371,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/stb_image/stb_image.h \
  C:/msys64/mingw64/include/c++/14.1.0/iostream \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_engine.h \
- C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.h \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.h \
  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/quaternion.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp \

@@ -1,66 +1,95 @@
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.cpp \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_descriptors.h \
- C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_types.h \
- C:/msys64/mingw64/include/c++/14.1.0/memory \
- C:/msys64/mingw64/include/c++/14.1.0/bits/memoryfwd.h \
+ C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
+ C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
+ C:/msys64/mingw64/include/stddef.h C:/msys64/mingw64/include/crtdefs.h \
+ C:/msys64/mingw64/include/corecrt.h C:/msys64/mingw64/include/_mingw.h \
+ C:/msys64/mingw64/include/_mingw_mac.h \
+ C:/msys64/mingw64/include/_mingw_secapi.h \
+ C:/msys64/mingw64/include/vadefs.h \
+ C:/msys64/mingw64/include/sdks/_mingw_ddk.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
+ C:/msys64/mingw64/include/stdint.h \
+ C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codecs_common.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std_encode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_encode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std_decode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_decode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_decode.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h \
+ C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_encode.h \
+ C:/msys64/mingw64/include/c++/14.1.0/vector \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/requires_hosted.h \
  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++config.h \
  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/os_defines.h \
  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/cpu_defines.h \
  C:/msys64/mingw64/include/c++/14.1.0/pstl/pstl_config.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/allocator.h \
- C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++allocator.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/new_allocator.h \
- C:/msys64/mingw64/include/c++/14.1.0/new \
- C:/msys64/mingw64/include/c++/14.1.0/bits/exception.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/version.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_algobase.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/functexcept.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/exception_defines.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/move.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/cpp_type_traits.h \
+ C:/msys64/mingw64/include/c++/14.1.0/ext/type_traits.h \
+ C:/msys64/mingw64/include/c++/14.1.0/ext/numeric_traits.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_pair.h \
  C:/msys64/mingw64/include/c++/14.1.0/type_traits \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_tempbuf.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_construct.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/version.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/move.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/utility.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator_base_types.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator_base_funcs.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/concept_check.h \
  C:/msys64/mingw64/include/c++/14.1.0/debug/assertions.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_pair.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/utility.h \
- C:/msys64/mingw64/include/c++/14.1.0/ext/numeric_traits.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/cpp_type_traits.h \
- C:/msys64/mingw64/include/c++/14.1.0/ext/type_traits.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_uninitialized.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_algobase.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/ptr_traits.h \
  C:/msys64/mingw64/include/c++/14.1.0/debug/debug.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/predefined_ops.h \
  C:/msys64/mingw64/include/c++/14.1.0/bit \
  C:/msys64/mingw64/include/c++/14.1.0/concepts \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/allocator.h \
+ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++allocator.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/new_allocator.h \
+ C:/msys64/mingw64/include/c++/14.1.0/new \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/exception.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/memoryfwd.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_construct.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_uninitialized.h \
  C:/msys64/mingw64/include/c++/14.1.0/ext/alloc_traits.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/alloc_traits.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_raw_storage_iter.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/align.h \
- C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
- C:/msys64/mingw64/include/stdint.h C:/msys64/mingw64/include/crtdefs.h \
- C:/msys64/mingw64/include/corecrt.h C:/msys64/mingw64/include/_mingw.h \
- C:/msys64/mingw64/include/_mingw_mac.h \
- C:/msys64/mingw64/include/_mingw_secapi.h \
- C:/msys64/mingw64/include/vadefs.h \
- C:/msys64/mingw64/include/sdks/_mingw_ddk.h \
- C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
- C:/msys64/mingw64/include/stddef.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/unique_ptr.h \
- C:/msys64/mingw64/include/c++/14.1.0/tuple \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h \
+ C:/msys64/mingw64/include/c++/14.1.0/initializer_list \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_bvector.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/functional_hash.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/hash_bytes.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/refwrap.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/invoke.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_function.h \
  C:/msys64/mingw64/include/c++/14.1.0/backward/binders.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/functional_hash.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/hash_bytes.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/range_access.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/vector.tcc \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/memory_resource.h \
+ C:/msys64/mingw64/include/c++/14.1.0/cstddef \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator_args.h \
+ C:/msys64/mingw64/include/c++/14.1.0/tuple \
+ C:/msys64/mingw64/include/c++/14.1.0/deque \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_deque.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/deque.tcc \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_types.h \
+ C:/msys64/mingw64/include/c++/14.1.0/memory \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_tempbuf.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_raw_storage_iter.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/align.h \
+ C:/msys64/mingw64/include/c++/14.1.0/bits/unique_ptr.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/shared_ptr.h \
  C:/msys64/mingw64/include/c++/14.1.0/iosfwd \
- C:/msys64/mingw64/include/c++/14.1.0/bits/requires_hosted.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/stringfwd.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/postypes.h \
  C:/msys64/mingw64/include/c++/14.1.0/cwchar \
@@ -74,7 +103,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/bits/shared_ptr_base.h \
  C:/msys64/mingw64/include/c++/14.1.0/typeinfo \
  C:/msys64/mingw64/include/c++/14.1.0/bits/allocated_ptr.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/refwrap.h \
  C:/msys64/mingw64/include/c++/14.1.0/ext/aligned_buffer.h \
  C:/msys64/mingw64/include/c++/14.1.0/ext/atomicity.h \
  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/gthr.h \
@@ -106,7 +134,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/pstl/glue_memory_defs.h \
  C:/msys64/mingw64/include/c++/14.1.0/pstl/execution_defs.h \
  C:/msys64/mingw64/include/c++/14.1.0/optional \
- C:/msys64/mingw64/include/c++/14.1.0/initializer_list \
  C:/msys64/mingw64/include/c++/14.1.0/bits/enable_special_members.h \
  C:/msys64/mingw64/include/c++/14.1.0/string \
  C:/msys64/mingw64/include/c++/14.1.0/bits/char_traits.h \
@@ -119,7 +146,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: \
  C:/msys64/mingw64/include/ctype.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/ostream_insert.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/cxxabi_forced.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/range_access.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/basic_string.h \
  C:/msys64/mingw64/include/c++/14.1.0/string_view \
  C:/msys64/mingw64/include/c++/14.1.0/bits/string_view.tcc \
@@ -135,13 +161,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/cerrno \
  C:/msys64/mingw64/include/c++/14.1.0/bits/charconv.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/basic_string.tcc \
- C:/msys64/mingw64/include/c++/14.1.0/bits/memory_resource.h \
- C:/msys64/mingw64/include/c++/14.1.0/cstddef \
- C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator_args.h \
- C:/msys64/mingw64/include/c++/14.1.0/vector \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_bvector.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/vector.tcc \
  C:/msys64/mingw64/include/c++/14.1.0/array \
  C:/msys64/mingw64/include/c++/14.1.0/compare \
  C:/msys64/mingw64/include/c++/14.1.0/functional \
@@ -152,26 +171,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/bits/hashtable_policy.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/node_handle.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/erase_if.h \
- C:/msys64/mingw64/include/c++/14.1.0/deque \
- C:/msys64/mingw64/include/c++/14.1.0/bits/stl_deque.h \
- C:/msys64/mingw64/include/c++/14.1.0/bits/deque.tcc \
  C:/msys64/mingw64/include/c++/14.1.0/span \
- C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
- C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
- C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codecs_common.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std_encode.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_encode.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std_decode.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_decode.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_decode.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h \
- C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_encode.h \
  C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_enum_string_helper.h \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h \

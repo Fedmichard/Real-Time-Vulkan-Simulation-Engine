@@ -20,11 +20,16 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
-struct PerspectiveObject {
-    // always explicitly define alignment
-    alignas(16) glm::mat4 model;
-    alignas(16 )glm::mat4 view;
-    alignas(16) glm::mat4 proj;
+#include "vk_descriptors.h"
+
+// holds scene data
+struct GPUSceneData {
+    glm::mat4 view;
+    glm::mat4 proj;
+    glm::mat4 viewproj;
+    glm::vec4 ambientColor;
+    glm::vec4 sunlightDirection; // w for sun power
+    glm::vec4 sunlightColor;
 };
 
 // compute push constants
@@ -56,7 +61,7 @@ struct AllocatedImage {
 // struct that holds everything we need for an allocated buffer
 struct AllocatedBuffer {
     VkBuffer buffer;
-    VmaAllocation allocation;
+    VmaAllocation allocation; // VkDeviceMemory probably
     VmaAllocationInfo info;
 };
 
@@ -113,6 +118,8 @@ struct FrameData {
     VkSemaphore _imageAvailableSemaphore, _renderFinishedSemaphore;
     VkFence _renderFence;
     DeletionQueue _deletionQueue;
+    // to allocate descriptor sets at runtime, we will hold one descriptor allocator in our FrameData structure
+    DescriptorAllocator2 _frameDescriptors;
 };
 
 
