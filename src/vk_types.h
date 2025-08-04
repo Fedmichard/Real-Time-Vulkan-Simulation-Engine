@@ -22,6 +22,23 @@
 
 #include "vk_descriptors.h"
 
+enum class MaterialPass :uint8_t {
+    MainColor,
+    Transparent,
+    Other
+};
+
+struct MaterialPipeline {
+	VkPipeline pipeline;
+	VkPipelineLayout layout;
+};
+
+struct MaterialInstance {
+    MaterialPipeline* pipeline;
+    VkDescriptorSet materialSet;
+    MaterialPass passType;
+};
+
 // holds scene data
 struct GPUSceneData {
     glm::mat4 view;

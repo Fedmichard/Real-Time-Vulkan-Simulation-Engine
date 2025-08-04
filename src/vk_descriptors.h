@@ -32,7 +32,7 @@ public:
 
 private:
 	VkDescriptorPool getPool(VkDevice device);
-	VkDescriptorPool createPool(VkDevice device, uint32_t setCount, std::vector<PoolSizeRatio> poolRatios);
+	VkDescriptorPool createPool(VkDevice device, uint32_t maxSets, std::vector<PoolSizeRatio> poolRatios);
 
 	std::vector<PoolSizeRatio> ratios;
 	std::vector<VkDescriptorPool> fullPools;

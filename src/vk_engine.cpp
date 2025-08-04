@@ -486,17 +486,12 @@ void VulkanEngine::initDescriptors() {
 
     // create descriptor pool
     // pool size ratio holds a VkDescriptorType and a ratio of how many
-    std::vector<DescriptorAllocator2::PoolSizeRatio> sizes2 = {
-        {VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1}
-    };
-
-    // texture descriptor pool
-    std::vector<DescriptorAllocator2::PoolSizeRatio> texturePoolSizes = {
-        {VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1}
+    std::vector<DescriptorAllocator2::PoolSizeRatio> sizes = {
+        { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1 }
     };
 
     // initialize descriptor pool then allocate descriptor set from pool
-    _descriptorAllocator.init(_device, 10, sizes2);
+    _descriptorAllocator.init(_device, 10, sizes);
     _drawImageDescriptorSet = _descriptorAllocator.allocate(_device, _drawImageDescriptorLayout);
 
     // update descriptor set
@@ -514,7 +509,7 @@ void VulkanEngine::initDescriptors() {
     // dynamic descriptor allocation strat
     for (int i = 0; i < MAX_FRAMES; i++) {
 		// create a descriptor pool
-		std::vector<DescriptorAllocator2::PoolSizeRatio> frame_sizes = { 
+		std::vector<DescriptorAllocator2::PoolSizeRatio> frameSizes = { 
 			{ VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 3 },
 			{ VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 3 },
 			{ VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 3 },
@@ -522,7 +517,7 @@ void VulkanEngine::initDescriptors() {
 		};
 
 		_frames[i]._frameDescriptors = DescriptorAllocator2{};
-		_frames[i]._frameDescriptors.init(_device, 1000, frame_sizes);
+		_frames[i]._frameDescriptors.init(_device, 1000, frameSizes);
 	
 		_mainDeletionQueue.push_function([&, i]() {
 			_frames[i]._frameDescriptors.destroyPools(_device);

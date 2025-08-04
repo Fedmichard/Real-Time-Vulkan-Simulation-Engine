@@ -55,20 +55,20 @@ VkDescriptorPool DescriptorAllocator2::getPool(VkDevice device) {
     return newPool;
 }
 
-VkDescriptorPool DescriptorAllocator2::createPool(VkDevice device, uint32_t setCount, std::vector<PoolSizeRatio> poolRatios) {
+VkDescriptorPool DescriptorAllocator2::createPool(VkDevice device, uint32_t maxSets, std::vector<PoolSizeRatio> poolRatios) {
 	std::vector<VkDescriptorPoolSize> poolSizes;
 
 	for (PoolSizeRatio ratio : poolRatios) {
 		poolSizes.push_back(VkDescriptorPoolSize{
 			.type = ratio.type,
-			.descriptorCount = uint32_t(ratio.ratio * setCount)
+			.descriptorCount = uint32_t(ratio.ratio * maxSets)
 		});
 	}
 
 	VkDescriptorPoolCreateInfo poolInfo = {};
 	poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
 	poolInfo.flags = 0;
-	poolInfo.maxSets = setCount;
+	poolInfo.maxSets = maxSets;
 	poolInfo.poolSizeCount = (uint32_t)poolSizes.size();
 	poolInfo.pPoolSizes = poolSizes.data();
 
@@ -131,7 +131,7 @@ VkDescriptorSet DescriptorAllocator2::allocate(VkDevice device, VkDescriptorSetL
     //get or create a pool to allocate from
     VkDescriptorPool poolToUse = getPool(device);
 
-	VkDescriptorSetAllocateInfo allocInfo = {};
+	VkDescriptorSetAllocateInfo allocInfo{};
 	allocInfo.pNext = pNext;
 	allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 	allocInfo.descriptorPool = poolToUse;
