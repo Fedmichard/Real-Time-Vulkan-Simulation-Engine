@@ -6,39 +6,43 @@
 
 constexpr unsigned int MAX_FRAMES = 2;
 
-// do we allocate a descriptor set for every single material/object?
+// Material is a data set that uses textures and other data to define how a surface looks
 struct GLTFMetallic_Roughness {
-	MaterialPipeline opaquePipeline;
-	MaterialPipeline transparentPipeline;
+	VkDescriptorSetLayout materialLayout; // layout for the descriptor set
+	DescriptorWriter writer;
 
-	VkDescriptorSetLayout materialLayout;
+	MaterialPipeline opaquePipeline; // one for opaque textures
+	MaterialPipeline transparentPipeline; // one for transparent textures
 
+    // uniform buffer 
 	struct MaterialConstants {
-		glm::vec4 colorFactors;
-		glm::vec4 metal_rough_factors;
-		//padding, we need it anyway for uniform buffers
-		glm::vec4 extra[14];
+		glm::vec4 colorFactors; // multiply the color texture
+		glm::vec4 metalRoughFactors;
+		//padding, we need it anyway for uniform buffers (uniform buffer needs to be a minimum of 256 bytes)
+		glm::vec4 extra[14]; // vec4 = 16 bites (4 bits per x, y, z, a)
 	};
 
+    // descriptor set will hold some textures we want to bind
 	struct MaterialResources {
 		AllocatedImage colorImage;
 		VkSampler colorSampler;
+
 		AllocatedImage metalRoughImage;
 		VkSampler metalRoughSampler;
+
 		VkBuffer dataBuffer;
 		uint32_t dataBufferOffset;
 	};
 
-	DescriptorWriter writer;
+	void buildPipelines(VulkanEngine* engine);
+	void clearResources(VkDevice device);
 
-	void build_pipelines(VulkanEngine* engine);
-	void clear_resources(VkDevice device);
-
-	MaterialInstance write_material(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocatorGrowable& descriptorAllocator);
+    // creates descriptor set and return a material instance struct that will be used for rendering
+	MaterialInstance writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator);
 };
 
 class VulkanEngine {
-private:
+public:
     bool _isInitialized { false };
     int _frameNumber { 0 };
     VkExtent2D _windowExtent{ 1700, 900 };
@@ -156,7 +160,6 @@ private:
     void destroySwapchain();
     void destroyBuffer(const AllocatedBuffer& buffer);
 
-public:
     // initializes engine
     void init();
 

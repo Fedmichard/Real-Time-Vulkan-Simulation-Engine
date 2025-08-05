@@ -794,6 +794,7 @@ void VulkanEngine::initMeshPipeline() {
 	//no blending
 	pipelineBuilder.disableBlending();
     // pipelineBuilder.enableBlendingAdditive();
+    // pipelineBuilder.enableBlendingAlpha();
     // depth testing
 	// pipelineBuilder.disableDepthtest();
     pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
@@ -1210,4 +1211,103 @@ void VulkanEngine::destroySwapchain() {
 
 void VulkanEngine::destroyBuffer(const AllocatedBuffer& buffer) {
     vmaDestroyBuffer(_allocator, buffer.buffer, buffer.allocation);
+}
+
+/******************************************************************************************************
+*                                              Others
+******************************************************************************************************/
+
+void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
+	VkShaderModule meshFragShader;
+	if (!vkutil::loadShaderModule("../../shaders/mesh.frag.spv", engine->_device, &meshFragShader)) {
+		fmt::println("Error when building the triangle fragment shader module");
+	}
+
+	VkShaderModule meshVertexShader;
+	if (!vkutil::loadShaderModule("../../shaders/mesh.vert.spv", engine->_device, &meshVertexShader)) {
+		fmt::println("Error when building the triangle vertex shader module");
+	}
+
+	VkPushConstantRange matrixRange{};
+	matrixRange.offset = 0;
+	matrixRange.size = sizeof(GPUDrawPushConstants);
+	matrixRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    DescriptorLayoutBuilder layoutBuilder;
+    layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    layoutBuilder.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+	layoutBuilder.addBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+
+    materialLayout = layoutBuilder.build(engine->_device);
+
+	VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout,
+        materialLayout };
+
+	VkPipelineLayoutCreateInfo meshLayoutInfo{};
+    meshLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+	meshLayoutInfo.setLayoutCount = 2;
+	meshLayoutInfo.pSetLayouts = layouts;
+	meshLayoutInfo.pPushConstantRanges = &matrixRange;
+	meshLayoutInfo.pushConstantRangeCount = 1;
+
+	VkPipelineLayout newLayout;
+	VK_CHECK(vkCreatePipelineLayout(engine->_device, &meshLayoutInfo, nullptr, &newLayout));
+
+    opaquePipeline.layout = newLayout;
+    transparentPipeline.layout = newLayout;
+
+	// build the stage-create-info for both vertex and fragment stages. This lets
+	// the pipeline know the shader modules per stage
+	PipelineBuilder pipelineBuilder;
+	pipelineBuilder.setShaders(meshVertexShader, meshFragShader);
+	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
+	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+	pipelineBuilder.setMultisamplingNone();
+	pipelineBuilder.disableBlending();
+	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
+
+	//render format
+	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+
+	// use the triangle layout we created
+	pipelineBuilder._pipelineLayout = newLayout;
+
+	// finally build the pipeline
+    opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+
+	// create the transparent variant
+	pipelineBuilder.enableBlendingAdditive();
+
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_GREATER_OR_EQUAL);
+
+	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+	
+	vkDestroyShaderModule(engine->_device, meshFragShader, nullptr);
+	vkDestroyShaderModule(engine->_device, meshVertexShader, nullptr);
+}
+
+MaterialInstance GLTFMetallic_Roughness::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator) {
+	MaterialInstance matData;
+	matData.passType = pass;
+
+	if (pass == MaterialPass::Transparent) {
+		matData.pipeline = &transparentPipeline;
+	}
+	else {
+		matData.pipeline = &opaquePipeline;
+	}
+
+	matData.materialSet = descriptorAllocator.allocate(device, materialLayout);
+
+
+	writer.clear();
+	writer.writeBuffer(0, resources.dataBuffer, sizeof(MaterialConstants), resources.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+	writer.writeImage(1, resources.colorImage.imageView, resources.colorSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	writer.writeImage(2, resources.metalRoughImage.imageView, resources.metalRoughSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+
+	writer.updateSet(device, matData.materialSet);
+
+	return matData;
 }
