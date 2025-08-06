@@ -528,6 +528,7 @@ void VulkanEngine::initDescriptors() {
 void VulkanEngine::initPipelines() {
     initBackgroundPipelines();
     initMeshPipeline();
+    metalRoughMaterial.buildPipelines(this);
 }
 
 void VulkanEngine::initImgui() {
@@ -864,6 +865,30 @@ void VulkanEngine::initDefaultData() {
 		destroyImage(_blackImage);
 		destroyImage(_errorCheckerboardImage);
 	});
+
+    // default values for a material
+    GLTFMetallicRoughness::MaterialResources materialResources;
+    materialResources.colorImage = _errorCheckerboardImage;
+    materialResources.colorSampler = _defaultSamplerLinear;
+    materialResources.metalRoughImage = _errorCheckerboardImage;
+    materialResources.metalRoughSampler = _defaultSamplerLinear;
+
+    // uniform buffer object
+    AllocatedBuffer materialConstants = createBuffer(sizeof(GLTFMetallicRoughness::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+    GLTFMetallicRoughness::MaterialConstants* sceneUniformData = (GLTFMetallicRoughness::MaterialConstants*)materialConstants.allocation->GetMappedData();
+    sceneUniformData->colorFactors = glm::vec4{ 1, 1, 1, 1};
+    sceneUniformData->metalRoughFactors = glm::vec4{ 1, 0.5, 0, 0};
+
+    _mainDeletionQueue.push_function([=](){
+        destroyBuffer(materialConstants);
+    });
+
+    materialResources.dataBuffer = materialConstants.buffer;
+    materialResources.dataBufferOffset = 0;
+
+    defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::MainColor, materialResources, _descriptorAllocator);
 }
 
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
@@ -1217,14 +1242,14 @@ void VulkanEngine::destroyBuffer(const AllocatedBuffer& buffer) {
 *                                              Others
 ******************************************************************************************************/
 
-void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
+void GLTFMetallicRoughness::buildPipelines(VulkanEngine* engine) {
 	VkShaderModule meshFragShader;
-	if (!vkutil::loadShaderModule("../../shaders/mesh.frag.spv", engine->_device, &meshFragShader)) {
+	if (!vkutil::loadShaderModule("../shaders/mesh.frag.spv", engine->_device, &meshFragShader)) {
 		fmt::println("Error when building the triangle fragment shader module");
 	}
 
 	VkShaderModule meshVertexShader;
-	if (!vkutil::loadShaderModule("../../shaders/mesh.vert.spv", engine->_device, &meshVertexShader)) {
+	if (!vkutil::loadShaderModule("../shaders/mesh.vert.spv", engine->_device, &meshVertexShader)) {
 		fmt::println("Error when building the triangle vertex shader module");
 	}
 
@@ -1240,8 +1265,7 @@ void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 
     materialLayout = layoutBuilder.build(engine->_device);
 
-	VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout,
-        materialLayout };
+	VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout, materialLayout };
 
 	VkPipelineLayoutCreateInfo meshLayoutInfo{};
     meshLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -1288,7 +1312,7 @@ void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 	vkDestroyShaderModule(engine->_device, meshVertexShader, nullptr);
 }
 
-MaterialInstance GLTFMetallic_Roughness::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator) {
+MaterialInstance GLTFMetallicRoughness::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator) {
 	MaterialInstance matData;
 	matData.passType = pass;
 

@@ -7,7 +7,7 @@
 constexpr unsigned int MAX_FRAMES = 2;
 
 // Material is a data set that uses textures and other data to define how a surface looks
-struct GLTFMetallic_Roughness {
+struct GLTFMetallicRoughness {
 	VkDescriptorSetLayout materialLayout; // layout for the descriptor set
 	DescriptorWriter writer;
 
@@ -24,12 +24,13 @@ struct GLTFMetallic_Roughness {
 
     // descriptor set will hold some textures we want to bind
 	struct MaterialResources {
+        // color image texture binding 1 of ds
 		AllocatedImage colorImage;
 		VkSampler colorSampler;
-
+        // metal texture binding 2 of ds
 		AllocatedImage metalRoughImage;
 		VkSampler metalRoughSampler;
-
+        // uniform buffer that holds material constants binding 0 of ds
 		VkBuffer dataBuffer;
 		uint32_t dataBufferOffset;
 	};
@@ -133,6 +134,10 @@ public:
 	VkSampler _defaultSamplerNearest;
 
     VkDescriptorSetLayout _singleImageDescriptorLayout;
+
+    // gltf loading
+    MaterialInstance defaultData;
+    GLTFMetallicRoughness metalRoughMaterial;
 
     // initializations
     void initVulkan();
