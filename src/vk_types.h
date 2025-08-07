@@ -26,13 +26,16 @@
 struct DrawContext;
 
 // base class for a renderable dynamic object
+// it's only purpose is to declare a single virtual draw funciton, all classes that derive from it must implement their
+// own
 class IRenderable {
+    // matrix to use as a parent and a render context(a struct that is an array of render objects)
     virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) = 0;
 };
 
 // implementation of a drawable scene node.
-// the scene node can hold children and will also keep a transform to propagate
-// to them
+// the scene node can hold children and will also keep a transform to propagate to them
+// base class for a renderable object node
 struct Node : public IRenderable {
 
     // parent pointer must be a weak pointer to avoid circular dependencies
@@ -42,19 +45,20 @@ struct Node : public IRenderable {
     glm::mat4 localTransform;
     glm::mat4 worldTransform;
 
-    void refreshTransform(const glm::mat4& parentMatrix)
-    {
+    void refreshTransform(const glm::mat4& parentMatrix) {
         worldTransform = parentMatrix * localTransform;
         for (auto c : children) {
             c->refreshTransform(worldTransform);
         }
     }
 
-    virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx)
-    {
-        // draw children
+    virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
+        // Combine the parent's transform with this node's local transform
+        glm::mat4 nodeMatrix = topMatrix * localTransform;
+
+        // Pass the combined transform down to the children
         for (auto& c : children) {
-            c->Draw(topMatrix, ctx);
+            c->Draw(nodeMatrix, ctx);
         }
     }
 };
