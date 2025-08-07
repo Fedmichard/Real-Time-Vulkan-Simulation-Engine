@@ -6,40 +6,41 @@
 
 constexpr unsigned int MAX_FRAMES = 2;
 
-// Material is a data set that uses textures and other data to define how a surface looks
-struct GLTFMetallicRoughness {
-	VkDescriptorSetLayout materialLayout; // layout for the descriptor set
-	DescriptorWriter writer;
+struct GLTFMetallic_Roughness {
+	MaterialPipeline opaquePipeline;
+	MaterialPipeline transparentPipeline;
 
-	MaterialPipeline opaquePipeline; // one for opaque textures
-	MaterialPipeline transparentPipeline; // one for transparent textures
+	VkDescriptorSetLayout materialLayout;
 
-    // uniform buffer 
 	struct MaterialConstants {
-		glm::vec4 colorFactors; // multiply the color texture
-		glm::vec4 metalRoughFactors;
-		//padding, we need it anyway for uniform buffers (uniform buffer needs to be a minimum of 256 bytes)
-		glm::vec4 extra[14]; // vec4 = 16 bites (4 bits per x, y, z, a)
+		glm::vec4 colorFactors;
+		glm::vec4 metal_rough_factors;
+		//padding, we need it anyway for uniform buffers
+		glm::vec4 extra[14];
 	};
 
-    // descriptor set will hold some textures we want to bind
 	struct MaterialResources {
-        // color image texture binding 1 of ds
 		AllocatedImage colorImage;
 		VkSampler colorSampler;
-        // metal texture binding 2 of ds
 		AllocatedImage metalRoughImage;
 		VkSampler metalRoughSampler;
-        // uniform buffer that holds material constants binding 0 of ds
 		VkBuffer dataBuffer;
 		uint32_t dataBufferOffset;
 	};
 
-	void buildPipelines(VulkanEngine* engine);
-	void clearResources(VkDevice device);
+	DescriptorWriter writer;
 
-    // creates descriptor set and return a material instance struct that will be used for rendering
-	MaterialInstance writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator);
+	void build_pipelines(VulkanEngine* engine);
+	void clear_resources(VkDevice device);
+
+	MaterialInstance write_material(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator);
+};
+
+struct MeshNode : public Node {
+
+	std::shared_ptr<MeshAsset> mesh;
+
+	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
 };
 
 struct RenderObject {
@@ -53,17 +54,8 @@ struct RenderObject {
 	VkDeviceAddress vertexBufferAddress;
 };
 
-// struct that holds a list of render objects, this is the core of our rendering
 struct DrawContext {
 	std::vector<RenderObject> OpaqueSurfaces;
-};
-
-// mesh node class that derives from node to display meshes
-struct MeshNode : public Node {
-    // a mesh asset which holds the name of a mesh, the surfaces of a mesh, and the mesh buffers
-    std::shared_ptr<MeshAsset> mesh;
-
-    virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
 };
 
 class VulkanEngine {
@@ -159,14 +151,15 @@ public:
 
     VkDescriptorSetLayout _singleImageDescriptorLayout;
 
-    // gltf loading
+    // materials
     MaterialInstance defaultData;
-    GLTFMetallicRoughness metalRoughMaterial;
+    GLTFMetallic_Roughness metalRoughMaterial;
 
-    // scene graphing
+    // gltf mesh loading
     DrawContext mainDrawContext;
     std::unordered_map<std::string, std::shared_ptr<Node>> loadedNodes;
-    void updateScene();
+
+    void update_scene();
 
     // initializations
     void initVulkan();
@@ -193,7 +186,6 @@ public:
     // cleanup
     void destroySwapchain();
     void destroyBuffer(const AllocatedBuffer& buffer);
-
     // initializes engine
     void init();
 
