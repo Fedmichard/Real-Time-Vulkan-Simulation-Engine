@@ -30,10 +30,10 @@ struct GLTFMetallic_Roughness {
 
 	DescriptorWriter writer;
 
-	void build_pipelines(VulkanEngine* engine);
-	void clear_resources(VkDevice device);
+	void buildPipelines(VulkanEngine* engine);
+	void clearResources(VkDevice device);
 
-	MaterialInstance write_material(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator);
+	MaterialInstance writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator);
 };
 
 struct MeshNode : public Node {
@@ -151,15 +151,13 @@ public:
 
     VkDescriptorSetLayout _singleImageDescriptorLayout;
 
-    // materials
+    // gltf
     MaterialInstance defaultData;
     GLTFMetallic_Roughness metalRoughMaterial;
-
-    // gltf mesh loading
     DrawContext mainDrawContext;
     std::unordered_map<std::string, std::shared_ptr<Node>> loadedNodes;
 
-    void update_scene();
+    void updateScene();
 
     // initializations
     void initVulkan();
@@ -186,6 +184,7 @@ public:
     // cleanup
     void destroySwapchain();
     void destroyBuffer(const AllocatedBuffer& buffer);
+
     // initializes engine
     void init();
 

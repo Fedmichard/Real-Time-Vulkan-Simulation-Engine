@@ -13,14 +13,16 @@
 #include <fastgltf/parser.hpp>
 #include <fastgltf/tools.hpp>
 
-std::optional<std::vector<std::shared_ptr<MeshAsset>>> loadGltfMeshes(VulkanEngine* engine, std::filesystem::path filePath) {
+std::optional<std::vector<std::shared_ptr<MeshAsset>>> loadGltfMeshes(VulkanEngine* engine, std::filesystem::path filePath)
+{
+//> openmesh
     std::cout << "Loading GLTF: " << filePath << std::endl;
 
-    // open the file
     fastgltf::GltfDataBuffer data;
     data.loadFromFile(filePath);
 
-    constexpr auto gltfOptions = fastgltf::Options::LoadGLBBuffers | fastgltf::Options::LoadExternalBuffers;
+    constexpr auto gltfOptions = fastgltf::Options::LoadGLBBuffers
+        | fastgltf::Options::LoadExternalBuffers;
 
     fastgltf::Asset gltf;
     fastgltf::Parser parser {};
@@ -32,13 +34,14 @@ std::optional<std::vector<std::shared_ptr<MeshAsset>>> loadGltfMeshes(VulkanEngi
         fmt::print("Failed to load glTF: {} \n", fastgltf::to_underlying(load.error()));
         return {};
     }
-
+//< openmesh
+//> loadmesh
     std::vector<std::shared_ptr<MeshAsset>> meshes;
 
-    // use the same vectors for all meshes so that the memory doesnt reallocate as often
+    // use the same vectors for all meshes so that the memory doesnt reallocate as
+    // often
     std::vector<uint32_t> indices;
     std::vector<Vertex> vertices;
-    // loop through every available mesh
     for (fastgltf::Mesh& mesh : gltf.meshes) {
         MeshAsset newmesh;
 
@@ -117,7 +120,7 @@ std::optional<std::vector<std::shared_ptr<MeshAsset>>> loadGltfMeshes(VulkanEngi
         }
 
         // display the vertex normals
-        constexpr bool OverrideColors = true;
+        constexpr bool OverrideColors = false;
         if (OverrideColors) {
             for (Vertex& vtx : vertices) {
                 vtx.color = glm::vec4(vtx.normal, 1.f);
@@ -129,4 +132,6 @@ std::optional<std::vector<std::shared_ptr<MeshAsset>>> loadGltfMeshes(VulkanEngi
     }
 
     return meshes;
+
+//< loadmesh
 }
