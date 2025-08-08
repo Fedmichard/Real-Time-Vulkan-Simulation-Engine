@@ -213,6 +213,8 @@ void VulkanEngine::draw() {
 void VulkanEngine::run() {
     while (!glfwWindowShouldClose(_window)) {
         glfwPollEvents();
+
+        mainCamera.processInput(_window);
         
         ImGui_ImplVulkan_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -1377,10 +1379,14 @@ void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx)
 void VulkanEngine::updateScene()
 {
 	mainDrawContext.OpaqueSurfaces.clear();
+    mainCamera.update();
+
+    glm::mat4 view = mainCamera.getViewMatrix();
 
 	loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);	
 
-	sceneData.view = glm::translate(glm::vec3{ 0,0,-5 });
+    sceneData.view = view;
+	// sceneData.view = glm::translate(glm::vec3{ 0,0,-5 });
 	// camera projection
 	sceneData.proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 10000.0f);
 

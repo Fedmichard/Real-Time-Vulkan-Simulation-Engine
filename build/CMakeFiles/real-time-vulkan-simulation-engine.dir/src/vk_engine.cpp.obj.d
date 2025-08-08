@@ -369,6 +369,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/codecvt \
  C:/msys64/mingw64/include/c++/14.1.0/bits/fs_dir.h \
  C:/msys64/mingw64/include/c++/14.1.0/bits/fs_ops.h \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\camera.h \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
  C:/msys64/mingw64/include/GL/gl.h \
  C:/msys64/mingw64/include/c++/14.1.0/utility \

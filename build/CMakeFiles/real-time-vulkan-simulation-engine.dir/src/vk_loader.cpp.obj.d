@@ -371,6 +371,9 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: \
  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/stb_image/stb_image.h \
  C:/msys64/mingw64/include/c++/14.1.0/iostream \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_engine.h \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\camera.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
+ C:/msys64/mingw64/include/GL/gl.h \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.h \
  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/quaternion.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp \

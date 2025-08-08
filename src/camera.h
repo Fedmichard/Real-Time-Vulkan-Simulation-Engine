@@ -1,5 +1,5 @@
 #include "vk_types.h"
-#include <SDL_events.h>
+#include <GLFW/glfw3.h>
 
 class Camera {
 public:
@@ -13,7 +13,6 @@ public:
     glm::mat4 getViewMatrix();
     glm::mat4 getRotationMatrix();
 
-    void processSDLEvent(SDL_Event& e);
-
     void update();
+    void processInput(GLFWwindow* window);
 };

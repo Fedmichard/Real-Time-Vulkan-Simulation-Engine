@@ -1669,6 +1669,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootst
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrapDispatch.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.cpp \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h \
   C:/VulkanSDK/1.4.309.0/Include/glm/common.hpp \
@@ -1679,10 +1680,16 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_common.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_exponential.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_geometric.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_integer.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_matrix.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_packing.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_trigonometric.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_vector_relational.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/qualifier.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/setup.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_float.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x2.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x2.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x3.hpp \
@@ -1701,6 +1708,8 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x3.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x4.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x4.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec1.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec1.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec2.hpp \
@@ -1710,6 +1719,8 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec4.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec4.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/exponential.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x2.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x2_precision.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x3.hpp \
@@ -1746,6 +1757,30 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x3_precision.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_transform.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_transform.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_common.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_common.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_double.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_double_precision.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_exponential.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_exponential.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_float.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_float_precision.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_geometric.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_geometric.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_relational.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_relational.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_common.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_common.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_constants.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_constants.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_int_sized.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_uint_sized.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool2.hpp \
@@ -1772,13 +1807,34 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_int3_sized.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_int4.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_int4_sized.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_relational.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_relational.inl \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint2.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint2_sized.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint3.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint3_sized.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint4.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint4_sized.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/fwd.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/geometric.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/epsilon.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/epsilon.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/quaternion.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtc/quaternion.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/component_wise.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/component_wise.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/norm.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/norm.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/quaternion.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/quaternion.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.inl \
+  C:/VulkanSDK/1.4.309.0/Include/glm/integer.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/mat2x2.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/mat2x3.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/mat2x4.hpp \
@@ -1789,7 +1845,9 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/glm/mat4x3.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/mat4x4.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/matrix.hpp \
+  C:/VulkanSDK/1.4.309.0/Include/glm/packing.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/simd/platform.h \
+  C:/VulkanSDK/1.4.309.0/Include/glm/trigonometric.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/vec2.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/vec3.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/vec4.hpp \
@@ -1808,6 +1866,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
+  C:/msys64/mingw64/include/GL/gl.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
@@ -1896,6 +1955,8 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/msys64/mingw64/include/c++/14.1.0/cassert \
   C:/msys64/mingw64/include/c++/14.1.0/cctype \
   C:/msys64/mingw64/include/c++/14.1.0/cerrno \
+  C:/msys64/mingw64/include/c++/14.1.0/cfloat \
+  C:/msys64/mingw64/include/c++/14.1.0/climits \
   C:/msys64/mingw64/include/c++/14.1.0/clocale \
   C:/msys64/mingw64/include/c++/14.1.0/cmath \
   C:/msys64/mingw64/include/c++/14.1.0/compare \
@@ -1968,6 +2029,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/msys64/mingw64/include/crtdefs.h \
   C:/msys64/mingw64/include/ctype.h \
   C:/msys64/mingw64/include/errno.h \
+  C:/msys64/mingw64/include/float.h \
   C:/msys64/mingw64/include/limits.h \
   C:/msys64/mingw64/include/locale.h \
   C:/msys64/mingw64/include/malloc.h \
@@ -1996,6 +2058,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/msys64/mingw64/include/time.h \
   C:/msys64/mingw64/include/vadefs.h \
   C:/msys64/mingw64/include/wchar.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
@@ -2006,6 +2069,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/main.cpp \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h \
   C:/VulkanSDK/1.4.309.0/Include/glm/common.hpp \
@@ -2145,6 +2209,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/fra
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
+  C:/msys64/mingw64/include/GL/gl.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
@@ -2373,6 +2438,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/fra
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_loader.h \
@@ -3137,6 +3203,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_images.h \
@@ -3510,6 +3577,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj: C
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_loader.cpp \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/glm_element_traits.hpp \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/parser.hpp \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/tools.hpp \
@@ -3710,6 +3778,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/User
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
+  C:/msys64/mingw64/include/GL/gl.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
@@ -3948,6 +4017,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/User
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h \
@@ -4321,40 +4391,6 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/fstream.tcc:
 
 C:/msys64/mingw64/include/c++/14.1.0/variant:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/gtx/norm.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtx/component_wise.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtc/quaternion.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_common.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_relational.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_geometric.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_geometric.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_exponential.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_double_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_double.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_common.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_common.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.hpp:
-
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/stb_image/stb_image.h:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/util.hpp:
@@ -4367,47 +4403,9 @@ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/li
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/climits:
-
-C:/msys64/mingw64/include/c++/14.1.0/cfloat:
-
 C:/msys64/mingw64/include/c++/14.1.0/bits/this_thread_sleep.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/std_thread.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/trigonometric.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/packing.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp:
-
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/parser.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/fwd.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_trigonometric.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_packing.inl:
 
 C:/msys64/mingw64/include/wctype.h:
 
@@ -4467,15 +4465,15 @@ C:/msys64/mingw64/include/c++/14.1.0/ext/aligned_buffer.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/compare:
 
+C:/msys64/mingw64/include/c++/14.1.0/climits:
+
+C:/msys64/mingw64/include/c++/14.1.0/cfloat:
+
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.cpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/unordered_map.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/unique_ptr.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.inl:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/streambuf_iterator.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/streambuf.tcc:
 
@@ -4513,19 +4511,45 @@ C:/VulkanSDK/1.4.309.0/Include/glm/vec3.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/vec2.hpp:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/trigonometric.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/packing.hpp:
+
 C:/VulkanSDK/1.4.309.0/Include/glm/mat3x4.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/mat2x4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtc/quaternion.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/mat2x3.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_enum_string_helper.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/mat2x2.hpp:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtx/norm.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtx/component_wise.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtc/quaternion.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/mat2x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtc/quaternion.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtc/matrix_transform.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp:
+
 C:/VulkanSDK/1.4.309.0/Include/glm/geometric.hpp:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/parser.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/fwd.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint4_sized.hpp:
 
@@ -4556,6 +4580,54 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_float3_precision.hpp:
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double4.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double3_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double2_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool4_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool3_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool2_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_uint_sized.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_common.inl:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/streambuf_iterator.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_relational.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_geometric.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_geometric.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_exponential.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_double_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_double.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_common.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_common.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveintrin.h:
 
@@ -4594,8 +4666,6 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tbmintrin.h:
 C:/msys64/mingw64/include/oleidl.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sm3intrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double2.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/x86gprintrin.h:
 
@@ -4983,12 +5053,6 @@ C:/msys64/mingw64/include/_mingw.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512ifmavlintrin.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.inl:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ia32intrin.h:
-
-C:/msys64/mingw64/include/urlmon.h:
-
 C:/msys64/mingw64/include/c++/14.1.0/memory_resource:
 
 C:/msys64/mingw64/include/reason.h:
@@ -5009,19 +5073,15 @@ C:/msys64/mingw64/include/c++/14.1.0/bit:
 
 C:/msys64/mingw64/include/processtopologyapi.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.hpp:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/simd/platform.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtc/constants.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm3dnow.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_exponential.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/functexcept.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_integer.inl:
-
-C:/msys64/mingw64/include/bemapiset.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/locale:
 
@@ -5066,6 +5126,8 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/bmi2intrin.h:
 C:/msys64/mingw64/include/c++/14.1.0/tr1/modified_bessel_func.tcc:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_common.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec3.inl:
 
@@ -5181,6 +5243,8 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/raointintrin.h:
 
 C:/msys64/mingw64/include/specstrings.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.hpp:
+
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x3.hpp:
 
 C:/msys64/mingw64/include/malloc.h:
@@ -5235,9 +5299,7 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/unique_lock.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++allocator.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_float.hpp:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxfp16intrin.h:
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_trigonometric.inl:
 
 C:/msys64/mingw64/include/c++/14.1.0/tr1/gamma.tcc:
 
@@ -5493,6 +5555,12 @@ C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_geometric.inl:
 
 C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_encode.h:
 
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ia32intrin.h:
+
+C:/msys64/mingw64/include/urlmon.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.inl:
+
 C:/VulkanSDK/1.4.309.0/Include/glm/mat4x4.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124fmapsintrin.h:
@@ -5538,8 +5606,6 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/functional_hash.h:
 C:/msys64/mingw64/include/excpt.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/localefwd.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool2_precision.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/nested_exception.h:
 
@@ -5599,9 +5665,17 @@ C:/msys64/mingw64/include/ktmtypes.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator_args.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_packing.inl:
+
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/lwpintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/vector.tcc:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/_fixes.hpp:
+
+C:/msys64/mingw64/include/c++/14.1.0/exception:
 
 C:/msys64/mingw64/include/winerror.h:
 
@@ -5665,6 +5739,8 @@ C:/msys64/mingw64/include/pthread_time.h:
 
 C:/msys64/mingw64/include/pthread_unistd.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.hpp:
+
 C:/msys64/mingw64/include/c++/14.1.0/iosfwd:
 
 C:/msys64/mingw64/include/sec_api/sys/timeb_s.h:
@@ -5677,9 +5753,9 @@ C:/msys64/mingw64/include/sys/types.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_base.h:
 
-C:/msys64/mingw64/include/_mingw_secapi.h:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_int_sized.hpp:
+
+C:/msys64/mingw64/include/_mingw_secapi.h:
 
 C:/msys64/mingw64/include/time.h:
 
@@ -5695,6 +5771,10 @@ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/li
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_exponential.inl:
 
+C:/msys64/mingw64/include/bemapiset.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_integer.inl:
+
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_matrix.inl:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_vector_relational.inl:
@@ -5704,6 +5784,10 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cldemoteintrin.h:
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_internal.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/qualifier.hpp:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxfp16intrin.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_float.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x2.inl:
 
@@ -5720,8 +5804,6 @@ C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x4.hpp:
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x4.inl:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool2.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x4.inl:
 
@@ -5743,9 +5825,13 @@ C:/msys64/mingw64/include/mmsyscom.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x4.hpp:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.inl:
+
 C:/msys64/mingw64/include/mcx.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.inl:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x2.hpp:
 
@@ -5780,19 +5866,3 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x2_precision.hpp:
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x2_precision.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x4_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_uint_sized.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool3.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool3_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/_fixes.hpp:
-
-C:/msys64/mingw64/include/c++/14.1.0/exception:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool4_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double2_precision.hpp:

@@ -3,6 +3,7 @@
 #include "vk_types.h"
 #include "vk_descriptors.h"
 #include "vk_loader.h"
+#include "camera.h"
 
 constexpr unsigned int MAX_FRAMES = 2;
 
@@ -156,6 +157,9 @@ public:
     GLTFMetallic_Roughness metalRoughMaterial;
     DrawContext mainDrawContext;
     std::unordered_map<std::string, std::shared_ptr<Node>> loadedNodes;
+
+    // camera
+    Camera mainCamera;
 
     void updateScene();
 
