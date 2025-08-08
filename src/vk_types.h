@@ -22,6 +22,24 @@
 
 #include "vk_descriptors.h"
 
+/* buffers */
+// struct that holds everything we need for an allocated image
+struct AllocatedImage {
+    VkImage image;
+    VkImageView imageView;
+    VmaAllocation allocation; // VkDeviceMemory probably
+    VkExtent3D imageExtent;
+    VkFormat imageFormat;
+};
+
+// struct that holds everything we need for an allocated buffer
+struct AllocatedBuffer {
+    VkBuffer buffer;
+    VmaAllocation allocation; // VkDeviceMemory probably
+    VmaAllocationInfo info;
+};
+
+/* scene graph nodes */
 struct DrawContext;
 
 // base class for a renderable dynamic object
@@ -59,6 +77,7 @@ struct Node : public IRenderable {
     }
 };
 
+/* material system */
 enum class MaterialPass :uint8_t {
     MainColor,
     Transparent,
@@ -75,6 +94,7 @@ struct MaterialInstance {
     MaterialPass passType;
 };
 
+/* object draws */
 // holds scene data
 struct GPUSceneData {
     glm::mat4 view;
@@ -85,6 +105,20 @@ struct GPUSceneData {
     glm::vec4 sunlightColor;
 };
 
+// holds the resources needed for a mesh
+struct GPUMeshBuffers {
+    AllocatedBuffer indexBuffer;
+    AllocatedBuffer vertexBuffer;
+    VkDeviceAddress vertexBufferAddress;
+};
+
+// push constants for our mesh object draws
+struct GPUDrawPushConstants {
+    glm::mat4 worldMatrix;
+    VkDeviceAddress vertexBuffer;
+};
+
+/* compute draws */
 // compute push constants
 struct ComputePushConstants {
     glm::vec4 data1;
@@ -102,22 +136,6 @@ struct ComputeEffect {
     ComputePushConstants data;
 };
 
-// struct that holds everything we need for an allocated image
-struct AllocatedImage {
-    VkImage image;
-    VkImageView imageView;
-    VmaAllocation allocation; // VkDeviceMemory probably
-    VkExtent3D imageExtent;
-    VkFormat imageFormat;
-};
-
-// struct that holds everything we need for an allocated buffer
-struct AllocatedBuffer {
-    VkBuffer buffer;
-    VmaAllocation allocation; // VkDeviceMemory probably
-    VmaAllocationInfo info;
-};
-
 // for meshes
 struct Vertex {
 	glm::vec3 position;
@@ -125,19 +143,6 @@ struct Vertex {
 	glm::vec3 normal;
 	float uvY;
 	glm::vec4 color;
-};
-
-// holds the resources needed for a mesh
-struct GPUMeshBuffers {
-    AllocatedBuffer indexBuffer;
-    AllocatedBuffer vertexBuffer;
-    VkDeviceAddress vertexBufferAddress;
-};
-
-// push constants for our mesh object draws
-struct GPUDrawPushConstants {
-    glm::mat4 worldMatrix;
-    VkDeviceAddress vertexBuffer;
 };
 
 struct DeletionQueue  {

@@ -54,7 +54,8 @@ struct RenderObject {
 	glm::mat4 transform;
 	VkDeviceAddress vertexBufferAddress;
 };
-
+/* START HERE WHEN I GETG BACK*/
+// temporary structure that holds everything that'll be drawn in a single frame
 struct DrawContext {
 	std::vector<RenderObject> OpaqueSurfaces;
 };
@@ -62,7 +63,6 @@ struct DrawContext {
 class VulkanEngine {
 public:
     bool _isInitialized { false };
-    int _frameNumber { 0 };
     VkExtent2D _windowExtent{ 1700, 900 };
     int _rotation { 0 }; // imGui
     
@@ -72,8 +72,10 @@ public:
 
     static VulkanEngine& Get();
 
-    // member variables
+    // sync structures
+    int _frameNumber { 0 };
     FrameData _frames[MAX_FRAMES];
+    FrameData& getCurrentFrame() { return _frames[_frameNumber % MAX_FRAMES]; };
 
     // queues
     VkQueue _graphicsQueue;
@@ -123,7 +125,6 @@ public:
     VkCommandBuffer _immBuffer;
 
     // member functions
-    FrameData& getCurrentFrame() { return _frames[_frameNumber % MAX_FRAMES]; };
     AllocatedBuffer createBuffer(size_t allocSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage);
     // create images
     AllocatedImage createImage(VkExtent3D extent, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
@@ -178,7 +179,7 @@ public:
     // helpers
     void initWindow(GLFWwindow** window, int width, int height);
     void createSurface(VkInstance& instance, GLFWwindow*& window, VkSurfaceKHR* surface);
-    void drawBackground(VkCommandBuffer commandBuffer, VkImage image);
+    void drawBackground(VkCommandBuffer commandBuffer);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);

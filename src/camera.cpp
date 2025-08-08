@@ -6,14 +6,14 @@
 float Camera::lastX = 800.0 / 2.0;
 float Camera::lastY = 600.0 / 2.0;
 bool Camera::firstMouse = true;
+float sensitivity = 0.1f;
 
 void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     // Retrieve the Camera instance from the window's user pointer
     Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
     if (camera == nullptr) return;
 
-    if (firstMouse)
-    {
+    if (firstMouse) {
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
@@ -24,7 +24,6 @@ void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
 
-    float sensitivity = 0.1f;
     xoffset *= sensitivity;
     yoffset *= sensitivity;
 
@@ -51,6 +50,7 @@ void Camera::update() {
 
 void Camera::processInput(GLFWwindow* window) {
     velocity = glm::vec3(0.0f); // adjust accordingly
+    sensitivity = 0.1f;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         velocity.z = -1;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -59,6 +59,14 @@ void Camera::processInput(GLFWwindow* window) {
         velocity.x = -1;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
         velocity.x = 1;
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        velocity.y = 1;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) 
+        velocity.y = -1;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+        velocity *= 3;
+        sensitivity = 0.2f;
+    }
 
     // mouse
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
