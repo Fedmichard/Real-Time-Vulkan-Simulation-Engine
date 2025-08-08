@@ -10,9 +10,17 @@ public:
     // horizontal rotation
     float yaw { 0.f };
 
+    glm::vec3 cameraFront;
+    glm::vec3 cameraUp;
+
+    static float lastX;
+    static float lastY;
+    static bool firstMouse;
+
     glm::mat4 getViewMatrix();
     glm::mat4 getRotationMatrix();
 
     void update();
     void processInput(GLFWwindow* window);
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 };

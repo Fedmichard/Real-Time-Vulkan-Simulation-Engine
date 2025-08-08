@@ -64,7 +64,7 @@ public:
     bool _isInitialized { false };
     int _frameNumber { 0 };
     VkExtent2D _windowExtent{ 1700, 900 };
-    int _rotation { 180 }; // imGui
+    int _rotation { 0 }; // imGui
     
 
     // glfw window

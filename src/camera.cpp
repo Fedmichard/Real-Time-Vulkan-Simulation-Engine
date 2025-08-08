@@ -3,14 +3,54 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+float Camera::lastX = 800.0 / 2.0;
+float Camera::lastY = 600.0 / 2.0;
+bool Camera::firstMouse = true;
+
+void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    // Retrieve the Camera instance from the window's user pointer
+    Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
+    if (camera == nullptr) return;
+
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+  
+    float xoffset = xpos - lastX;
+    float yoffset = lastY - ypos; 
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f;
+    xoffset *= sensitivity;
+    yoffset *= sensitivity;
+
+    camera->yaw   += xoffset / 20.0f;
+    camera->pitch += yoffset / 20.0f;
+
+    if(camera->pitch > 89.0f)
+        camera->pitch = 89.0f;
+    if(camera->pitch < -89.0f)
+        camera->pitch = -89.0f;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch));
+    direction.y = sin(glm::radians(camera->pitch));
+    direction.z = sin(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch));
+    camera->cameraFront = glm::normalize(direction);
+}
+
 void Camera::update() {
+    const float cameraSpeed = 0.05f;
     glm::mat4 cameraRotation = getRotationMatrix();
-    position += glm::vec3(cameraRotation * glm::vec4(velocity * 0.5f, 0.f));
+    position += glm::vec3(cameraRotation * glm::vec4(velocity * 0.5f, 0.f)) * cameraSpeed;
 }
 
 void Camera::processInput(GLFWwindow* window) {
-    velocity = glm::vec3(0.0f);
-    const float cameraSpeed = 0.05f; // adjust accordingly
+    velocity = glm::vec3(0.0f); // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         velocity.z = -1;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
@@ -19,6 +59,10 @@ void Camera::processInput(GLFWwindow* window) {
         velocity.x = -1;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
         velocity.x = 1;
+
+    // mouse
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
 }
 
 glm::mat4 Camera::getViewMatrix() {

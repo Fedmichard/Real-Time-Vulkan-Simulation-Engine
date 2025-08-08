@@ -5,6 +5,7 @@
 
 #define VMA_IMPLEMENTATION
 #include "vk_mem_alloc.h"
+#define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -50,6 +51,12 @@ void VulkanEngine::init() {
     initPipelines(); // init all our pipelines
     initImgui(); // init gui
     initDefaultData(); // maybe?
+
+    mainCamera.velocity = glm::vec3(0.f);
+    mainCamera.position = glm::vec3(0.0f, 0.0f, 5.0f);
+
+    mainCamera.pitch = 0;
+    mainCamera.yaw = 0;
     
     // everything was successful
     _isInitialized = true;
@@ -607,6 +614,10 @@ void VulkanEngine::initWindow(GLFWwindow** window, int width, int height) {
     // so we're passing a pointer of our HelloTriangleApplication class 
     glfwSetWindowUserPointer(*window, this);
     glfwSetFramebufferSizeCallback(*window, framebufferResizeCallback);
+
+    glfwSetWindowUserPointer(*window, &mainCamera); 
+    // Now, set the callback
+    glfwSetCursorPosCallback(*window, Camera::mouse_callback);
 }
 
 // we're creating a static function as a callback because GLFW doesn't know how to properly call a member function with the correct "this" pointer 
@@ -924,7 +935,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-    depthAttachment.clearValue.depthStencil.depth = 0.0f;
+    depthAttachment.clearValue.depthStencil.depth = 1.0f;
 
 	VkRenderingInfo renderInfo{};
     renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
@@ -1302,7 +1313,7 @@ void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
 	pipelineBuilder.setMultisamplingNone();
 	pipelineBuilder.disableBlending();
-	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
+	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
 
 	//render format
 	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
@@ -1315,7 +1326,7 @@ void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 	// create the transparent variant
 	pipelineBuilder.enableBlendingAdditive();
 
-	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_GREATER_OR_EQUAL);
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
 
 	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
 	
@@ -1376,25 +1387,26 @@ void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx)
 	Node::Draw(topMatrix, ctx);
 }
 
-void VulkanEngine::updateScene()
-{
+void VulkanEngine::updateScene() {
 	mainDrawContext.OpaqueSurfaces.clear();
     mainCamera.update();
 
     glm::mat4 view = mainCamera.getViewMatrix();
+    glm::mat4 proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 10000.0f);
 
-	loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);	
+    proj[1][1] *= -1;
 
-    sceneData.view = view;
 	// sceneData.view = glm::translate(glm::vec3{ 0,0,-5 });
 	// camera projection
-	sceneData.proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 10000.0f);
+	sceneData.proj = proj;
+    sceneData.view = view;
 
     glm::mat4 model = glm::rotate(glm::radians(1.0f) * _rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
-	sceneData.proj[1][1] *= -1;
+	loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);	
+    
 	sceneData.viewproj = sceneData.proj * sceneData.view * model;
 
 	//some default lighting parameters
