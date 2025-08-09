@@ -905,7 +905,7 @@ void VulkanEngine::initDefaultData() {
 	materialResources.dataBuffer = materialConstants.buffer;
 	materialResources.dataBufferOffset = 0;
 
-	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::MainColor, materialResources, _descriptorAllocator);
+	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::Transparent, materialResources, _descriptorAllocator);
 
     for (auto& m : testMeshes) {
 		std::shared_ptr<MeshNode> newNode = std::make_shared<MeshNode>();
@@ -919,6 +919,7 @@ void VulkanEngine::initDefaultData() {
 			s.material->data = defaultData;
 		}
 
+        // this is a root node that represents the beginning of a MeshNode
 		loadedNodes[m->name] = std::move(newNode);
 	}
 }
@@ -1403,7 +1404,7 @@ void VulkanEngine::updateScene() {
 
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
-	loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);	
+    loadedNodes["Sphere"]->Draw(glm::mat4{1.f}, mainDrawContext);
     
 	sceneData.viewproj = sceneData.proj * sceneData.view * model;
 

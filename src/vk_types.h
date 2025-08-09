@@ -68,6 +68,8 @@ struct Node : public IRenderable {
         }
     }
 
+    // it's only purpose is to recursively call draw on it's children
+    // that way no matter what node type it is, it'll all just call when this one does
     virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx)
     {
         // draw children
