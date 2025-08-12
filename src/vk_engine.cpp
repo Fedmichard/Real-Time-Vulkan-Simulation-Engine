@@ -60,6 +60,15 @@ void VulkanEngine::init() {
     
     // everything was successful
     _isInitialized = true;
+
+    std::string structurePath = { "..\\assets\\structure.glb" };
+    auto structureFile = loadGltf(this,structurePath);
+
+    assert(structureFile.has_value());
+
+    // default scene and default cam pos
+    loadedScenes["structure"] = *structureFile;
+    mainCamera.position = glm::vec3(30.f, -00.f, -085.f);
 }
 
 void VulkanEngine::cleanup() {
@@ -80,6 +89,8 @@ void VulkanEngine::cleanup() {
             destroyBuffer(mesh->meshBuffers.indexBuffer);
             destroyBuffer(mesh->meshBuffers.vertexBuffer);
         }
+
+        loadedScenes[0]->~LoadedGLTF();
 
         metalRoughMaterial.clearResources(_device);
 
@@ -905,8 +916,9 @@ void VulkanEngine::initDefaultData() {
 	materialResources.dataBuffer = materialConstants.buffer;
 	materialResources.dataBufferOffset = 0;
 
-	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::Transparent, materialResources, _descriptorAllocator);
+	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::MainColor, materialResources, _descriptorAllocator);
 
+    // creates a new parent node for every single mesh we have available
     for (auto& m : testMeshes) {
 		std::shared_ptr<MeshNode> newNode = std::make_shared<MeshNode>();
 		newNode->mesh = m;
@@ -1369,6 +1381,7 @@ MaterialInstance GLTFMetallic_Roughness::writeMaterial(VkDevice device, Material
 }
 
 void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
+    glm::mat4 model = glm::translate(glm::vec3{35.f, -00.f, -085.f});
 	glm::mat4 nodeMatrix = topMatrix * worldTransform;
 
 	for (auto& s : mesh->surfaces) {
@@ -1402,9 +1415,10 @@ void VulkanEngine::updateScene() {
     sceneData.view = view;
     glm::mat4 model = glm::rotate(glm::radians(1.0f) * _rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
+    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
-    loadedNodes["Sphere"]->Draw(glm::mat4{1.f}, mainDrawContext);
+    loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
     
 	sceneData.viewproj = sceneData.proj * sceneData.view * model;
 

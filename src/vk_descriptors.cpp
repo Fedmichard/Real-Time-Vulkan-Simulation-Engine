@@ -78,25 +78,6 @@ VkDescriptorPool DescriptorAllocator2::createPool(VkDevice device, uint32_t maxS
 }
 
 /**
- * creates a pool that is preallocated for a certain amount of max sets
- *          meaning this memory region can create 10 sets of similar 
- *          binding points and descriptors
- */
-void DescriptorAllocator2::init(VkDevice device, uint32_t maxSets, std::vector<PoolSizeRatio> poolRatios) {
-    ratios.clear();
-    
-    for (auto r : poolRatios) {
-        ratios.push_back(r);
-    }
-	
-    VkDescriptorPool newPool = createPool(device, maxSets, poolRatios);
-
-    setsPerPool = maxSets * 1.5; //grow it next allocation
-
-    readyPools.push_back(newPool);
-}
-
-/**
  * clears all the available allocated pools and full allocated pools then adds full pools back to ready pool
  */
 void DescriptorAllocator2::clearPools(VkDevice device) { 
@@ -119,6 +100,25 @@ void DescriptorAllocator2::destroyPools(VkDevice device) {
 		vkDestroyDescriptorPool(device,p,nullptr);
     }
     fullPools.clear();
+}
+
+/**
+ * creates a pool that is preallocated for a certain amount of max sets
+ *          meaning this memory region can create 10 sets of similar 
+ *          binding points and descriptors
+ */
+void DescriptorAllocator2::init(VkDevice device, uint32_t maxSets, std::vector<PoolSizeRatio> poolRatios) {
+    ratios.clear();
+    
+    for (auto r : poolRatios) {
+        ratios.push_back(r);
+    }
+	
+    VkDescriptorPool newPool = createPool(device, maxSets, poolRatios);
+
+    setsPerPool = maxSets * 1.5; //grow it next allocation
+
+    readyPools.push_back(newPool);
 }
 
 /**

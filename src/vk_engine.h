@@ -54,7 +54,7 @@ struct RenderObject {
 	glm::mat4 transform;
 	VkDeviceAddress vertexBufferAddress;
 };
-/* START HERE WHEN I GETG BACK*/
+
 // temporary structure that holds everything that'll be drawn in a single frame
 struct DrawContext {
 	std::vector<RenderObject> OpaqueSurfaces;
@@ -158,6 +158,7 @@ public:
     GLTFMetallic_Roughness metalRoughMaterial;
     DrawContext mainDrawContext;
     std::unordered_map<std::string, std::shared_ptr<Node>> loadedNodes;
+    std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> loadedScenes;
 
     // camera
     Camera mainCamera;
