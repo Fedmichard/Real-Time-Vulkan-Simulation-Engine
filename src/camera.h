@@ -17,6 +17,8 @@ public:
     static float lastY;
     static bool firstMouse;
 
+    bool unlockMouse;
+
     glm::mat4 getViewMatrix();
     glm::mat4 getRotationMatrix();
 

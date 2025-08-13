@@ -52,13 +52,13 @@ void Camera::processInput(GLFWwindow* window) {
     velocity = glm::vec3(0.0f); // adjust accordingly
     sensitivity = 0.1f;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        velocity.z = -1;
+        velocity.z = -3;
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        velocity.z = 1;
+        velocity.z = 3;
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        velocity.x = -1;
+        velocity.x = -3;
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
-        velocity.x = 1;
+        velocity.x = 3;
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
         velocity.y = 1;
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) 
@@ -68,8 +68,21 @@ void Camera::processInput(GLFWwindow* window) {
         sensitivity = 0.2f;
     }
 
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        unlockMouse = true;
+    } else {
+        unlockMouse = false;
+    }
+
+    if (unlockMouse == true) {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    } else {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     // mouse
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
 }
 
