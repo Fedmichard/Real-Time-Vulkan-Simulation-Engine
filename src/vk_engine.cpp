@@ -87,11 +87,14 @@ void VulkanEngine::init() {
     assert(countryFile.has_value());
     loadedScenes["country"] = *countryFile;
 
+<<<<<<< HEAD
+=======
     std::string buildingPath = { "..\\assets\\building_scan_no._1_-_interior.glb" };
     auto buildingFile = loadGltf(this, buildingPath);
     assert(buildingFile.has_value());
     loadedScenes["building"] = *buildingFile;
 
+>>>>>>> 342da38 (able to consistently load different glb models and scenes, added some stats, working on faster drawing, review should start tomorrow or friday)
     std::string roomPath = { "..\\assets\\vr-room\\source\\Untitled.glb" };
     auto roomFile = loadGltf(this, roomPath);
     assert(roomFile.has_value());
