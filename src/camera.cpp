@@ -24,8 +24,8 @@ void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
 
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
+    xoffset *= 0.125f;
+    yoffset *= 0.125f;
 
     camera->yaw   += xoffset / 20.0f;
     camera->pitch += yoffset / 20.0f;
@@ -60,9 +60,9 @@ void Camera::processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
         velocity.x = 3;
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        velocity.y = 1;
+        velocity.y = 3;
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) 
-        velocity.y = -1;
+        velocity.y = -3;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         velocity *= 3;
         sensitivity = 0.2f;

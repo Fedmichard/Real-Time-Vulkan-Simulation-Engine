@@ -22,6 +22,7 @@
 
 #include <chrono>
 #include <thread>
+#include <iostream>
 
 constexpr bool bUseValidationLayers = false;
 
@@ -87,17 +88,6 @@ void VulkanEngine::init() {
     assert(countryFile.has_value());
     loadedScenes["country"] = *countryFile;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    std::string buildingPath = { "..\\assets\\building_scan_no._1_-_interior.glb" };
-    auto buildingFile = loadGltf(this, buildingPath);
-    assert(buildingFile.has_value());
-    loadedScenes["building"] = *buildingFile;
-
->>>>>>> 342da38 (able to consistently load different glb models and scenes, added some stats, working on faster drawing, review should start tomorrow or friday)
-=======
->>>>>>> 92d49b5 (able to consistently load different glb models and scenes, added some stats, working on faster drawing, review should start tomorrow or friday)
     std::string roomPath = { "..\\assets\\vr-room\\source\\Untitled.glb" };
     auto roomFile = loadGltf(this, roomPath);
     assert(roomFile.has_value());
@@ -1093,7 +1083,8 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             stats.drawcall_count++;
             stats.triangle_count += draw.indexCount / 3;   
         }
-        /*
+        
+        // transparent objects
         for (const RenderObject& draw : mainDrawContext.TransparentSurfaces) {
             vkCmdBindPipeline(cmd,VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->pipeline);
 
@@ -1114,7 +1105,11 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
 
             vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
-        }*/
+            
+            // stats
+            stats.drawcall_count++;
+            stats.triangle_count += draw.indexCount / 3;   
+        }
 	vkCmdEndRendering(cmd);
 
     // clock
@@ -1534,7 +1529,7 @@ void VulkanEngine::updateScene() {
 	// to opengl and gltf axis
     // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
     
-	sceneData.viewproj = sceneData.proj * sceneData.view * model;
+	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
 	sceneData.ambientColor = glm::vec4(.1f);
