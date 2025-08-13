@@ -87,11 +87,6 @@ void VulkanEngine::init() {
     assert(countryFile.has_value());
     loadedScenes["country"] = *countryFile;
 
-    std::string buildingPath = { "..\\assets\\building_scan_no._1_-_interior.glb" };
-    auto buildingFile = loadGltf(this, buildingPath);
-    assert(buildingFile.has_value());
-    loadedScenes["building"] = *buildingFile;
-
     std::string roomPath = { "..\\assets\\vr-room\\source\\Untitled.glb" };
     auto roomFile = loadGltf(this, roomPath);
     assert(roomFile.has_value());
