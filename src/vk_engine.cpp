@@ -23,7 +23,7 @@
 #include <chrono>
 #include <thread>
 
-constexpr bool bUseValidationLayers = true;
+constexpr bool bUseValidationLayers = false;
 
 VulkanEngine* loadedEngine = nullptr;
 
@@ -53,22 +53,54 @@ void VulkanEngine::init() {
     initDefaultData(); // maybe?
 
     mainCamera.velocity = glm::vec3(0.f);
-    mainCamera.position = glm::vec3(0.0f, 0.0f, 5.0f);
+    mainCamera.position = glm::vec3(30.f, -00.f, -85.f);
 
     mainCamera.pitch = 0;
     mainCamera.yaw = 0;
     
     // everything was successful
     _isInitialized = true;
-
+    
     std::string structurePath = { "..\\assets\\structure.glb" };
-    auto structureFile = loadGltf(this,structurePath);
-
+    auto structureFile = loadGltf(this, structurePath);
     assert(structureFile.has_value());
-
-    // default scene and default cam pos
     loadedScenes["structure"] = *structureFile;
-    mainCamera.position = glm::vec3(30.f, -00.f, -085.f);
+
+    /*
+    std::string structurePath = { "..\\assets\\structure.glb" };
+    auto structureFile = loadGltf(this, structurePath);
+    assert(structureFile.has_value());
+    loadedScenes["structure"] = *structureFile;
+
+    std::string gorillaPath = { "..\\assets\\gorilla-tag-map\\source\\gorilla_tag_map (1).glb" };
+    auto gorillaFile = loadGltf(this, gorillaPath);
+    assert(gorillaFile.has_value());
+    loadedScenes["gorilla"] = *gorillaFile;
+    
+    std::string vrPath = { "..\\assets\\vr_room_light_baked.glb" };
+    auto vrFile = loadGltf(this, vrPath);
+    assert(vrFile.has_value());
+    loadedScenes["vr"] = *vrFile;
+
+    std::string countryPath = { "..\\assets\\countryside-scene-free\\source\\untitled.glb" };
+    auto countryFile = loadGltf(this, countryPath);
+    assert(countryFile.has_value());
+    loadedScenes["country"] = *countryFile;
+
+    std::string buildingPath = { "..\\assets\\building_scan_no._1_-_interior.glb" };
+    auto buildingFile = loadGltf(this, buildingPath);
+    assert(buildingFile.has_value());
+    loadedScenes["building"] = *buildingFile;
+
+    std::string roomPath = { "..\\assets\\vr-room\\source\\Untitled.glb" };
+    auto roomFile = loadGltf(this, roomPath);
+    assert(roomFile.has_value());
+    loadedScenes["room"] = *roomFile; 
+
+    std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
+    auto gmodFile = loadGltf(this, gmodPath);
+    assert(gmodFile.has_value());
+    loadedScenes["gmod"] = *gmodFile; */
 }
 
 void VulkanEngine::cleanup() {
@@ -232,6 +264,8 @@ void VulkanEngine::draw() {
 
 void VulkanEngine::run() {
     while (!glfwWindowShouldClose(_window)) {
+        auto start = std::chrono::system_clock::now();
+
         glfwPollEvents();
 
         mainCamera.processInput(_window);
@@ -254,6 +288,29 @@ void VulkanEngine::run() {
 			ImGui::InputFloat4("data4",(float*)& selected.data.data4);
             
 			ImGui::SliderInt("Model Rotation", &_rotation, 0, 1800);
+
+            // temp
+            float yawToDegrees = (mainCamera.yaw * 180/M_PI);
+            float* yawDegrees = &(yawToDegrees);
+            float pitchToDegrees = (mainCamera.pitch * 180/M_PI);
+            float* pitchDegrees = &(pitchToDegrees);
+
+            // stats
+            ImGui::Begin("Stats");
+
+            ImGui::Text("frametime %f ms", stats.frametime);
+            ImGui::Text("draw time %f ms", stats.mesh_draw_time);
+            ImGui::Text("update time %f ms", stats.scene_update_time);
+            ImGui::Text("triangles %i", stats.triangle_count);
+            ImGui::Text("draws %i", stats.drawcall_count);
+
+            // camera viewer
+			ImGui::Text("Camera Yaw: ", yawToDegrees);
+			ImGui::Text("Camera Pitch: ", pitchToDegrees);
+			ImGui::Text("Camera X: ", mainCamera.position.x);
+			ImGui::Text("Camera Y: ", mainCamera.position.y);
+			ImGui::Text("Camera Z: ", mainCamera.position.z);
+            ImGui::End();
 		}
 
 		ImGui::End();
@@ -262,6 +319,10 @@ void VulkanEngine::run() {
         ImGui::Render();
 
         draw();
+
+        auto end = std::chrono::system_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        stats.frametime = elapsed.count() / 1000.0f;
     }
 }
 
@@ -937,6 +998,12 @@ void VulkanEngine::initDefaultData() {
 }
 
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
+    // clock
+    stats.drawcall_count = 0;
+    stats.triangle_count = 0;
+
+    auto start = std::chrono::system_clock::now();
+
     VkRenderingAttachmentInfo colorAttachment{};
     colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
     colorAttachment.imageView = _drawImage.imageView;
@@ -994,6 +1061,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
         vkCmdSetScissor(cmd, 0, 1, &scissor);
         // pipeline for vertex buffer draws
         // vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _meshPipeline);
+        // draw opaque objects
         for (const RenderObject& draw : mainDrawContext.OpaqueSurfaces) {
             vkCmdBindPipeline(cmd,VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->pipeline);
 
@@ -1014,8 +1082,40 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
 
             vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+            
+            // stats
+            stats.drawcall_count++;
+            stats.triangle_count += draw.indexCount / 3;   
         }
+        /*
+        for (const RenderObject& draw : mainDrawContext.TransparentSurfaces) {
+            vkCmdBindPipeline(cmd,VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->pipeline);
+
+            // bind a texture
+            VkDescriptorSet globalDescriptor = getCurrentFrame()._frameDescriptors.allocate(_device, _gpuSceneDataDescriptorLayout);
+            DescriptorWriter writer;
+            writer.writeBuffer(0, gpuSceneDataBuffer.buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+            writer.updateSet(_device, globalDescriptor);
+
+            vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 0, 1, &globalDescriptor, 0, nullptr);
+            vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 1, 1, &draw.material->materialSet, 0, nullptr);
+
+            vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+            GPUDrawPushConstants pushConstants;
+            pushConstants.vertexBuffer = draw.vertexBufferAddress;
+            pushConstants.worldMatrix = draw.transform;
+            vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+
+            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+        }*/
 	vkCmdEndRendering(cmd);
+
+    // clock
+    auto end = std::chrono::system_clock::now();
+
+    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    stats.mesh_draw_time = elapsed.count() / 1000.f;
 }
 
 // UI
@@ -1402,7 +1502,14 @@ void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
 }
 
 void VulkanEngine::updateScene() {
+    // clock
+    stats.drawcall_count = 0;
+    stats.triangle_count = 0;
+
+    auto start = std::chrono::system_clock::now();
+
 	mainDrawContext.OpaqueSurfaces.clear();
+	mainDrawContext.TransparentSurfaces.clear();
     mainCamera.update();
 
     glm::mat4 view = mainCamera.getViewMatrix();
@@ -1416,9 +1523,10 @@ void VulkanEngine::updateScene() {
     glm::mat4 model = glm::rotate(glm::radians(1.0f) * _rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
     loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
-    loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
+    // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
     
 	sceneData.viewproj = sceneData.proj * sceneData.view * model;
 
@@ -1426,4 +1534,8 @@ void VulkanEngine::updateScene() {
 	sceneData.ambientColor = glm::vec4(.1f);
 	sceneData.sunlightColor = glm::vec4(1.f);
 	sceneData.sunlightDirection = glm::vec4(0,1,0.5,1.f);
+
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    stats.scene_update_time = elapsed.count() / 1000.f;
 }

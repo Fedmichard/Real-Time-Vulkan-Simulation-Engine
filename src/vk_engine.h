@@ -58,6 +58,15 @@ struct RenderObject {
 // temporary structure that holds everything that'll be drawn in a single frame
 struct DrawContext {
 	std::vector<RenderObject> OpaqueSurfaces;
+	std::vector<RenderObject> TransparentSurfaces;
+};
+
+struct EngineStats {
+    float frametime;
+    int triangle_count;
+    int drawcall_count;
+    float scene_update_time;
+    float mesh_draw_time;
 };
 
 class VulkanEngine {
@@ -162,6 +171,9 @@ public:
 
     // camera
     Camera mainCamera;
+
+    // engine
+    EngineStats stats;
 
     void updateScene();
 
