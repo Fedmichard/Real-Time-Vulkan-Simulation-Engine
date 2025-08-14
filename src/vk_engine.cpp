@@ -61,13 +61,12 @@ void VulkanEngine::init() {
     
     // everything was successful
     _isInitialized = true;
-    
+    /*
     std::string structurePath = { "..\\assets\\structure.glb" };
     auto structureFile = loadGltf(this, structurePath);
     assert(structureFile.has_value());
     loadedScenes["structure"] = *structureFile;
-
-    /*
+    
     std::string structurePath = { "..\\assets\\structure.glb" };
     auto structureFile = loadGltf(this, structurePath);
     assert(structureFile.has_value());
@@ -91,12 +90,12 @@ void VulkanEngine::init() {
     std::string roomPath = { "..\\assets\\vr-room\\source\\Untitled.glb" };
     auto roomFile = loadGltf(this, roomPath);
     assert(roomFile.has_value());
-    loadedScenes["room"] = *roomFile; 
+    loadedScenes["room"] = *roomFile; */
 
     std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
     auto gmodFile = loadGltf(this, gmodPath);
     assert(gmodFile.has_value());
-    loadedScenes["gmod"] = *gmodFile; */
+    loadedScenes["gmod"] = *gmodFile;
 }
 
 void VulkanEngine::cleanup() {
@@ -1083,7 +1082,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             stats.drawcall_count++;
             stats.triangle_count += draw.indexCount / 3;   
         }
-        
+
         // transparent objects
         for (const RenderObject& draw : mainDrawContext.TransparentSurfaces) {
             vkCmdBindPipeline(cmd,VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->pipeline);
@@ -1523,8 +1522,8 @@ void VulkanEngine::updateScene() {
     sceneData.view = view;
     glm::mat4 model = glm::rotate(glm::radians(1.0f) * _rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
     // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
