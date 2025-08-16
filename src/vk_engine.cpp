@@ -61,12 +61,8 @@ void VulkanEngine::init() {
     
     // everything was successful
     _isInitialized = true;
-    /*
-    std::string structurePath = { "..\\assets\\structure.glb" };
-    auto structureFile = loadGltf(this, structurePath);
-    assert(structureFile.has_value());
-    loadedScenes["structure"] = *structureFile;
     
+    /*
     std::string structurePath = { "..\\assets\\structure.glb" };
     auto structureFile = loadGltf(this, structurePath);
     assert(structureFile.has_value());
@@ -1455,7 +1451,7 @@ void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 	matrixRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 
     DescriptorLayoutBuilder layoutBuilder;
-    layoutBuilder.addBinding(0,VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
     layoutBuilder.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
 	layoutBuilder.addBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
 

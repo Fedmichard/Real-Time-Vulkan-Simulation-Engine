@@ -17,7 +17,7 @@ struct GLTFMetallic_Roughness {
 		glm::vec4 colorFactors;
 		glm::vec4 metal_rough_factors;
 		//padding, we need it anyway for uniform buffers
-		glm::vec4 extra[14];
+		// glm::vec4 extra[14];
 	};
 
 	struct MaterialResources {
@@ -50,7 +50,7 @@ struct RenderObject {
 	VkBuffer indexBuffer;
 
 	MaterialInstance* material;
-
+    Bounds bounds;
 	glm::mat4 transform;
 	VkDeviceAddress vertexBufferAddress;
 };
