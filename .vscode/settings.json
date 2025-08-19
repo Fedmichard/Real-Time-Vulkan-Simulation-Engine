@@ -93,6 +93,7 @@
         "variant": "cpp",
         "ranges": "cpp",
         "filesystem": "cpp",
-        "stdfloat": "cpp"
+        "stdfloat": "cpp",
+        "cfenv": "cpp"
     }
 }

@@ -182,6 +182,7 @@ public:
     void initVulkan();
     void initSwapchain();
     void createSwapchain(uint32_t width, uint32_t height);
+    void createDrawImage(uint32_t width, uint32_t height);
     void initCommands();
     void initSyncStructures();
     void initDescriptors();

@@ -69,10 +69,10 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string countryPath = { "..\\assets\\countryside-scene-free\\source\\untitled.glb" };
-    auto countryFile = loadGltf(this, countryPath);
-    assert(countryFile.has_value());
-    loadedScenes["country"] = *countryFile;
+    std::string structurePath = { "..\\assets\\structure.glb" };
+    auto structureFile = loadGltf(this, structurePath);
+    assert(structureFile.has_value());
+    loadedScenes["structure"] = *structureFile;
     
     /*
     std::string structurePath = { "..\\assets\\structure.glb" };
@@ -167,7 +167,7 @@ void VulkanEngine::draw() {
     }
 
 	_drawExtent.height = std::min(_swapchainExtent.height, _drawImage.imageExtent.height) * renderScale;
-	_drawExtent.width= std::min(_swapchainExtent.width, _drawImage.imageExtent.width) * renderScale;
+	_drawExtent.width = std::min(_swapchainExtent.width, _drawImage.imageExtent.width) * renderScale;
 
     // select current frames command buffer and reset it for recording
     VkCommandBuffer cmd = getCurrentFrame()._mainCommandBuffer;
@@ -437,6 +437,44 @@ void VulkanEngine::run() {
 *         Init Funcitons
 **********************************/
 
+bool is_visible(const RenderObject& obj, const glm::mat4& viewproj) {
+    std::array<glm::vec3, 8> corners {
+        glm::vec3 { 1, 1, 1 },
+        glm::vec3 { 1, 1, -1 },
+        glm::vec3 { 1, -1, 1 },
+        glm::vec3 { 1, -1, -1 },
+        glm::vec3 { -1, 1, 1 },
+        glm::vec3 { -1, 1, -1 },
+        glm::vec3 { -1, -1, 1 },
+        glm::vec3 { -1, -1, -1 },
+    };
+
+    glm::mat4 matrix = viewproj * obj.transform;
+
+    glm::vec3 min = { 1.5, 1.5, 1.5 };
+    glm::vec3 max = { -1.5, -1.5, -1.5 };
+
+    for (int c = 0; c < 8; c++) {
+        // project each corner into clip space
+        glm::vec4 v = matrix * glm::vec4(obj.bounds.origin + (corners[c] * obj.bounds.extents), 1.f);
+
+        // perspective correction
+        v.x = v.x / v.w;
+        v.y = v.y / v.w;
+        v.z = v.z / v.w;
+
+        min = glm::min(glm::vec3 { v.x, v.y, v.z }, min);
+        max = glm::max(glm::vec3 { v.x, v.y, v.z }, max);
+    }
+
+    // check the clip space box is within the view
+    if (min.z > 1.f || max.z < 0.f || min.x > 1.f || max.x < -1.f || min.y > 1.f || max.y < -1.f) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 void VulkanEngine::initVulkan() {
     vkb::InstanceBuilder builder;
 
@@ -504,92 +542,7 @@ void VulkanEngine::initVulkan() {
 
 void VulkanEngine::initSwapchain() {
     createSwapchain(_windowExtent.width, _windowExtent.height);
-
-    // creating an image that will use a much higher precision format that we will draw to and then transfer to swap chain with low latency
-    VkExtent3D drawImageExtent;
-    drawImageExtent.width = _windowExtent.width;
-    drawImageExtent.height = _windowExtent.height;
-    drawImageExtent.depth = 1;
-
-    // hard coding draw format to VK_FORMAT_R16G16B16A16_SFLOAT from VK_FORMAT_B8G8R8A8_UNORM
-    _drawImage.imageFormat = VK_FORMAT_R16G16B16A16_SFLOAT;
-    _drawImage.imageExtent = drawImageExtent;
-
-    VkImageUsageFlags drawImageUsages{};
-	drawImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-	drawImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-	drawImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
-	drawImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
-
-    // image create info
-    /* abstract later */
-    VkImageCreateInfo imgInfo{};
-    imgInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    imgInfo.imageType = VK_IMAGE_TYPE_2D;
-    imgInfo.format = _drawImage.imageFormat;
-    imgInfo.extent = drawImageExtent;
-    imgInfo.mipLevels = 1; // no mipmapping yet
-    imgInfo.arrayLayers = 1;
-    imgInfo.samples = VK_SAMPLE_COUNT_1_BIT; // no multisampling yet
-    imgInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // used for optimal gpu reading
-    imgInfo.usage = drawImageUsages;
-
-    // allocation info for gpu
-    VmaAllocationCreateInfo imgAllocInfo{};
-    imgAllocInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY; 
-    imgAllocInfo.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    // create the image and allocate it on the gpu 
-    vmaCreateImage(_allocator, &imgInfo, &imgAllocInfo, &_drawImage.image, &_drawImage.allocation, nullptr);
-
-    // image view create info
-    /* abstract later */
-    VkImageViewCreateInfo imgViewInfo{};
-    imgViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    imgViewInfo.image = _drawImage.image;
-    imgViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    imgViewInfo.format = _drawImage.imageFormat;
-    imgViewInfo.subresourceRange.baseMipLevel = 0;
-    imgViewInfo.subresourceRange.levelCount = 1;
-    imgViewInfo.subresourceRange.baseArrayLayer = 0;
-    imgViewInfo.subresourceRange.layerCount = 1;
-    imgViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
-    // create draw image view
-    VK_CHECK(vkCreateImageView(_device, &imgViewInfo, nullptr, &_drawImage.imageView));
-
-    // will use the same draw extent as draw image of course for our depth attachment
-    _depthImage.imageExtent = drawImageExtent;
-    _depthImage.imageFormat = VK_FORMAT_D32_SFLOAT;
-
-    VkImageUsageFlags depthImageUsages{};
-    depthImageUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-
-    VkImageCreateInfo depthInfo{};
-    depthInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    depthInfo.imageType = VK_IMAGE_TYPE_2D;
-    depthInfo.format = _depthImage.imageFormat;
-    depthInfo.extent = drawImageExtent;
-    depthInfo.mipLevels = 1;
-    depthInfo.arrayLayers = 1;
-    depthInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    depthInfo.usage = depthImageUsages;
-
-    vmaCreateImage(_allocator, &depthInfo, &imgAllocInfo, &_depthImage.image, &_depthImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthImageView{};
-    depthImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthImageView.image = _depthImage.image;
-    depthImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthImageView.format = _depthImage.imageFormat;
-    depthImageView.subresourceRange.baseMipLevel = 0;
-    depthImageView.subresourceRange.levelCount = 1;
-    depthImageView.subresourceRange.baseArrayLayer = 0;
-    depthImageView.subresourceRange.layerCount = 1;
-    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-
-    VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthImage.imageView));
+    createDrawImage(_windowExtent.width, _windowExtent.height);
 
     // add to deletion queues
     _mainDeletionQueue.push_function([=]() {
@@ -807,6 +760,94 @@ void VulkanEngine::createSwapchain(uint32_t width, uint32_t height) {
     _swapchain = swapchain.swapchain;
     _swapchainImages = swapchain.get_images().value();
     _swapchainImageViews = swapchain.get_image_views().value();
+}
+
+void VulkanEngine::createDrawImage(uint32_t width, uint32_t height) {
+    // creating an image that will use a much higher precision format that we will draw to and then transfer to swap chain with low latency
+    VkExtent3D drawImageExtent;
+    drawImageExtent.width = _windowExtent.width;
+    drawImageExtent.height = _windowExtent.height;
+    drawImageExtent.depth = 1;
+
+    // hard coding draw format to VK_FORMAT_R16G16B16A16_SFLOAT from VK_FORMAT_B8G8R8A8_UNORM
+    _drawImage.imageFormat = VK_FORMAT_R16G16B16A16_SFLOAT;
+    _drawImage.imageExtent = drawImageExtent;
+
+    VkImageUsageFlags drawImageUsages{};
+	drawImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+	drawImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	drawImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
+	drawImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
+
+    // image create info
+    /* abstract later */
+    VkImageCreateInfo imgInfo{};
+    imgInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    imgInfo.imageType = VK_IMAGE_TYPE_2D;
+    imgInfo.format = _drawImage.imageFormat;
+    imgInfo.extent = drawImageExtent;
+    imgInfo.mipLevels = 1; // no mipmapping yet
+    imgInfo.arrayLayers = 1;
+    imgInfo.samples = VK_SAMPLE_COUNT_1_BIT; // no multisampling yet
+    imgInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // used for optimal gpu reading
+    imgInfo.usage = drawImageUsages;
+
+    // allocation info for gpu
+    VmaAllocationCreateInfo imgAllocInfo{};
+    imgAllocInfo.usage = VMA_MEMORY_USAGE_GPU_ONLY; 
+    imgAllocInfo.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    // create the image and allocate it on the gpu 
+    vmaCreateImage(_allocator, &imgInfo, &imgAllocInfo, &_drawImage.image, &_drawImage.allocation, nullptr);
+
+    // image view create info
+    /* abstract later */
+    VkImageViewCreateInfo imgViewInfo{};
+    imgViewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    imgViewInfo.image = _drawImage.image;
+    imgViewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    imgViewInfo.format = _drawImage.imageFormat;
+    imgViewInfo.subresourceRange.baseMipLevel = 0;
+    imgViewInfo.subresourceRange.levelCount = 1;
+    imgViewInfo.subresourceRange.baseArrayLayer = 0;
+    imgViewInfo.subresourceRange.layerCount = 1;
+    imgViewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+    // create draw image view
+    VK_CHECK(vkCreateImageView(_device, &imgViewInfo, nullptr, &_drawImage.imageView));
+
+    // will use the same draw extent as draw image of course for our depth attachment
+    _depthImage.imageExtent = drawImageExtent;
+    _depthImage.imageFormat = VK_FORMAT_D32_SFLOAT;
+
+    VkImageUsageFlags depthImageUsages{};
+    depthImageUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+
+    VkImageCreateInfo depthInfo{};
+    depthInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    depthInfo.imageType = VK_IMAGE_TYPE_2D;
+    depthInfo.format = _depthImage.imageFormat;
+    depthInfo.extent = drawImageExtent;
+    depthInfo.mipLevels = 1;
+    depthInfo.arrayLayers = 1;
+    depthInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    depthInfo.usage = depthImageUsages;
+
+    vmaCreateImage(_allocator, &depthInfo, &imgAllocInfo, &_depthImage.image, &_depthImage.allocation, nullptr);
+
+    VkImageViewCreateInfo depthImageView{};
+    depthImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    depthImageView.image = _depthImage.image;
+    depthImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    depthImageView.format = _depthImage.imageFormat;
+    depthImageView.subresourceRange.baseMipLevel = 0;
+    depthImageView.subresourceRange.levelCount = 1;
+    depthImageView.subresourceRange.baseArrayLayer = 0;
+    depthImageView.subresourceRange.layerCount = 1;
+    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+    VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthImage.imageView));
 }
 
 // init background pipelines
@@ -1087,7 +1128,9 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     opaqueDraws.reserve(mainDrawContext.OpaqueSurfaces.size());
 
     for (uint32_t i = 0; i < mainDrawContext.OpaqueSurfaces.size(); i++) {
-        opaqueDraws.push_back(i);
+        if (is_visible(mainDrawContext.OpaqueSurfaces[i], sceneData.viewproj)) {
+            opaqueDraws.push_back(i);
+       }
     }
 
     std::sort(opaqueDraws.begin(), opaqueDraws.end(), [&](const auto& iA, const auto& iB) {
@@ -1422,9 +1465,13 @@ AllocatedImage VulkanEngine::createImage(void* data, VkExtent3D extent, VkFormat
 		vkCmdCopyBufferToImage(cmd, uploadbuffer.buffer, newImage.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1,
 			&copyRegion);
 
-		vkutil::transitionImageLayout(cmd, newImage.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-			VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-		});
+        if (mipmapped) {
+            vkutil::generateMipmaps(cmd, newImage.image, VkExtent2D { newImage.imageExtent.width, newImage.imageExtent.height });
+        } else {
+		    vkutil::transitionImageLayout(cmd, newImage.image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        }
+
+    });
 
 	destroyBuffer(uploadbuffer);
 
@@ -1492,12 +1539,27 @@ void VulkanEngine::recreateSwapChain() {
     // make sure the old versions of these objets are cleaned up before recreation
     destroySwapchain();
 
+    // destroy the old draw image and depth image
+    destroyImage(_drawImage);
+    destroyImage(_depthImage);
+
+    // get the new window size and set new resolution
     int w, h;
 	SDL_GetWindowSize(_window, &w, &h);
 	_windowExtent.width = w;
 	_windowExtent.height = h;
 
+    // set the new draw extent
+    _drawExtent.width = _windowExtent.width;
+    _drawExtent.height = _windowExtent.height;
+
+    // create new swapchain and draw/depth image
 	createSwapchain(_windowExtent.width, _windowExtent.height);
+    createDrawImage(_drawExtent.width, _drawExtent.height);
+
+    // rewrite the descriptor for background to new image
+    _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+    _descriptorWriter.updateSet(_device, _drawImageDescriptorSet);
 
 	resizeReuqested = false;
 }
@@ -1625,24 +1687,27 @@ MaterialInstance GLTFMetallic_Roughness::writeMaterial(VkDevice device, Material
 }
 
 void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
-    glm::mat4 model = glm::translate(glm::vec3{35.f, -00.f, -085.f});
-	glm::mat4 nodeMatrix = topMatrix * worldTransform;
+    glm::mat4 nodeMatrix = topMatrix * worldTransform;
 
-	for (auto& s : mesh->surfaces) {
-		RenderObject def;
-		def.indexCount = s.count;
-		def.firstIndex = s.startIndex;
-		def.indexBuffer = mesh->meshBuffers.indexBuffer.buffer;
-		def.material = &s.material->data;
+    for (auto& s : mesh->surfaces) {
+        RenderObject def;
+        def.indexCount = s.count;
+        def.firstIndex = s.startIndex;
+        def.indexBuffer = mesh->meshBuffers.indexBuffer.buffer;
+        def.material = &s.material->data;
+        def.bounds = s.bounds;
+        def.transform = nodeMatrix;
+        def.vertexBufferAddress = mesh->meshBuffers.vertexBufferAddress;
 
-		def.transform = nodeMatrix;
-		def.vertexBufferAddress = mesh->meshBuffers.vertexBufferAddress;
-		
-		ctx.OpaqueSurfaces.push_back(def);
-	}
+        if (s.material->data.passType == MaterialPass::Transparent) {
+            ctx.TransparentSurfaces.push_back(def);
+        } else {
+            ctx.OpaqueSurfaces.push_back(def);
+        }
+    }
 
-	// recurse down
-	Node::Draw(topMatrix, ctx);
+    // recurse down
+    Node::Draw(topMatrix, ctx);
 }
 
 void VulkanEngine::updateScene() {
@@ -1666,8 +1731,8 @@ void VulkanEngine::updateScene() {
     sceneData.view = view;
     glm::mat4 model = glm::rotate(glm::radians(1.0f) * _rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
-    // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["country"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["country"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
     // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
