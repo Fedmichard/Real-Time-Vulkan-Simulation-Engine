@@ -212,6 +212,71 @@ fastgltf/fast:
 	$(MAKE) $(MAKESILENT) -f libraries\fastgltf\CMakeFiles\fastgltf.dir\build.make libraries/fastgltf/CMakeFiles/fastgltf.dir/build
 .PHONY : fastgltf/fast
 
+#=============================================================================
+# Target rules for targets named sdl_headers_copy
+
+# Build rule for target.
+sdl_headers_copy: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 sdl_headers_copy
+.PHONY : sdl_headers_copy
+
+# fast build rule for target.
+sdl_headers_copy/fast:
+	$(MAKE) $(MAKESILENT) -f libraries\SDL\CMakeFiles\sdl_headers_copy.dir\build.make libraries/SDL/CMakeFiles/sdl_headers_copy.dir/build
+.PHONY : sdl_headers_copy/fast
+
+#=============================================================================
+# Target rules for targets named SDL2main
+
+# Build rule for target.
+SDL2main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 SDL2main
+.PHONY : SDL2main
+
+# fast build rule for target.
+SDL2main/fast:
+	$(MAKE) $(MAKESILENT) -f libraries\SDL\CMakeFiles\SDL2main.dir\build.make libraries/SDL/CMakeFiles/SDL2main.dir/build
+.PHONY : SDL2main/fast
+
+#=============================================================================
+# Target rules for targets named SDL2
+
+# Build rule for target.
+SDL2: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 SDL2
+.PHONY : SDL2
+
+# fast build rule for target.
+SDL2/fast:
+	$(MAKE) $(MAKESILENT) -f libraries\SDL\CMakeFiles\SDL2.dir\build.make libraries/SDL/CMakeFiles/SDL2.dir/build
+.PHONY : SDL2/fast
+
+#=============================================================================
+# Target rules for targets named SDL2_test
+
+# Build rule for target.
+SDL2_test: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 SDL2_test
+.PHONY : SDL2_test
+
+# fast build rule for target.
+SDL2_test/fast:
+	$(MAKE) $(MAKESILENT) -f libraries\SDL\CMakeFiles\SDL2_test.dir\build.make libraries/SDL/CMakeFiles/SDL2_test.dir/build
+.PHONY : SDL2_test/fast
+
+#=============================================================================
+# Target rules for targets named uninstall
+
+# Build rule for target.
+uninstall: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 uninstall
+.PHONY : uninstall
+
+# fast build rule for target.
+uninstall/fast:
+	$(MAKE) $(MAKESILENT) -f libraries\SDL\CMakeFiles\uninstall.dir\build.make libraries/SDL/CMakeFiles/uninstall.dir/build
+.PHONY : uninstall/fast
+
 libraries/imgui/imgui.obj: libraries/imgui/imgui.cpp.obj
 .PHONY : libraries/imgui/imgui.obj
 
@@ -307,6 +372,30 @@ libraries/imgui/imgui_impl_glfw.s: libraries/imgui/imgui_impl_glfw.cpp.s
 libraries/imgui/imgui_impl_glfw.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.s
 .PHONY : libraries/imgui/imgui_impl_glfw.cpp.s
+
+libraries/imgui/imgui_impl_sdl2.obj: libraries/imgui/imgui_impl_sdl2.cpp.obj
+.PHONY : libraries/imgui/imgui_impl_sdl2.obj
+
+# target to build an object file
+libraries/imgui/imgui_impl_sdl2.cpp.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_sdl2.cpp.obj
+.PHONY : libraries/imgui/imgui_impl_sdl2.cpp.obj
+
+libraries/imgui/imgui_impl_sdl2.i: libraries/imgui/imgui_impl_sdl2.cpp.i
+.PHONY : libraries/imgui/imgui_impl_sdl2.i
+
+# target to preprocess a source file
+libraries/imgui/imgui_impl_sdl2.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_sdl2.cpp.i
+.PHONY : libraries/imgui/imgui_impl_sdl2.cpp.i
+
+libraries/imgui/imgui_impl_sdl2.s: libraries/imgui/imgui_impl_sdl2.cpp.s
+.PHONY : libraries/imgui/imgui_impl_sdl2.s
+
+# target to generate assembly for a file
+libraries/imgui/imgui_impl_sdl2.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_sdl2.cpp.s
+.PHONY : libraries/imgui/imgui_impl_sdl2.cpp.s
 
 libraries/imgui/imgui_impl_vulkan.obj: libraries/imgui/imgui_impl_vulkan.cpp.obj
 .PHONY : libraries/imgui/imgui_impl_vulkan.obj
@@ -608,6 +697,11 @@ help:
 	@echo ... install/strip
 	@echo ... list_install_components
 	@echo ... rebuild_cache
+	@echo ... sdl_headers_copy
+	@echo ... uninstall
+	@echo ... SDL2
+	@echo ... SDL2_test
+	@echo ... SDL2main
 	@echo ... fastgltf
 	@echo ... fastgltf_simdjson
 	@echo ... fmt
@@ -624,6 +718,9 @@ help:
 	@echo ... libraries/imgui/imgui_impl_glfw.obj
 	@echo ... libraries/imgui/imgui_impl_glfw.i
 	@echo ... libraries/imgui/imgui_impl_glfw.s
+	@echo ... libraries/imgui/imgui_impl_sdl2.obj
+	@echo ... libraries/imgui/imgui_impl_sdl2.i
+	@echo ... libraries/imgui/imgui_impl_sdl2.s
 	@echo ... libraries/imgui/imgui_impl_vulkan.obj
 	@echo ... libraries/imgui/imgui_impl_vulkan.i
 	@echo ... libraries/imgui/imgui_impl_vulkan.s

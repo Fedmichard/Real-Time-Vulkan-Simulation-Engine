@@ -372,8 +372,35 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: \
  C:/msys64/mingw64/include/c++/14.1.0/iostream \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_engine.h \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\camera.h \
- C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
- C:/msys64/mingw64/include/GL/gl.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_events.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_stdinc.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_config.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_platform.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/begin_code.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/close_code.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
+ C:/msys64/mingw64/include/stdarg.h \
+ C:/msys64/mingw64/include/_mingw_stdarg.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_error.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_video.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_pixels.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_endian.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rect.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rwops.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_surface.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_blendmode.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keyboard.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keycode.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_scancode.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mouse.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_joystick.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_guid.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mutex.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gamecontroller.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_sensor.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_quit.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gesture.h \
+ C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_touch.h \
  C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\src\vk_initializers.h \
  C:/VulkanSDK/1.4.309.0/Include/glm/gtx/quaternion.hpp \
  C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp \

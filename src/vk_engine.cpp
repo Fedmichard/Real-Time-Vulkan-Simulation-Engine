@@ -1,7 +1,7 @@
 #include "vk_engine.h"
 
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_vulkan.h>
 
 #define VMA_IMPLEMENTATION
 #include "vk_mem_alloc.h"
@@ -11,26 +11,26 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
-#include "vk_types.h"
-#include "vk_initializers.h"
-#include "vk_images.h"
-#include "vk_pipelines.h"
-#include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_vulkan.h"
-#include "VkBootstrap.h"
-
 #include <chrono>
 #include <thread>
 #include <iostream>
 
-constexpr bool bUseValidationLayers = true;
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+
+#include "VkBootstrap.h"
+
+#include "vk_types.h"
+#include "vk_initializers.h"
+#include "vk_images.h"
+#include "vk_pipelines.h"
+
+
+constexpr bool bUseValidationLayers = false;
 
 VulkanEngine* loadedEngine = nullptr;
-
-// declarations
-static void framebufferResizeCallback(GLFWwindow *window, int width, int height);
-
 /**********************************
 *             Engine
 **********************************/
@@ -40,8 +40,15 @@ void VulkanEngine::init() {
     // can only initialize one engine per app
     assert(loadedEngine == nullptr);
     loadedEngine = this;
+
     // GLFW window initialization
-    initWindow(&_window, _windowExtent.width, _windowExtent.height);
+    // initWindow(&_window, _windowExtent.width, _windowExtent.height);
+    SDL_Init(SDL_INIT_VIDEO);
+    
+    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
+
+    _window = SDL_CreateWindow("Vulkan Engine", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, _windowExtent.width,
+        _windowExtent.height, window_flags);
 
     // initialize vulkan
     initVulkan(); // init vulkan
@@ -50,8 +57,8 @@ void VulkanEngine::init() {
     initSyncStructures(); // init all our fences and semaphores
     initDescriptors(); // init all our descriptors
     initPipelines(); // init all our pipelines
-    initImgui(); // init gui
     initDefaultData(); // maybe?
+    initImgui(); // init gui
 
     mainCamera.velocity = glm::vec3(0.f);
     mainCamera.position = glm::vec3(30.f, -00.f, -85.f);
@@ -61,6 +68,11 @@ void VulkanEngine::init() {
     
     // everything was successful
     _isInitialized = true;
+
+    std::string countryPath = { "..\\assets\\countryside-scene-free\\source\\untitled.glb" };
+    auto countryFile = loadGltf(this, countryPath);
+    assert(countryFile.has_value());
+    loadedScenes["country"] = *countryFile;
     
     /*
     std::string structurePath = { "..\\assets\\structure.glb" };
@@ -86,12 +98,12 @@ void VulkanEngine::init() {
     std::string roomPath = { "..\\assets\\vr-room\\source\\Untitled.glb" };
     auto roomFile = loadGltf(this, roomPath);
     assert(roomFile.has_value());
-    loadedScenes["room"] = *roomFile; */
+    loadedScenes["room"] = *roomFile;
 
     std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
     auto gmodFile = loadGltf(this, gmodPath);
     assert(gmodFile.has_value());
-    loadedScenes["gmod"] = *gmodFile;
+    loadedScenes["gmod"] = *gmodFile; */
 }
 
 void VulkanEngine::cleanup() {
@@ -127,16 +139,16 @@ void VulkanEngine::cleanup() {
         vkb::destroy_debug_utils_messenger(_instance, _debugMessenger);
         vkDestroyInstance(_instance, nullptr);
         
-        glfwDestroyWindow(_window);
+        // glfwDestroyWindow(_window);
+        SDL_DestroyWindow(_window);
 
-        glfwTerminate();
+        //glfwTerminate();
     }
 
     loadedEngine = nullptr;
 }
 
 void VulkanEngine::draw() {
-    updateScene();
     // cpu will wait for fence to enter signaled state and then unsignal it (it will be signaled again once rendering is finished)
     VK_CHECK(vkWaitForFences(_device, 1, &getCurrentFrame()._renderFence, VK_TRUE, UINT64_MAX));
     // by flushing the current frame after you wait for the fence, you're ensuring the gpu has finished using all those resources
@@ -148,8 +160,9 @@ void VulkanEngine::draw() {
     uint32_t swapchainImageIndex;
     VkResult result = vkAcquireNextImageKHR(_device, _swapchain, UINT64_MAX, getCurrentFrame()._imageAvailableSemaphore, VK_NULL_HANDLE, &swapchainImageIndex);
     
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || resizeReuqested) {
-        recreateSwapChain();
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        // recreateSwapChain();
+        resizeReuqested = true;
         return;
     }
 
@@ -245,8 +258,9 @@ void VulkanEngine::draw() {
     // present
     result = vkQueuePresentKHR(_graphicsQueue, &presentInfo);
 
-    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR || resizeReuqested) {
-        recreateSwapChain();
+    if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
+        // recreateSwapChain();
+        resizeReuqested = true;
         return;
     }
 
@@ -254,15 +268,115 @@ void VulkanEngine::draw() {
 }
 
 void VulkanEngine::run() {
+    SDL_Event e;
+    bool bQuit = false;
+
+    // main loop
+    while (!bQuit) {
+        auto start = std::chrono::system_clock::now();
+
+        // Handle events on queue
+        while (SDL_PollEvent(&e) != 0) {
+            // close the window when user alt-f4s or clicks the X button
+            if (e.type == SDL_QUIT)
+                bQuit = true;
+
+            if (e.type == SDL_WINDOWEVENT) {
+
+				if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    resizeReuqested = true;
+				}
+				if (e.window.event == SDL_WINDOWEVENT_MINIMIZED) {
+					freezeRendering = true;
+				}
+				if (e.window.event == SDL_WINDOWEVENT_RESTORED) {
+					freezeRendering = false;
+				}
+            }
+            
+            mainCamera.processSDLEvent(e);
+            ImGui_ImplSDL2_ProcessEvent(&e);
+        }
+
+        if (freezeRendering) continue;
+
+		if (resizeReuqested) {
+			recreateSwapChain();
+		}
+
+        // imgui new frame
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplSDL2_NewFrame();
+
+        ImGui::NewFrame();
+
+        if (ImGui::Begin("background")) {
+            ImGui::SliderFloat("Render Scale",&renderScale, 0.3f, 1.f);
+			ComputeEffect& selected = backgroundEffects[currentBackgroundIndex];
+		
+			ImGui::Text("Selected effect: ", selected.name);
+		
+			ImGui::SliderInt("Effect Index", &currentBackgroundIndex, 0, backgroundEffects.size() - 1);
+		
+			ImGui::InputFloat4("data1",(float*)& selected.data.data1);
+			ImGui::InputFloat4("data2",(float*)& selected.data.data2);
+			ImGui::InputFloat4("data3",(float*)& selected.data.data3);
+			ImGui::InputFloat4("data4",(float*)& selected.data.data4);
+            
+			ImGui::SliderInt("Model Rotation", &_rotation, 0, 1800);
+
+            // temp
+            float yawToDegrees = (mainCamera.yaw * 180/M_PI);
+            float* yawDegrees = &(yawToDegrees);
+            float pitchToDegrees = (mainCamera.pitch * 180/M_PI);
+            float* pitchDegrees = &(pitchToDegrees);
+
+            // stats
+            ImGui::Begin("Stats");
+
+            ImGui::Text("frametime %f ms", stats.frametime);
+            ImGui::Text("draw time %f ms", stats.mesh_draw_time);
+            ImGui::Text("update time %f ms", stats.scene_update_time);
+            ImGui::Text("triangles %i", stats.triangle_count);
+            ImGui::Text("draws %i", stats.drawcall_count);
+
+            // camera viewer
+			ImGui::Text("Camera Yaw: ", yawToDegrees);
+			ImGui::Text("Camera Pitch: ", pitchToDegrees);
+			ImGui::Text("Camera X: ", mainCamera.position.x);
+			ImGui::Text("Camera Y: ", mainCamera.position.y);
+			ImGui::Text("Camera Z: ", mainCamera.position.z);
+            ImGui::End();
+		}
+
+		ImGui::End();
+
+        //make imgui calculate internal draw structures
+        ImGui::Render();
+
+        updateScene();
+
+        draw();
+
+        auto end = std::chrono::system_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        stats.frametime = elapsed.count() / 1000.0f;
+    }
+
+/*
     while (!glfwWindowShouldClose(_window)) {
         auto start = std::chrono::system_clock::now();
 
         glfwPollEvents();
 
         mainCamera.processInput(_window);
+
+        if (resizeReuqested) {
+            recreateSwapChain();
+        }
         
         ImGui_ImplVulkan_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
+        // ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
         if (ImGui::Begin("background")) {
@@ -314,7 +428,9 @@ void VulkanEngine::run() {
         auto end = std::chrono::system_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         stats.frametime = elapsed.count() / 1000.0f;
+
     }
+*/
 }
 
 /**********************************
@@ -337,7 +453,8 @@ void VulkanEngine::initVulkan() {
     _debugMessenger = instance.debug_messenger;
 
     // create the surface
-    createSurface(_instance, _window, &_surface);
+    // createSurface(_instance, _window, &_surface);
+    SDL_Vulkan_CreateSurface(_window, _instance, &_surface);
 
     // vulkan 1.3 features
     VkPhysicalDeviceVulkan13Features features13{};
@@ -636,7 +753,8 @@ void VulkanEngine::initImgui() {
     ImGui::CreateContext();
 
     // intializes for glfw
-    ImGui_ImplGlfw_InitForVulkan(_window, true);
+    // ImGui_ImplGlfw_InitForVulkan(_window, true);
+	ImGui_ImplSDL2_InitForVulkan(_window);
 
     // initializes for vulkan
     ImGui_ImplVulkan_InitInfo initInfo{};
@@ -669,37 +787,6 @@ void VulkanEngine::initImgui() {
 /**********************************
 *        Helper Functions
 **********************************/
-
-// initialize window
-void VulkanEngine::initWindow(GLFWwindow** window, int width, int height) {
-    glfwInit();
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    *window = glfwCreateWindow(width, height, "Vulkan Simulation Engine", nullptr, nullptr);
-    // we do this because GLFW is a C library and doesn't handle the concept of this from classes
-    // so we're passing a pointer of our HelloTriangleApplication class 
-    glfwSetWindowUserPointer(*window, this);
-    glfwSetFramebufferSizeCallback(*window, framebufferResizeCallback);
-
-    glfwSetWindowUserPointer(*window, &mainCamera); 
-    // Now, set the callback
-    glfwSetCursorPosCallback(*window, Camera::mouse_callback);
-}
-
-// we're creating a static function as a callback because GLFW doesn't know how to properly call a member function with the correct "this" pointer 
-// static members belong to the class themselves and not a specific instance
-static void framebufferResizeCallback(GLFWwindow *window, int width, int height) {
-    auto app = reinterpret_cast<VulkanEngine*>(glfwGetWindowUserPointer(window));
-    app->resizeReuqested = true;
-}
-
-// create surface
-void VulkanEngine::createSurface(VkInstance& instance, GLFWwindow*& window, VkSurfaceKHR* surface) {
-    // Glfw is creating a vulkan window surface linked to our glfw window
-    if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS) {
-        throw std::runtime_error("failed to create window surface!");
-    }
-}
-
 // create swap chain
 void VulkanEngine::createSwapchain(uint32_t width, uint32_t height) {
     vkb::SwapchainBuilder swapchainBuilder { _physicalDevice, _device, _surface };
@@ -937,8 +1024,8 @@ void VulkanEngine::initDefaultData() {
 	vkCreateSampler(_device, &sampler, nullptr, &_defaultSamplerLinear);
 
 	_mainDeletionQueue.push_function([&](){
-		vkDestroySampler(_device,_defaultSamplerNearest,nullptr);
-		vkDestroySampler(_device,_defaultSamplerLinear,nullptr);
+		vkDestroySampler(_device, _defaultSamplerNearest,nullptr);
+		vkDestroySampler(_device, _defaultSamplerLinear,nullptr);
 
 		destroyImage(_whiteImage);
 		destroyImage(_greyImage);
@@ -947,16 +1034,16 @@ void VulkanEngine::initDefaultData() {
 	});
 
     GLTFMetallic_Roughness::MaterialResources materialResources;
-	//default the material textures
+	// default the material textures
 	materialResources.colorImage = _whiteImage;
 	materialResources.colorSampler = _defaultSamplerLinear;
 	materialResources.metalRoughImage = _whiteImage;
 	materialResources.metalRoughSampler = _defaultSamplerLinear;
 
-	//set the uniform buffer for the material data
+	// set the uniform buffer for the material data
 	AllocatedBuffer materialConstants = createBuffer(sizeof(GLTFMetallic_Roughness::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
 
-	//write the buffer
+	// write the buffer
 	GLTFMetallic_Roughness::MaterialConstants* sceneUniformData = (GLTFMetallic_Roughness::MaterialConstants*)materialConstants.allocation->GetMappedData();
 	sceneUniformData->colorFactors = glm::vec4{1,1,1,1};
 	sceneUniformData->metal_rough_factors = glm::vec4{1,0.5,0,0};
@@ -1104,18 +1191,18 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
                 vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
             }
             
-            // vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32); -- don't know if I need
+            // vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32); // -- don't know if I need
 
             GPUDrawPushConstants pushConstants;
             pushConstants.vertexBuffer = draw.vertexBufferAddress;
             pushConstants.worldMatrix = draw.transform;
             vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
-
-            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
             
             // stats
             stats.drawcall_count++;
             stats.triangle_count += draw.indexCount / 3;   
+            
+            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
         }
 
         // transparent objects
@@ -1405,20 +1492,14 @@ void VulkanEngine::recreateSwapChain() {
     // make sure the old versions of these objets are cleaned up before recreation
     destroySwapchain();
 
-    int width, height;
-    glfwGetFramebufferSize(_window, &width, &height);
-    while (width == 0 || height == 0) {
-        glfwGetFramebufferSize(_window, &width, &height);
-        glfwWaitEvents();
-    }
+    int w, h;
+	SDL_GetWindowSize(_window, &w, &h);
+	_windowExtent.width = w;
+	_windowExtent.height = h;
 
-    _windowExtent.width = width;
-    _windowExtent.height = height;
+	createSwapchain(_windowExtent.width, _windowExtent.height);
 
-    // swap chain will have to be recreated because that is our queue of images
-    createSwapchain(_windowExtent.width, _windowExtent.height);
-    
-    resizeReuqested = false;
+	resizeReuqested = false;
 }
 
 /**********************************
@@ -1586,7 +1667,7 @@ void VulkanEngine::updateScene() {
     glm::mat4 model = glm::rotate(glm::radians(1.0f) * _rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
     // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["country"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
     // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);

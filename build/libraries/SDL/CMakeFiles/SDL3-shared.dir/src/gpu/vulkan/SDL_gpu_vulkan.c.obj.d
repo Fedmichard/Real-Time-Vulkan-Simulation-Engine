@@ -1,0 +1,33 @@
+libraries/SDL/CMakeFiles/SDL3-shared.dir/src/gpu/vulkan/SDL_gpu_vulkan.c.obj: \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\SDL\src\gpu\vulkan\SDL_gpu_vulkan.c \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/SDL_internal.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vulkan/vulkan.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vulkan/vk_platform.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
+ C:/msys64/mingw64/include/stddef.h C:/msys64/mingw64/include/crtdefs.h \
+ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vulkan/vulkan_core.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h264std.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codecs_common.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h264std_encode.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h264std.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h265std.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h265std_encode.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h265std.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h264std_decode.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_h265std_decode.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_av1std.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_av1std_decode.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vk_video/vulkan_video_codec_av1std.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos/vulkan/vulkan_beta.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/include/SDL3/SDL_vulkan.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/include/SDL3/SDL_stdinc.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/include/SDL3/SDL_error.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/include/SDL3/SDL_video.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/include/SDL3/SDL_begin_code.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/include/SDL3/SDL_close_code.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/gpu/SDL_sysgpu.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/SDL_sysvideo.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/SDL_surface_c.h \
+ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/SDL_blit.h \
+ C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\libraries\SDL\src\gpu\vulkan\SDL_gpu_vulkan_vkfuncs.h

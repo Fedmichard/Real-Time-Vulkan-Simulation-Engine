@@ -827,6 +827,332 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glf
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_glfw.h
 
+CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_sdl2.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_sdl2.cpp \
+  libraries/SDL/include-config-debug/SDL2/SDL_config.h \
+  libraries/SDL/include/SDL2/SDL.h \
+  libraries/SDL/include/SDL2/SDL_assert.h \
+  libraries/SDL/include/SDL2/SDL_atomic.h \
+  libraries/SDL/include/SDL2/SDL_audio.h \
+  libraries/SDL/include/SDL2/SDL_blendmode.h \
+  libraries/SDL/include/SDL2/SDL_clipboard.h \
+  libraries/SDL/include/SDL2/SDL_cpuinfo.h \
+  libraries/SDL/include/SDL2/SDL_endian.h \
+  libraries/SDL/include/SDL2/SDL_error.h \
+  libraries/SDL/include/SDL2/SDL_events.h \
+  libraries/SDL/include/SDL2/SDL_filesystem.h \
+  libraries/SDL/include/SDL2/SDL_gamecontroller.h \
+  libraries/SDL/include/SDL2/SDL_gesture.h \
+  libraries/SDL/include/SDL2/SDL_guid.h \
+  libraries/SDL/include/SDL2/SDL_haptic.h \
+  libraries/SDL/include/SDL2/SDL_hidapi.h \
+  libraries/SDL/include/SDL2/SDL_hints.h \
+  libraries/SDL/include/SDL2/SDL_joystick.h \
+  libraries/SDL/include/SDL2/SDL_keyboard.h \
+  libraries/SDL/include/SDL2/SDL_keycode.h \
+  libraries/SDL/include/SDL2/SDL_loadso.h \
+  libraries/SDL/include/SDL2/SDL_locale.h \
+  libraries/SDL/include/SDL2/SDL_log.h \
+  libraries/SDL/include/SDL2/SDL_main.h \
+  libraries/SDL/include/SDL2/SDL_messagebox.h \
+  libraries/SDL/include/SDL2/SDL_metal.h \
+  libraries/SDL/include/SDL2/SDL_misc.h \
+  libraries/SDL/include/SDL2/SDL_mouse.h \
+  libraries/SDL/include/SDL2/SDL_mutex.h \
+  libraries/SDL/include/SDL2/SDL_pixels.h \
+  libraries/SDL/include/SDL2/SDL_platform.h \
+  libraries/SDL/include/SDL2/SDL_power.h \
+  libraries/SDL/include/SDL2/SDL_quit.h \
+  libraries/SDL/include/SDL2/SDL_rect.h \
+  libraries/SDL/include/SDL2/SDL_render.h \
+  libraries/SDL/include/SDL2/SDL_rwops.h \
+  libraries/SDL/include/SDL2/SDL_scancode.h \
+  libraries/SDL/include/SDL2/SDL_sensor.h \
+  libraries/SDL/include/SDL2/SDL_shape.h \
+  libraries/SDL/include/SDL2/SDL_stdinc.h \
+  libraries/SDL/include/SDL2/SDL_surface.h \
+  libraries/SDL/include/SDL2/SDL_system.h \
+  libraries/SDL/include/SDL2/SDL_syswm.h \
+  libraries/SDL/include/SDL2/SDL_thread.h \
+  libraries/SDL/include/SDL2/SDL_timer.h \
+  libraries/SDL/include/SDL2/SDL_touch.h \
+  libraries/SDL/include/SDL2/SDL_version.h \
+  libraries/SDL/include/SDL2/SDL_video.h \
+  libraries/SDL/include/SDL2/SDL_vulkan.h \
+  libraries/SDL/include/SDL2/begin_code.h \
+  libraries/SDL/include/SDL2/close_code.h \
+  C:/msys64/mingw64/include/_mingw.h \
+  C:/msys64/mingw64/include/_mingw_mac.h \
+  C:/msys64/mingw64/include/_mingw_off_t.h \
+  C:/msys64/mingw64/include/_mingw_secapi.h \
+  C:/msys64/mingw64/include/_mingw_stat64.h \
+  C:/msys64/mingw64/include/_mingw_stdarg.h \
+  C:/msys64/mingw64/include/_mingw_unicode.h \
+  C:/msys64/mingw64/include/apiset.h \
+  C:/msys64/mingw64/include/apisetcconv.h \
+  C:/msys64/mingw64/include/assert.h \
+  C:/msys64/mingw64/include/basetsd.h \
+  C:/msys64/mingw64/include/bemapiset.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bit \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/concept_check.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/cpp_type_traits.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/exception_defines.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/functexcept.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/move.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/predefined_ops.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/ptr_traits.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/requires_hosted.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/specfun.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/std_abs.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_algobase.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator_base_funcs.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator_base_types.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/stl_pair.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/utility.h \
+  C:/msys64/mingw64/include/c++/14.1.0/bits/version.h \
+  C:/msys64/mingw64/include/c++/14.1.0/cmath \
+  C:/msys64/mingw64/include/c++/14.1.0/concepts \
+  C:/msys64/mingw64/include/c++/14.1.0/cstdlib \
+  C:/msys64/mingw64/include/c++/14.1.0/debug/assertions.h \
+  C:/msys64/mingw64/include/c++/14.1.0/debug/debug.h \
+  C:/msys64/mingw64/include/c++/14.1.0/ext/numeric_traits.h \
+  C:/msys64/mingw64/include/c++/14.1.0/ext/type_traits.h \
+  C:/msys64/mingw64/include/c++/14.1.0/limits \
+  C:/msys64/mingw64/include/c++/14.1.0/math.h \
+  C:/msys64/mingw64/include/c++/14.1.0/pstl/pstl_config.h \
+  C:/msys64/mingw64/include/c++/14.1.0/stdlib.h \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/bessel_function.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/beta_function.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/ell_integral.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/exp_integral.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/gamma.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/hypergeometric.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/legendre_function.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/modified_bessel_func.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/poly_hermite.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/poly_laguerre.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/riemann_zeta.tcc \
+  C:/msys64/mingw64/include/c++/14.1.0/tr1/special_function_util.h \
+  C:/msys64/mingw64/include/c++/14.1.0/type_traits \
+  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++config.h \
+  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/cpu_defines.h \
+  C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/os_defines.h \
+  C:/msys64/mingw64/include/concurrencysal.h \
+  C:/msys64/mingw64/include/corecrt.h \
+  C:/msys64/mingw64/include/corecrt_startup.h \
+  C:/msys64/mingw64/include/corecrt_stdio_config.h \
+  C:/msys64/mingw64/include/corecrt_wstdlib.h \
+  C:/msys64/mingw64/include/crtdefs.h \
+  C:/msys64/mingw64/include/ctype.h \
+  C:/msys64/mingw64/include/datetimeapi.h \
+  C:/msys64/mingw64/include/debugapi.h \
+  C:/msys64/mingw64/include/driverspecs.h \
+  C:/msys64/mingw64/include/errhandlingapi.h \
+  C:/msys64/mingw64/include/errno.h \
+  C:/msys64/mingw64/include/excpt.h \
+  C:/msys64/mingw64/include/fibersapi.h \
+  C:/msys64/mingw64/include/fileapi.h \
+  C:/msys64/mingw64/include/float.h \
+  C:/msys64/mingw64/include/fltwinerror.h \
+  C:/msys64/mingw64/include/guiddef.h \
+  C:/msys64/mingw64/include/handleapi.h \
+  C:/msys64/mingw64/include/heapapi.h \
+  C:/msys64/mingw64/include/imm.h \
+  C:/msys64/mingw64/include/interlockedapi.h \
+  C:/msys64/mingw64/include/intrin.h \
+  C:/msys64/mingw64/include/inttypes.h \
+  C:/msys64/mingw64/include/ioapiset.h \
+  C:/msys64/mingw64/include/jobapi.h \
+  C:/msys64/mingw64/include/ktmtypes.h \
+  C:/msys64/mingw64/include/libloaderapi.h \
+  C:/msys64/mingw64/include/limits.h \
+  C:/msys64/mingw64/include/malloc.h \
+  C:/msys64/mingw64/include/math.h \
+  C:/msys64/mingw64/include/mcx.h \
+  C:/msys64/mingw64/include/memoryapi.h \
+  C:/msys64/mingw64/include/minwinbase.h \
+  C:/msys64/mingw64/include/minwindef.h \
+  C:/msys64/mingw64/include/namedpipeapi.h \
+  C:/msys64/mingw64/include/namespaceapi.h \
+  C:/msys64/mingw64/include/poppack.h \
+  C:/msys64/mingw64/include/process.h \
+  C:/msys64/mingw64/include/processenv.h \
+  C:/msys64/mingw64/include/processthreadsapi.h \
+  C:/msys64/mingw64/include/processtopologyapi.h \
+  C:/msys64/mingw64/include/profileapi.h \
+  C:/msys64/mingw64/include/psdk_inc/intrin-impl.h \
+  C:/msys64/mingw64/include/pshpack1.h \
+  C:/msys64/mingw64/include/pshpack2.h \
+  C:/msys64/mingw64/include/pshpack4.h \
+  C:/msys64/mingw64/include/pshpack8.h \
+  C:/msys64/mingw64/include/realtimeapiset.h \
+  C:/msys64/mingw64/include/reason.h \
+  C:/msys64/mingw64/include/sal.h \
+  C:/msys64/mingw64/include/sdkddkver.h \
+  C:/msys64/mingw64/include/sdks/_mingw_ddk.h \
+  C:/msys64/mingw64/include/sec_api/stdio_s.h \
+  C:/msys64/mingw64/include/sec_api/stdlib_s.h \
+  C:/msys64/mingw64/include/sec_api/stralign_s.h \
+  C:/msys64/mingw64/include/sec_api/string_s.h \
+  C:/msys64/mingw64/include/sec_api/wchar_s.h \
+  C:/msys64/mingw64/include/securityappcontainer.h \
+  C:/msys64/mingw64/include/securitybaseapi.h \
+  C:/msys64/mingw64/include/setjmp.h \
+  C:/msys64/mingw64/include/specstrings.h \
+  C:/msys64/mingw64/include/stdarg.h \
+  C:/msys64/mingw64/include/stddef.h \
+  C:/msys64/mingw64/include/stdint.h \
+  C:/msys64/mingw64/include/stdio.h \
+  C:/msys64/mingw64/include/stdlib.h \
+  C:/msys64/mingw64/include/stralign.h \
+  C:/msys64/mingw64/include/string.h \
+  C:/msys64/mingw64/include/stringapiset.h \
+  C:/msys64/mingw64/include/strings.h \
+  C:/msys64/mingw64/include/swprintf.inl \
+  C:/msys64/mingw64/include/synchapi.h \
+  C:/msys64/mingw64/include/sys/types.h \
+  C:/msys64/mingw64/include/sysinfoapi.h \
+  C:/msys64/mingw64/include/systemtopologyapi.h \
+  C:/msys64/mingw64/include/threadpoolapiset.h \
+  C:/msys64/mingw64/include/threadpoollegacyapiset.h \
+  C:/msys64/mingw64/include/timezoneapi.h \
+  C:/msys64/mingw64/include/tvout.h \
+  C:/msys64/mingw64/include/utilapiset.h \
+  C:/msys64/mingw64/include/vadefs.h \
+  C:/msys64/mingw64/include/virtdisk.h \
+  C:/msys64/mingw64/include/wchar.h \
+  C:/msys64/mingw64/include/winapifamily.h \
+  C:/msys64/mingw64/include/winbase.h \
+  C:/msys64/mingw64/include/wincon.h \
+  C:/msys64/mingw64/include/windef.h \
+  C:/msys64/mingw64/include/windows.h \
+  C:/msys64/mingw64/include/winerror.h \
+  C:/msys64/mingw64/include/wingdi.h \
+  C:/msys64/mingw64/include/winnetwk.h \
+  C:/msys64/mingw64/include/winnls.h \
+  C:/msys64/mingw64/include/winnt.h \
+  C:/msys64/mingw64/include/winreg.h \
+  C:/msys64/mingw64/include/winsvc.h \
+  C:/msys64/mingw64/include/winuser.h \
+  C:/msys64/mingw64/include/winver.h \
+  C:/msys64/mingw64/include/wnnc.h \
+  C:/msys64/mingw64/include/wow64apiset.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/adxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ammintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxbf16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxcomplexintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxfp16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxint8intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxtileintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx2intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124fmapsintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124vnniwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bf16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bf16vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bitalgintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bitalgvlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512cdintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512dqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512erintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512fintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512fp16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512fp16vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512ifmaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512ifmavlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512pfintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmi2intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmi2vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmiintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmivlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vlbwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vldqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vnniintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vnnivlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vp2intersectintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vp2intersectvlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vpopcntdqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vpopcntdqvlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxifmaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxneconvertintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniint16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniint8intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/bmi2intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/bmiintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cetintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cldemoteintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/clflushoptintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/clwbintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/clzerointrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cmpccxaddintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cpuid.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/emmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/enqcmdintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/f16cintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fma4intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fmaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fxsrintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/gfniintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/hresetintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ia32intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/immintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/keylockerintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/lwpintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/lzcntintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm3dnow.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/movdirintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mwaitintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mwaitxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pconfigintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pkuintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/popcntintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/prfchiintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/prfchwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/raointintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/rdseedintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/rtmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/serializeintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sgxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sha512intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/shaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sm3intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sm4intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/smmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tbmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tsxldtrkintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/uintrintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/usermsrintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/vaesintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/vpclmulqdqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/waitpkgintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/wbnoinvdintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/wmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/x86gprintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/x86intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xopintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsavecintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveoptintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsavesintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xtestintrin.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imconfig.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_sdl2.h
+
 CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_vulkan.cpp \
   C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h \
   C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_decode.h \
@@ -1669,9 +1995,34 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/vkbootstrap/VkBootst
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrapDispatch.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.cpp \
-  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_blendmode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_config.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_endian.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_error.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_events.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gamecontroller.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gesture.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_guid.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_joystick.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keyboard.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keycode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mouse.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mutex.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_pixels.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_platform.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_quit.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rect.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rwops.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_scancode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_sensor.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_stdinc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_surface.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_touch.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_video.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/begin_code.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/close_code.h \
   C:/VulkanSDK/1.4.309.0/Include/glm/common.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_fixes.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_vectorize.hpp \
@@ -1866,12 +2217,12 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
-  C:/msys64/mingw64/include/GL/gl.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
   C:/msys64/mingw64/include/_mingw_secapi.h \
   C:/msys64/mingw64/include/_mingw_stat64.h \
+  C:/msys64/mingw64/include/_mingw_stdarg.h \
   C:/msys64/mingw64/include/_timeval.h \
   C:/msys64/mingw64/include/assert.h \
   C:/msys64/mingw64/include/c++/14.1.0/array \
@@ -2047,6 +2398,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/msys64/mingw64/include/sec_api/sys/timeb_s.h \
   C:/msys64/mingw64/include/sec_api/wchar_s.h \
   C:/msys64/mingw64/include/signal.h \
+  C:/msys64/mingw64/include/stdarg.h \
   C:/msys64/mingw64/include/stddef.h \
   C:/msys64/mingw64/include/stdint.h \
   C:/msys64/mingw64/include/stdio.h \
@@ -2061,6 +2413,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
@@ -2069,9 +2422,34 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/camera.cpp.obj: C:/Users/f
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/main.cpp \
-  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_blendmode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_config.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_endian.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_error.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_events.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gamecontroller.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gesture.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_guid.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_joystick.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keyboard.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keycode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mouse.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mutex.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_pixels.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_platform.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_quit.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rect.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rwops.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_scancode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_sensor.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_stdinc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_surface.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_touch.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_video.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/begin_code.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/close_code.h \
   C:/VulkanSDK/1.4.309.0/Include/glm/common.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_fixes.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_vectorize.hpp \
@@ -2209,12 +2587,12 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/fra
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
-  C:/msys64/mingw64/include/GL/gl.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
   C:/msys64/mingw64/include/_mingw_secapi.h \
   C:/msys64/mingw64/include/_mingw_stat64.h \
+  C:/msys64/mingw64/include/_mingw_stdarg.h \
   C:/msys64/mingw64/include/_timeval.h \
   C:/msys64/mingw64/include/assert.h \
   C:/msys64/mingw64/include/c++/14.1.0/array \
@@ -2421,6 +2799,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/fra
   C:/msys64/mingw64/include/sec_api/sys/timeb_s.h \
   C:/msys64/mingw64/include/sec_api/wchar_s.h \
   C:/msys64/mingw64/include/signal.h \
+  C:/msys64/mingw64/include/stdarg.h \
   C:/msys64/mingw64/include/stddef.h \
   C:/msys64/mingw64/include/stdint.h \
   C:/msys64/mingw64/include/stdio.h \
@@ -2435,6 +2814,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/main.cpp.obj: C:/Users/fra
   C:/msys64/mingw64/include/wctype.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
@@ -2781,15 +3161,66 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_descriptors.cpp.obj: C:
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.cpp \
-  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imconfig.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_glfw.h \
+  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_sdl2.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_vulkan.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrap.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrapDispatch.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_assert.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_atomic.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_audio.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_blendmode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_clipboard.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_config.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_cpuinfo.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_endian.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_error.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_events.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_filesystem.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gamecontroller.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gesture.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_guid.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_haptic.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_hidapi.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_hints.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_joystick.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keyboard.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keycode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_loadso.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_locale.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_log.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_main.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_messagebox.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_metal.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_misc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mouse.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mutex.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_pixels.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_platform.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_power.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_quit.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rect.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_render.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rwops.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_scancode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_sensor.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_shape.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_stdinc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_surface.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_system.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_thread.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_timer.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_touch.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_version.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_video.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_vulkan.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/begin_code.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/close_code.h \
   C:/VulkanSDK/1.4.309.0/Include/glm/common.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_fixes.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_vectorize.hpp \
@@ -2951,7 +3382,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
-  C:/msys64/mingw64/include/GL/gl.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
@@ -3167,11 +3597,13 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/ctype.h \
   C:/msys64/mingw64/include/errno.h \
   C:/msys64/mingw64/include/float.h \
+  C:/msys64/mingw64/include/intrin.h \
   C:/msys64/mingw64/include/limits.h \
   C:/msys64/mingw64/include/locale.h \
   C:/msys64/mingw64/include/malloc.h \
   C:/msys64/mingw64/include/math.h \
   C:/msys64/mingw64/include/process.h \
+  C:/msys64/mingw64/include/psdk_inc/intrin-impl.h \
   C:/msys64/mingw64/include/pthread.h \
   C:/msys64/mingw64/include/pthread_compat.h \
   C:/msys64/mingw64/include/pthread_signal.h \
@@ -3183,6 +3615,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/sec_api/string_s.h \
   C:/msys64/mingw64/include/sec_api/sys/timeb_s.h \
   C:/msys64/mingw64/include/sec_api/wchar_s.h \
+  C:/msys64/mingw64/include/setjmp.h \
   C:/msys64/mingw64/include/signal.h \
   C:/msys64/mingw64/include/stdarg.h \
   C:/msys64/mingw64/include/stddef.h \
@@ -3197,13 +3630,118 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_engine.cpp.obj: C:/User
   C:/msys64/mingw64/include/vadefs.h \
   C:/msys64/mingw64/include/wchar.h \
   C:/msys64/mingw64/include/wctype.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/adxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ammintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxbf16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxcomplexintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxfp16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxint8intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxtileintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx2intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124fmapsintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124vnniwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bf16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bf16vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bitalgintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bitalgvlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512cdintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512dqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512erintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512fintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512fp16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512fp16vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512ifmaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512ifmavlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512pfintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmi2intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmi2vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmiintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmivlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vlbwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vldqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vnniintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vnnivlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vp2intersectintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vp2intersectvlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vpopcntdqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vpopcntdqvlintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxifmaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxneconvertintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniint16intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniint8intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/bmi2intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/bmiintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cetintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cldemoteintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/clflushoptintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/clwbintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/clzerointrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cmpccxaddintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cpuid.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/emmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/enqcmdintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/f16cintrin.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fma4intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fmaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fxsrintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/gfniintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/hresetintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ia32intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/immintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/keylockerintrin.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/lwpintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/lzcntintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm3dnow.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/movdirintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mwaitintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mwaitxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pconfigintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pkuintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/popcntintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/prfchiintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/prfchwintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/raointintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/rdseedintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/rtmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/serializeintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sgxintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sha512intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/shaintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sm3intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sm4intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/smmintrin.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tbmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tsxldtrkintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/uintrintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/usermsrintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/vaesintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/vpclmulqdqintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/waitpkgintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/wbnoinvdintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/wmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/x86gprintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/x86intrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xmmintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xopintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsavecintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveoptintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsavesintrin.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xtestintrin.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/camera.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.h \
@@ -3648,7 +4186,6 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_initializers.cpp.obj: C
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_types.h
 
 CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_loader.cpp \
-  C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/GLFW/include/GLFW/glfw3.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/glm_element_traits.hpp \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/parser.hpp \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/tools.hpp \
@@ -3657,6 +4194,32 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/User
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/stb_image/stb_image.h \
   C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_blendmode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_config.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_endian.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_error.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_events.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gamecontroller.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gesture.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_guid.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_joystick.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keyboard.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keycode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mouse.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mutex.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_pixels.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_platform.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_quit.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rect.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rwops.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_scancode.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_sensor.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_stdinc.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_surface.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_touch.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_video.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/begin_code.h \
+  C:/VulkanSDK/1.4.309.0/Include/SDL2/close_code.h \
   C:/VulkanSDK/1.4.309.0/Include/glm/common.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_fixes.hpp \
   C:/VulkanSDK/1.4.309.0/Include/glm/detail/_vectorize.hpp \
@@ -3849,12 +4412,12 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/User
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h \
   C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h \
-  C:/msys64/mingw64/include/GL/gl.h \
   C:/msys64/mingw64/include/_mingw.h \
   C:/msys64/mingw64/include/_mingw_mac.h \
   C:/msys64/mingw64/include/_mingw_off_t.h \
   C:/msys64/mingw64/include/_mingw_secapi.h \
   C:/msys64/mingw64/include/_mingw_stat64.h \
+  C:/msys64/mingw64/include/_mingw_stdarg.h \
   C:/msys64/mingw64/include/_timeval.h \
   C:/msys64/mingw64/include/assert.h \
   C:/msys64/mingw64/include/c++/14.1.0/array \
@@ -4070,6 +4633,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/User
   C:/msys64/mingw64/include/sec_api/sys/timeb_s.h \
   C:/msys64/mingw64/include/sec_api/wchar_s.h \
   C:/msys64/mingw64/include/signal.h \
+  C:/msys64/mingw64/include/stdarg.h \
   C:/msys64/mingw64/include/stddef.h \
   C:/msys64/mingw64/include/stdint.h \
   C:/msys64/mingw64/include/stdio.h \
@@ -4085,6 +4649,7 @@ CMakeFiles/real-time-vulkan-simulation-engine.dir/src/vk_loader.cpp.obj: C:/User
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/limits.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mm_malloc.h \
+  C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stddef.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h \
   C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h \
@@ -4462,8 +5027,6 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/fstream.tcc:
 
 C:/msys64/mingw64/include/c++/14.1.0/variant:
 
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/util.hpp:
-
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/types.hpp:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/tools.hpp:
@@ -4472,21 +5035,45 @@ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/li
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/stb_image/stb_image.h:
 
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/this_thread_sleep.h:
-
 C:/msys64/mingw64/include/c++/14.1.0/bits/std_thread.h:
 
-C:/msys64/mingw64/include/wctype.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_vulkan.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/messages_members.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_timer.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_thread.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_render.h:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/util.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_power.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_metal.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_messagebox.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_locale.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_loadso.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_haptic.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_filesystem.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_cpuinfo.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_clipboard.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_assert.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL.h:
+
+C:/msys64/mingw64/include/wctype.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_inline.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/sstream:
-
-C:/msys64/mingw64/include/c++/14.1.0/istream:
 
 C:/msys64/mingw64/include/c++/14.1.0/iostream:
 
@@ -4505,6 +5092,8 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets_nonio.tcc:
 C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets_nonio.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/fs_ops.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_version.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/fs_fwd.h:
 
@@ -4535,8 +5124,6 @@ C:/msys64/mingw64/include/c++/14.1.0/functional:
 C:/msys64/mingw64/include/c++/14.1.0/ext/aligned_buffer.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/compare:
-
-C:/msys64/mingw64/include/c++/14.1.0/climits:
 
 C:/msys64/mingw64/include/c++/14.1.0/cfloat:
 
@@ -4570,6 +5157,8 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/hashtable.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/enable_special_members.h:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_main.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/bits/atomic_lockfree_defines.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/allocated_ptr.h:
@@ -4589,10 +5178,6 @@ C:/VulkanSDK/1.4.309.0/Include/glm/packing.hpp:
 C:/VulkanSDK/1.4.309.0/Include/glm/mat3x4.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/mat2x4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_enum_string_helper.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/mat2x2.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/gtx/transform.inl:
 
@@ -4618,10 +5203,6 @@ C:/VulkanSDK/1.4.309.0/Include/glm/glm.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/geometric.hpp:
 
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/parser.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/fwd.hpp:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint4_sized.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint4.hpp:
@@ -4631,8 +5212,6 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint3_sized.hpp:
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.cpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint3.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint2_sized.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint2.hpp:
 
@@ -4656,8 +5235,6 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double2_precision.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double2.hpp:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool4_precision.hpp:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool3_precision.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool3.hpp:
@@ -4670,10 +5247,6 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_uint_sized.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_common.inl:
 
-C:/msys64/mingw64/include/c++/14.1.0/bits/streambuf_iterator.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.inl:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.inl:
@@ -4681,6 +5254,8 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.inl:
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_transform.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_relational.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_hints.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_geometric.inl:
 
@@ -4700,7 +5275,129 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.inl:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_projection.hpp:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveintrin.h:
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x3_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x4_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x3_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double4_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x2_precision.hpp:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/locale_conv.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x3_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x2_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_float.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x3_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/mat3x2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x2_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x4_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x2_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_relational.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec4.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec2.inl:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_images.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec1.inl:
+
+C:/msys64/mingw64/include/c++/14.1.0/ext/concurrence.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec1.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x3.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x4.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x4.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x3.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x4.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x3.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x2.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x2.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/setup.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_vector_relational.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_trigonometric.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_packing.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_matrix.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_exponential.inl:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_common.inl:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/align.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/compute_vector_relational.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/compute_common.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/_vectorize.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/syslimits.h:
 
@@ -4712,9 +5409,15 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/wbnoinvdintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/exception.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x3.inl:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/usermsrintrin.h:
+
 C:/msys64/mingw64/include/limits.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/uintrintrin.h:
+
+libraries/SDL/include/SDL2/begin_code.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/atomic:
 
@@ -4728,13 +5431,11 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tsxldtrkintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/stl_tempbuf.h:
 
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.cpp:
-
-C:/msys64/mingw64/include/pthread.h:
-
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tbmintrin.h:
 
 C:/msys64/mingw64/include/oleidl.h:
+
+libraries/SDL/include/SDL2/SDL_filesystem.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sm3intrin.h:
 
@@ -4757,6 +5458,10 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_float_precision.hpp:
 C:/msys64/mingw64/include/c++/14.1.0/cstddef:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdint.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x3_precision.hpp:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/prfchwintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/popcntintrin.h:
 
@@ -4786,17 +5491,15 @@ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/sr
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/gfniintrin.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/smmintrin.h:
-
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/immintrin.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/pstl/glue_algorithm_defs.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniint8intrin.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x3_precision.hpp:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_stdinc.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxneconvertintrin.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_guid.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/sgxintrin.h:
 
@@ -4821,6 +5524,8 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/ostream_insert.h:
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vnnivlintrin.h:
 
 C:/msys64/mingw64/include/mmeapi.h:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_sdl2.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vlintrin.h:
 
@@ -4850,23 +5555,31 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/bmiintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/ext/atomicity.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x2.hpp:
-
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/x86intrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/limits:
+
+libraries/SDL/include/SDL2/SDL_log.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bitalgintrin.h:
 
 C:/msys64/mingw64/include/winsvc.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec3.hpp:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bf16vlintrin.h:
+
 C:/msys64/mingw64/include/_mingw_unicode.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/range_access.h:
 
+libraries/SDL/include/SDL2/SDL_keyboard.h:
+
 C:/msys64/mingw64/include/crtdefs.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxtileintrin.h:
+
+libraries/SDL/include/SDL2/SDL_clipboard.h:
 
 C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std_decode.h:
 
@@ -4875,6 +5588,10 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/hash_bytes.h:
 C:/msys64/mingw64/include/errno.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/memoryfwd.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/this_thread_sleep.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keycode.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ammintrin.h:
 
@@ -4892,9 +5609,9 @@ C:/msys64/mingw64/include/winnls.h:
 
 C:/msys64/mingw64/include/wow64apiset.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4.hpp:
-
 C:/msys64/mingw64/include/wingdi.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_keyboard.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/rdseedintrin.h:
 
@@ -4924,8 +5641,6 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vlbwintrin.h:
 
 C:/msys64/mingw64/include/utilapiset.h:
 
-C:/msys64/mingw64/include/tvout.h:
-
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_tables.cpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsavecintrin.h:
@@ -4934,11 +5649,9 @@ C:/msys64/mingw64/include/mciapi.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/stdarg.h:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/begin_code.h:
+
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/f16cintrin.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/locale_conv.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x2.hpp:
 
 C:/msys64/mingw64/include/timezoneapi.h:
 
@@ -4964,6 +5677,12 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/float.h:
 
 C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_platform.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x2.inl:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/enqcmdintrin.h:
+
 C:/msys64/mingw64/include/sec_api/stdlib_s.h:
 
 C:/msys64/mingw64/include/winver.h:
@@ -4973,6 +5692,12 @@ C:/msys64/mingw64/include/corecrt.h:
 C:/msys64/mingw64/include/c++/14.1.0/tr1/exp_integral.tcc:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/version.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_system.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x4.hpp:
+
+C:/msys64/mingw64/include/sal.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/exception_defines.h:
 
@@ -4984,7 +5709,7 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/emmintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/os_defines.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x3.hpp:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_atomic.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_constants.hpp:
 
@@ -4999,6 +5724,10 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxintrin.h:
 C:/msys64/mingw64/include/c++/14.1.0/tr1/special_function_util.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/move.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x2.hpp:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx2intrin.h:
 
 C:/msys64/mingw64/include/winefs.h:
 
@@ -5028,10 +5757,6 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124vnniwintrin.h
 
 C:/msys64/mingw64/include/pthread_signal.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/iterator:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x4.inl:
-
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/clzerointrin.h:
 
 C:/msys64/mingw64/include/poppack.h:
@@ -5042,21 +5767,13 @@ C:/msys64/mingw64/include/c++/14.1.0/chrono:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mmintrin.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/vector:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x3_precision.hpp:
-
 C:/msys64/mingw64/include/c++/14.1.0/ext/numeric_traits.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/pstl/pstl_config.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/lzcntintrin.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec2.inl:
-
 C:/msys64/mingw64/include/_mingw_off_t.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x4.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmi2vlintrin.h:
 
@@ -5066,11 +5783,13 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avxvnniintrin.h:
 
 C:/msys64/mingw64/include/apisetcconv.h:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_sensor.h:
+
 C:/VulkanSDK/1.4.309.0/Include/glm/common.hpp:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_float.hpp:
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x2.hpp:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x3_precision.hpp:
+C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/cpu_defines.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/ratio:
 
@@ -5085,10 +5804,6 @@ C:/msys64/mingw64/include/rpcasync.h:
 C:/msys64/mingw64/include/assert.h:
 
 C:/msys64/mingw64/include/minwinbase.h:
-
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_images.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec1.inl:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/keylockerintrin.h:
 
@@ -5114,15 +5829,25 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/concept_check.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/tr1/beta_function.tcc:
 
+libraries/SDL/include/SDL2/SDL_main.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/tuple:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/ptr_traits.h:
 
 C:/msys64/mingw64/include/apiset.h:
 
-C:/msys64/mingw64/include/_mingw.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_surface.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512ifmavlintrin.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.inl:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ia32intrin.h:
+
+C:/msys64/mingw64/include/urlmon.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mouse.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/memory_resource:
 
@@ -5132,13 +5857,11 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vldqintrin.h:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_engine.h:
 
+libraries/SDL/include/SDL2/SDL_surface.h:
+
 C:/msys64/mingw64/include/_mingw_stdarg.h:
 
 C:/msys64/mingw64/include/swprintf.inl:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bf16vlintrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec3.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bit:
 
@@ -5154,17 +5877,25 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_exponential.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/functexcept.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_integer.inl:
+
+C:/msys64/mingw64/include/bemapiset.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xsaveintrin.h:
+
+libraries/SDL/include/SDL2/SDL_hints.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/locale:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/prfchiintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/cmath:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_misc.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/bits/requires_hosted.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/bits/fs_path.h:
-
-C:/msys64/mingw64/include/securitybaseapi.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_blendmode.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/mat4x2.hpp:
 
@@ -5174,39 +5905,39 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bwintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/stl_iterator_base_types.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double3.hpp:
-
-C:/msys64/mingw64/include/basetsd.h:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/mat3x3.hpp:
 
 C:/msys64/mingw64/include/errhandlingapi.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/bits/std_abs.h:
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double3.hpp:
+
+C:/msys64/mingw64/include/basetsd.h:
+
+libraries/SDL/include/SDL2/SDL_shape.h:
+
+libraries/SDL/include/SDL2/SDL_stdinc.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/stl_algobase.h:
 
 C:/msys64/mingw64/include/dlgs.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/cassert:
+libraries/SDL/include/SDL2/SDL_system.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/debug/debug.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/bmi2intrin.h:
 
+C:/VulkanSDK/1.4.309.0/Include/vulkan/vk_enum_string_helper.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/mat2x2.hpp:
+
+libraries/SDL/include/SDL2/SDL_locale.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/tr1/modified_bessel_func.tcc:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_common.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec3.inl:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bf16intrin.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pmmintrin.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/gthr.h:
 
 C:/msys64/mingw64/include/psdk_inc/intrin-impl.h:
 
@@ -5214,19 +5945,29 @@ C:/msys64/mingw64/include/unknwnbase.h:
 
 C:/msys64/mingw64/include/fltwinerror.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_float3.hpp:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/utility.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_shape.h:
 
 C:/msys64/mingw64/include/inttypes.h:
 
 C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codecs_common.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec4.hpp:
+
+C:/msys64/mingw64/include/mcx.h:
+
+libraries/SDL/include/SDL2/SDL_atomic.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/stdlib.h:
 
 C:/msys64/mingw64/include/datetimeapi.h:
 
 C:/msys64/mingw64/include/timeapi.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/iterator:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x4.inl:
+
+libraries/SDL/include/SDL2/SDL_syswm.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/mat4x3.hpp:
 
@@ -5236,7 +5977,7 @@ C:/msys64/mingw64/include/corecrt_stdio_config.h:
 
 C:/msys64/mingw64/include/dde.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x3.hpp:
+libraries/SDL/include/SDL2/SDL_assert.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/deque.tcc:
 
@@ -5252,15 +5993,15 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vbmi2intrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/backward/binders.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/_vectorize.hpp:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gamecontroller.h:
 
 C:/msys64/mingw64/include/fileapi.h:
 
 C:/msys64/mingw64/include/stralign.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x2.hpp:
-
 C:/msys64/mingw64/include/guiddef.h:
+
+libraries/SDL/include/SDL2/SDL_metal.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512erintrin.h:
 
@@ -5268,13 +6009,19 @@ C:/msys64/mingw64/include/c++/14.1.0/math.h:
 
 C:/msys64/mingw64/include/interlockedapi.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/mat3x2.hpp:
+C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/time_members.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x3.hpp:
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x2.hpp:
+
+C:/msys64/mingw64/include/realtimeapiset.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_common.hpp:
 
 C:/msys64/mingw64/include/heapapi.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/smmintrin.h:
+
+libraries/SDL/include/SDL2/SDL_hidapi.h:
 
 C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan.h:
 
@@ -5290,6 +6037,12 @@ C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++config.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/allocator.h:
 
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_initializers.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_config.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/close_code.h:
+
 C:/msys64/mingw64/include/ioapiset.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/hresetintrin.h:
@@ -5300,7 +6053,21 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fmaintrin.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512vp2intersectintrin.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x2_precision.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_quit.h:
+
 C:/msys64/mingw64/include/namespaceapi.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/ios:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x3.hpp:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cetintrin.h:
+
+libraries/SDL/include/SDL2/SDL_blendmode.h:
+
+C:/msys64/mingw64/include/jobapi.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/shaintrin.h:
 
@@ -5314,15 +6081,11 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/raointintrin.h:
 
 C:/msys64/mingw64/include/specstrings.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x3.hpp:
-
 C:/msys64/mingw64/include/malloc.h:
 
-C:/msys64/mingw64/include/math.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_endian.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/compute_common.hpp:
+C:/msys64/mingw64/include/math.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/mwaitxintrin.h:
 
@@ -5338,19 +6101,15 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_float2.hpp:
 
 C:/msys64/mingw64/include/processenv.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/setup.hpp:
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x2_precision.hpp:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/adxintrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x2_precision.hpp:
 
 C:/msys64/mingw64/include/securityappcontainer.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/gtx/quaternion.inl:
 
 C:/msys64/mingw64/include/pshpack1.h:
-
-C:/msys64/mingw64/include/dpapi.h:
 
 C:/msys64/mingw64/include/pshpack4.h:
 
@@ -5368,17 +6127,31 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_float2_precision.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/unique_lock.h:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_log.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++allocator.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_trigonometric.inl:
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_float.hpp:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxfp16intrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/tr1/gamma.tcc:
 
 C:/msys64/mingw64/include/sdks/_mingw_ddk.h:
 
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_float3.hpp:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/utility.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_touch.h:
+
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_draw.cpp:
 
 C:/msys64/mingw64/include/sec_api/stdio_s.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/climits:
+
+libraries/SDL/include/SDL2/SDL_messagebox.h:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512ifmaintrin.h:
 
@@ -5390,8 +6163,6 @@ C:/msys64/mingw64/include/stdarg.h:
 
 C:/msys64/mingw64/include/string.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/tr1/bessel_function.tcc:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_transform.hpp:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x4_precision.hpp:
@@ -5399,6 +6170,8 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x4_precision.hpp:
 C:/msys64/mingw64/include/synchapi.h:
 
 C:/msys64/mingw64/include/systemtopologyapi.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_hidapi.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_float4_precision.hpp:
 
@@ -5414,9 +6187,9 @@ C:/msys64/mingw64/include/float.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/stl_function.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x2.hpp:
-
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imconfig.h:
+
+libraries/SDL/include/SDL2/SDL_mutex.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/stdexcept:
 
@@ -5424,15 +6197,19 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxbf16intrin.h:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_double4_precision.hpp:
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/qualifier.hpp:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x3.hpp:
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cldemoteintrin.h:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_internal.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x3_precision.hpp:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_demo.cpp:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imstb_rectpack.h:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_sdl2.cpp:
 
 C:/msys64/mingw64/include/rpcnsi.h:
 
@@ -5454,6 +6231,8 @@ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/li
 
 C:/msys64/mingw64/include/GL/gl.h:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_scancode.h:
+
 C:/msys64/mingw64/include/_timeval.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/clocale:
@@ -5472,6 +6251,8 @@ C:/msys64/mingw64/include/cguid.h:
 
 C:/msys64/mingw64/include/combaseapi.h:
 
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cpuid.h:
+
 C:/msys64/mingw64/include/ddeml.h:
 
 C:/msys64/mingw64/include/inaddr.h:
@@ -5484,39 +6265,31 @@ C:/msys64/mingw64/include/joystickapi.h:
 
 C:/msys64/mingw64/include/mmiscapi.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x4.hpp:
+C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x4.hpp:
+
+C:/msys64/mingw64/include/processthreadsapi.h:
+
+C:/msys64/mingw64/include/mmsyscom.h:
 
 C:/msys64/mingw64/include/mmsystem.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/std_abs.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_gesture.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_constants.inl:
 
 C:/msys64/mingw64/include/msxml.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/prfchwintrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x3_precision.hpp:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/gtx/norm.inl:
 
 C:/msys64/mingw64/include/ncrypt.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/usermsrintrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x3.inl:
 
 C:/msys64/mingw64/include/c++/14.1.0/cwctype:
 
 C:/msys64/mingw64/include/oaidl.h:
 
 C:/msys64/mingw64/include/objidlbase.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.tcc:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxint8intrin.h:
-
-C:/msys64/mingw64/include/virtdisk.h:
-
-C:/msys64/mingw64/include/rpcnterr.h:
 
 C:/msys64/mingw64/include/ole2.h:
 
@@ -5542,27 +6315,33 @@ C:/msys64/mingw64/include/stdlib.h:
 
 C:/msys64/mingw64/include/psdk_inc/_socket_types.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4.hpp:
-
 C:/msys64/mingw64/include/psdk_inc/_wsa_errnos.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx2intrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x2.hpp:
 
 C:/msys64/mingw64/include/windef.h:
 
 C:/msys64/mingw64/include/psdk_inc/_xmitfile.h:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_audio.h:
+
 C:/msys64/mingw64/include/rpc.h:
 
 C:/msys64/mingw64/include/servprov.h:
+
+C:/msys64/mingw64/include/intrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/codecvt:
 
 C:/msys64/mingw64/include/stringapiset.h:
 
 C:/msys64/mingw64/include/rpcndr.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/tr1/bessel_function.tcc:
+
+libraries/SDL/include/SDL2/SDL_gesture.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_bool4_precision.hpp:
+
+libraries/SDL/include/SDL2/SDL.h:
 
 C:/msys64/mingw64/include/mmiscapi2.h:
 
@@ -5573,6 +6352,8 @@ C:/msys64/mingw64/include/rpcsal.h:
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_int2_sized.hpp:
 
 C:/msys64/mingw64/include/wincrypt.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rwops.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/gtx/component_wise.hpp:
 
@@ -5586,6 +6367,12 @@ C:/msys64/mingw64/include/winscard.h:
 
 C:/msys64/mingw64/include/winsock.h:
 
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/src/vk_descriptors.cpp:
+
+C:/msys64/mingw64/include/pthread.h:
+
+libraries/SDL/include/SDL2/SDL_joystick.h:
+
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_int2.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/ctime:
@@ -5594,11 +6381,9 @@ C:/msys64/mingw64/include/wtypes.h:
 
 C:/msys64/mingw64/include/wtypesbase.h:
 
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_mutex.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/bits/memory_resource.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/gtc/epsilon.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x4.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/utility:
 
@@ -5606,9 +6391,155 @@ C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/sr
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_impl_glfw.h:
 
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/pmmintrin.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/gthr.h:
+
+libraries/SDL/include-config-debug/SDL2/SDL_config.h:
+
+libraries/SDL/include/SDL2/SDL_audio.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/system_error:
+
+C:/msys64/mingw64/include/c++/14.1.0/cassert:
+
+libraries/SDL/include/SDL2/SDL_cpuinfo.h:
+
+libraries/SDL/include/SDL2/SDL_endian.h:
+
+C:/msys64/mingw64/include/profileapi.h:
+
+C:/msys64/mingw64/include/sec_api/stralign_s.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/uniform_int_dist.h:
+
+C:/msys64/mingw64/include/io.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tmmintrin.h:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrap.h:
+
+libraries/SDL/include/SDL2/SDL_error.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/exception_ptr.h:
+
+C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fastgltf/include/fastgltf/parser.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/fwd.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_pixels.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/gtc/epsilon.hpp:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x4.hpp:
+
+libraries/SDL/include/SDL2/SDL_events.h:
+
+C:/msys64/mingw64/include/dpapi.h:
+
+libraries/SDL/include/SDL2/SDL_gamecontroller.h:
+
+libraries/SDL/include/SDL2/SDL_guid.h:
+
+libraries/SDL/include/SDL2/SDL_haptic.h:
+
+C:/msys64/mingw64/include/_mingw.h:
+
+libraries/SDL/include/SDL2/SDL_loadso.h:
+
+C:/msys64/mingw64/include/tvout.h:
+
+libraries/SDL/include/SDL2/SDL_misc.h:
+
+C:/msys64/mingw64/include/pthread_unistd.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_rect.h:
+
+libraries/SDL/include/SDL2/SDL_pixels.h:
+
+libraries/SDL/include/SDL2/SDL_scancode.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/mat4x4.hpp:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124fmapsintrin.h:
+
+C:/msys64/mingw64/include/minwindef.h:
+
+C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_uint2_sized.hpp:
+
+libraries/SDL/include/SDL2/SDL_platform.h:
+
+libraries/SDL/include/SDL2/SDL_quit.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/istream:
+
+libraries/SDL/include/SDL2/SDL_rect.h:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fma4intrin.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/stringfwd.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/fs_path.h:
+
+C:/msys64/mingw64/include/securitybaseapi.h:
+
+libraries/SDL/include/SDL2/SDL_render.h:
+
+libraries/SDL/include/SDL2/SDL_rwops.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/locale_facets.tcc:
+
+C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxint8intrin.h:
+
+C:/msys64/mingw64/include/virtdisk.h:
+
+C:/msys64/mingw64/include/rpcnterr.h:
+
+libraries/SDL/include/SDL2/SDL_sensor.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/streambuf_iterator.h:
+
+C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_trigonometric.inl:
+
+libraries/SDL/include/SDL2/SDL_touch.h:
+
+libraries/SDL/include/SDL2/SDL_version.h:
+
+libraries/SDL/include/SDL2/SDL_video.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/bits/basic_string.h:
+
+libraries/SDL/include/SDL2/close_code.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/debug/assertions.h:
+
+C:/msys64/mingw64/include/_mingw_stat64.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/ostream:
+
+C:/msys64/mingw64/include/sec_api/wchar_s.h:
+
+C:/msys64/mingw64/include/setjmp.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/pstl/glue_algorithm_defs.h:
+
+C:/msys64/mingw64/include/strings.h:
+
+C:/msys64/mingw64/include/sys/types.h:
+
+C:/msys64/mingw64/include/wchar.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/bits/node_handle.h:
 
 C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_av1std.h:
+
+C:/msys64/mingw64/include/c++/14.1.0/cstring:
+
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_joystick.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_int4_sized.hpp:
 
@@ -5620,35 +6551,17 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/erase_if.h:
 
 C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h264std_encode.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float4x4_precision.hpp:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_geometric.inl:
 
 C:/VulkanSDK/1.4.309.0/Include/vk_video/vulkan_video_codec_h265std_encode.h:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/ia32intrin.h:
-
-C:/msys64/mingw64/include/urlmon.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_half.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/mat4x4.hpp:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx5124fmapsintrin.h:
-
-C:/msys64/mingw64/include/minwindef.h:
-
-C:/VulkanSDK/1.4.309.0/Include/vulkan/vulkan_core.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/debug/assertions.h:
-
-C:/msys64/mingw64/include/_mingw_stat64.h:
-
 C:/msys64/mingw64/include/c++/14.1.0/algorithm:
+
+libraries/SDL/include/SDL2/SDL_timer.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/algorithmfwd.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/bits/basic_string.h:
+libraries/SDL/include/SDL2/SDL_thread.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/char_traits.h:
 
@@ -5665,8 +6578,6 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/chrono.h:
 C:/msys64/mingw64/include/signal.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/cxxabi_init_exception.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/exception_ptr.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/vector_relational.hpp:
 
@@ -5686,6 +6597,8 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/postypes.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/refwrap.h:
 
+libraries/SDL/include/SDL2/SDL_power.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/atomic_word.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/std_mutex.h:
@@ -5696,35 +6609,9 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/stl_bvector.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/stl_construct.h:
 
-C:/msys64/mingw64/include/c++/14.1.0/bits/stl_vector.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/time_members.h:
-
-C:/msys64/mingw64/include/realtimeapiset.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x2.hpp:
-
 C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec2.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/string_view.tcc:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fma4intrin.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/stringfwd.h:
-
-C:/msys64/mingw64/include/profileapi.h:
-
-C:/msys64/mingw64/include/sec_api/stralign_s.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/uniform_int_dist.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/cstring:
-
-C:/msys64/mingw64/include/io.h:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/tmmintrin.h:
-
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vkbootstrap/VkBootstrap.h:
 
 C:/VulkanSDK/1.4.309.0/Include/glm/ext/quaternion_relational.inl:
 
@@ -5735,8 +6622,6 @@ C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator.h:
 C:/msys64/mingw64/include/ktmtypes.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/bits/uses_allocator_args.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_packing.inl:
 
 C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/lwpintrin.h:
 
@@ -5751,10 +6636,6 @@ C:/msys64/mingw64/include/c++/14.1.0/exception:
 C:/msys64/mingw64/include/winerror.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/cctype:
-
-C:/msys64/mingw64/include/c++/14.1.0/bits/align.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/compute_vector_relational.hpp:
 
 C:/msys64/mingw64/include/c++/14.1.0/cerrno:
 
@@ -5778,6 +6659,8 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/serializeintrin.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/ext/string_conversions.h:
 
+libraries/SDL/include/SDL2/SDL_vulkan.h:
+
 C:/msys64/mingw64/include/c++/14.1.0/initializer_list:
 
 C:/msys64/mingw64/include/c++/14.1.0/pstl/execution_defs.h:
@@ -5786,19 +6669,13 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/avx512bitalgvlintrin
 
 C:/msys64/mingw64/include/c++/14.1.0/string:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x3.hpp:
-
 C:/msys64/mingw64/include/c++/14.1.0/string_view:
-
-C:/msys64/mingw64/include/c++/14.1.0/system_error:
 
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/c++locale.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/typeinfo:
 
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/error_constants.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x3_precision.hpp:
 
 C:/msys64/mingw64/include/locale.h:
 
@@ -5808,19 +6685,9 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/xopintrin.h:
 
 C:/msys64/mingw64/include/pthread_time.h:
 
-C:/msys64/mingw64/include/pthread_unistd.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.hpp:
-
 C:/msys64/mingw64/include/c++/14.1.0/iosfwd:
 
 C:/msys64/mingw64/include/sec_api/sys/timeb_s.h:
-
-C:/msys64/mingw64/include/c++/14.1.0/ostream:
-
-C:/msys64/mingw64/include/sec_api/wchar_s.h:
-
-C:/msys64/mingw64/include/sys/types.h:
 
 C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/ctype_base.h:
 
@@ -5828,9 +6695,9 @@ C:/VulkanSDK/1.4.309.0/Include/glm/ext/scalar_int_sized.hpp:
 
 C:/msys64/mingw64/include/_mingw_secapi.h:
 
-C:/msys64/mingw64/include/time.h:
+libraries/SDL/include/SDL2/SDL_mouse.h:
 
-C:/msys64/mingw64/include/wchar.h:
+C:/msys64/mingw64/include/time.h:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/fmt/include/fmt/core.h:
 
@@ -5840,100 +6707,16 @@ C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/fxsrintrin.h:
 
 C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/vma/vk_mem_alloc.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_exponential.inl:
+C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/messages_members.h:
 
-C:/msys64/mingw64/include/bemapiset.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_error.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_integer.inl:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_events.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_matrix.inl:
+libraries/SDL/include/SDL2/SDL_keycode.h:
 
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/func_vector_relational.inl:
+C:/msys64/mingw64/include/c++/14.1.0/vector:
 
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cldemoteintrin.h:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_platform.h:
 
-C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/imgui/imgui_internal.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/qualifier.hpp:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/amxfp16intrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_float.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x2.inl:
-
-C:/msys64/mingw64/include/c++/14.1.0/ext/concurrence.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec1.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x3.inl:
-
-C:/msys64/mingw64/include/sal.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat2x4.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat3x4.inl:
-
-C:/msys64/mingw64/include/c++/14.1.0/x86_64-w64-mingw32/bits/cpu_defines.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x2.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/vector_relational.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec4.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x3.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x3.inl:
-
-C:/msys64/mingw64/include/processthreadsapi.h:
-
-C:/msys64/mingw64/include/mmsyscom.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_quat.inl:
-
-C:/msys64/mingw64/include/mcx.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_vec4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_clip_space.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x2.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x2_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x4.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double2x4_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x2.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double3x2_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x2_precision.hpp:
-
-C:/msys64/mingw64/include/c++/14.1.0/ios:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/cetintrin.h:
-
-C:/msys64/mingw64/include/jobapi.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x3.hpp:
-
-C:/msys64/mingw64/lib/gcc/x86_64-w64-mingw32/14.1.0/include/enqcmdintrin.h:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/detail/type_mat4x2.inl:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_double4x4_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float2x2_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x2_precision.hpp:
-
-C:/VulkanSDK/1.4.309.0/Include/glm/ext/matrix_float3x4_precision.hpp:
+C:/VulkanSDK/1.4.309.0/Include/SDL2/SDL_video.h:

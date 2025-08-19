@@ -3,90 +3,8 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-float Camera::lastX = 800.0 / 2.0;
-float Camera::lastY = 600.0 / 2.0;
-bool Camera::firstMouse = true;
-float sensitivity = 0.1f;
-
-void Camera::mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    // Retrieve the Camera instance from the window's user pointer
-    Camera* camera = static_cast<Camera*>(glfwGetWindowUserPointer(window));
-    if (camera == nullptr) return;
-
-    if (firstMouse) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-  
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; 
-    lastX = xpos;
-    lastY = ypos;
-
-    xoffset *= 0.125f;
-    yoffset *= 0.125f;
-
-    camera->yaw   += xoffset / 20.0f;
-    camera->pitch += yoffset / 20.0f;
-
-    if(camera->pitch > 89.0f)
-        camera->pitch = 89.0f;
-    if(camera->pitch < -89.0f)
-        camera->pitch = -89.0f;
-
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch));
-    direction.y = sin(glm::radians(camera->pitch));
-    direction.z = sin(glm::radians(camera->yaw)) * cos(glm::radians(camera->pitch));
-    camera->cameraFront = glm::normalize(direction);
-}
-
-void Camera::update() {
-    const float cameraSpeed = 0.05f;
-    glm::mat4 cameraRotation = getRotationMatrix();
-    position += glm::vec3(cameraRotation * glm::vec4(velocity * 0.5f, 0.f)) * cameraSpeed;
-}
-
-void Camera::processInput(GLFWwindow* window) {
-    velocity = glm::vec3(0.0f); // adjust accordingly
-    sensitivity = 0.1f;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        velocity.z = -3;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        velocity.z = 3;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        velocity.x = -3;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) 
-        velocity.x = 3;
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        velocity.y = 3;
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) 
-        velocity.y = -3;
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        velocity *= 3;
-        sensitivity = 0.2f;
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-        unlockMouse = true;
-    } else {
-        unlockMouse = false;
-    }
-
-    if (unlockMouse == true) {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    } else {
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
-
-    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    // mouse
-    // glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, mouse_callback);
-}
-
-glm::mat4 Camera::getViewMatrix() {
+glm::mat4 Camera::getViewMatrix() const
+{
     // to create a correct model view, we need to move the world in opposite
     // direction to the camera
     //  so we will create the camera model matrix and invert
@@ -95,7 +13,8 @@ glm::mat4 Camera::getViewMatrix() {
     return glm::inverse(cameraTranslation * cameraRotation);
 }
 
-glm::mat4 Camera::getRotationMatrix() {
+glm::mat4 Camera::getRotationMatrix() const
+{
     // fairly typical FPS style camera. we join the pitch and yaw rotations into
     // the final rotation matrix
 
@@ -103,4 +22,36 @@ glm::mat4 Camera::getRotationMatrix() {
     glm::quat yawRotation = glm::angleAxis(yaw, glm::vec3 { 0.f, -1.f, 0.f });
 
     return glm::toMat4(yawRotation) * glm::toMat4(pitchRotation);
+}
+
+void Camera::processSDLEvent(SDL_Event& e)
+{
+    if (e.type == SDL_KEYDOWN) {
+        if (e.key.keysym.sym == SDLK_w) { velocity.z = -0.25f; }
+        if (e.key.keysym.sym == SDLK_s) { velocity.z = 0.25f; }
+        if (e.key.keysym.sym == SDLK_a) { velocity.x = -0.25f; }
+        if (e.key.keysym.sym == SDLK_d) { velocity.x = 0.25f; }
+        if (e.key.keysym.sym == SDLK_LCTRL) { velocity.y = -0.25f; }
+        if (e.key.keysym.sym == SDLK_SPACE) { velocity.y = 0.25f; }
+    }
+
+    if (e.type == SDL_KEYUP) {
+        if (e.key.keysym.sym == SDLK_w) { velocity.z = 0; }
+        if (e.key.keysym.sym == SDLK_s) { velocity.z = 0; }
+        if (e.key.keysym.sym == SDLK_a) { velocity.x = 0; }
+        if (e.key.keysym.sym == SDLK_d) { velocity.x = 0; }
+        if (e.key.keysym.sym == SDLK_LCTRL) { velocity.y = 0; }
+        if (e.key.keysym.sym == SDLK_SPACE) { velocity.y = 0; }
+    }
+
+    if (e.type == SDL_MOUSEMOTION) {
+        yaw += (float)e.motion.xrel / 200.f;
+        pitch -= (float)e.motion.yrel / 200.f;
+    }
+}
+
+void Camera::update()
+{
+    glm::mat4 cameraRotation = getRotationMatrix();
+    position += glm::vec3(cameraRotation * glm::vec4(velocity * 0.5f, 0.f));
 }

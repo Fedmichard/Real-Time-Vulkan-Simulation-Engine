@@ -17,7 +17,7 @@ struct GLTFMetallic_Roughness {
 		glm::vec4 colorFactors;
 		glm::vec4 metal_rough_factors;
 		//padding, we need it anyway for uniform buffers
-		// glm::vec4 extra[14];
+		glm::vec4 extra[14];
 	};
 
 	struct MaterialResources {
@@ -77,7 +77,8 @@ public:
     
 
     // glfw window
-    struct GLFWwindow* _window { nullptr };
+    // struct GLFWwindow* _window { nullptr };
+    struct SDL_Window* _window { nullptr };
 
     static VulkanEngine& Get();
 
@@ -190,8 +191,8 @@ public:
     void initMeshPipeline();
 
     // helpers
-    void initWindow(GLFWwindow** window, int width, int height);
-    void createSurface(VkInstance& instance, GLFWwindow*& window, VkSurfaceKHR* surface);
+    // void initWindow(GLFWwindow** window, int width, int height);
+    // void createSurface(VkInstance& instance, GLFWwindow*& window, VkSurfaceKHR* surface);
     void drawBackground(VkCommandBuffer commandBuffer);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
@@ -217,5 +218,6 @@ public:
 
     // public functions needed
     bool resizeReuqested { false };
+    bool freezeRendering{false};
     GPUMeshBuffers uploadMesh(std::vector<uint32_t> indices, std::vector<Vertex> vertices);
 };

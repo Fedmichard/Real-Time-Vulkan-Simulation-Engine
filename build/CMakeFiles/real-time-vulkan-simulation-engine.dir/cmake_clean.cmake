@@ -7,6 +7,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_draw.cpp.obj.d"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_glfw.cpp.obj.d"
+  "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_sdl2.cpp.obj"
+  "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_sdl2.cpp.obj.d"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_impl_vulkan.cpp.obj.d"
   "CMakeFiles/real-time-vulkan-simulation-engine.dir/libraries/imgui/imgui_tables.cpp.obj"

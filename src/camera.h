@@ -1,5 +1,5 @@
 #include "vk_types.h"
-#include <GLFW/glfw3.h>
+#include <SDL2/SDL_events.h>
 
 class Camera {
 public:
@@ -10,19 +10,10 @@ public:
     // horizontal rotation
     float yaw { 0.f };
 
-    glm::vec3 cameraFront;
-    glm::vec3 cameraUp;
+    glm::mat4 getViewMatrix() const;
+    glm::mat4 getRotationMatrix() const;
 
-    static float lastX;
-    static float lastY;
-    static bool firstMouse;
-
-    bool unlockMouse;
-
-    glm::mat4 getViewMatrix();
-    glm::mat4 getRotationMatrix();
+    void processSDLEvent(SDL_Event& e);
 
     void update();
-    void processInput(GLFWwindow* window);
-    static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 };
