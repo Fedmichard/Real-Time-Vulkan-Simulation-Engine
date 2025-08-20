@@ -62,6 +62,7 @@ struct DrawContext {
 };
 
 struct EngineStats {
+    float fps;
     float frametime;
     int triangle_count;
     int drawcall_count;

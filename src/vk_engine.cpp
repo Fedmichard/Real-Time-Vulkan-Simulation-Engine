@@ -69,10 +69,10 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string structurePath = { "..\\assets\\structure.glb" };
-    auto structureFile = loadGltf(this, structurePath);
-    assert(structureFile.has_value());
-    loadedScenes["structure"] = *structureFile;
+    std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
+    auto gmodFile = loadGltf(this, gmodPath);
+    assert(gmodFile.has_value());
+    loadedScenes["gmod"] = *gmodFile;
     
     /*
     std::string structurePath = { "..\\assets\\structure.glb" };
@@ -334,6 +334,7 @@ void VulkanEngine::run() {
             // stats
             ImGui::Begin("Stats");
 
+            ImGui::Text("%f fps", 1000 / stats.frametime);
             ImGui::Text("frametime %f ms", stats.frametime);
             ImGui::Text("draw time %f ms", stats.mesh_draw_time);
             ImGui::Text("update time %f ms", stats.scene_update_time);
@@ -360,119 +361,104 @@ void VulkanEngine::run() {
 
         auto end = std::chrono::system_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-        stats.frametime = elapsed.count() / 1000.0f;
-    }
-
-/*
-    while (!glfwWindowShouldClose(_window)) {
-        auto start = std::chrono::system_clock::now();
-
-        glfwPollEvents();
-
-        mainCamera.processInput(_window);
-
-        if (resizeReuqested) {
-            recreateSwapChain();
-        }
         
-        ImGui_ImplVulkan_NewFrame();
-        // ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
-
-        if (ImGui::Begin("background")) {
-            ImGui::SliderFloat("Render Scale",&renderScale, 0.3f, 1.f);
-			ComputeEffect& selected = backgroundEffects[currentBackgroundIndex];
-		
-			ImGui::Text("Selected effect: ", selected.name);
-		
-			ImGui::SliderInt("Effect Index", &currentBackgroundIndex, 0, backgroundEffects.size() - 1);
-		
-			ImGui::InputFloat4("data1",(float*)& selected.data.data1);
-			ImGui::InputFloat4("data2",(float*)& selected.data.data2);
-			ImGui::InputFloat4("data3",(float*)& selected.data.data3);
-			ImGui::InputFloat4("data4",(float*)& selected.data.data4);
-            
-			ImGui::SliderInt("Model Rotation", &_rotation, 0, 1800);
-
-            // temp
-            float yawToDegrees = (mainCamera.yaw * 180/M_PI);
-            float* yawDegrees = &(yawToDegrees);
-            float pitchToDegrees = (mainCamera.pitch * 180/M_PI);
-            float* pitchDegrees = &(pitchToDegrees);
-
-            // stats
-            ImGui::Begin("Stats");
-
-            ImGui::Text("frametime %f ms", stats.frametime);
-            ImGui::Text("draw time %f ms", stats.mesh_draw_time);
-            ImGui::Text("update time %f ms", stats.scene_update_time);
-            ImGui::Text("triangles %i", stats.triangle_count);
-            ImGui::Text("draws %i", stats.drawcall_count);
-
-            // camera viewer
-			ImGui::Text("Camera Yaw: ", yawToDegrees);
-			ImGui::Text("Camera Pitch: ", pitchToDegrees);
-			ImGui::Text("Camera X: ", mainCamera.position.x);
-			ImGui::Text("Camera Y: ", mainCamera.position.y);
-			ImGui::Text("Camera Z: ", mainCamera.position.z);
-            ImGui::End();
-		}
-
-		ImGui::End();
-
-        //make imgui calculate internal draw structures
-        ImGui::Render();
-
-        draw();
-
-        auto end = std::chrono::system_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
         stats.frametime = elapsed.count() / 1000.0f;
-
     }
-*/
 }
 
 /**********************************
 *         Init Funcitons
 **********************************/
 
-bool is_visible(const RenderObject& obj, const glm::mat4& viewproj) {
-    std::array<glm::vec3, 8> corners {
-        glm::vec3 { 1, 1, 1 },
-        glm::vec3 { 1, 1, -1 },
-        glm::vec3 { 1, -1, 1 },
-        glm::vec3 { 1, -1, -1 },
-        glm::vec3 { -1, 1, 1 },
-        glm::vec3 { -1, 1, -1 },
-        glm::vec3 { -1, -1, 1 },
-        glm::vec3 { -1, -1, -1 },
-    };
+// init a default triangle
+void VulkanEngine::initDefaultData() {
+    // init data
+    testMeshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
 
-    glm::mat4 matrix = viewproj * obj.transform;
+    // white image
+    uint32_t white = glm::packUnorm4x8(glm::vec4(1, 1, 1, 1));
+    _whiteImage = createImage((void*)&white, VkExtent3D{ 1, 1, 1}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
 
-    glm::vec3 min = { 1.5, 1.5, 1.5 };
-    glm::vec3 max = { -1.5, -1.5, -1.5 };
+    // grey image
+    uint32_t grey = glm::packUnorm4x8(glm::vec4(0.66f, 0.66f, 0.66f, 1));
+	_greyImage = createImage((void*)&grey, VkExtent3D{ 1, 1, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
 
-    for (int c = 0; c < 8; c++) {
-        // project each corner into clip space
-        glm::vec4 v = matrix * glm::vec4(obj.bounds.origin + (corners[c] * obj.bounds.extents), 1.f);
+    // black image
+	uint32_t black = glm::packUnorm4x8(glm::vec4(0, 0, 0, 0));
+	_blackImage = createImage((void*)&black, VkExtent3D{ 1, 1, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        // perspective correction
-        v.x = v.x / v.w;
-        v.y = v.y / v.w;
-        v.z = v.z / v.w;
+    //checkerboard image
+	uint32_t magenta = glm::packUnorm4x8(glm::vec4(1, 0, 1, 1));
+	std::array<uint32_t, 16 *16 > pixels; //for 16x16 checkerboard texture
+	for (int x = 0; x < 16; x++) {
+		for (int y = 0; y < 16; y++) {
+			pixels[y*16 + x] = ((x % 2) ^ (y % 2)) ? magenta : black;
+		}
+	}
+	_errorCheckerboardImage = createImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
 
-        min = glm::min(glm::vec3 { v.x, v.y, v.z }, min);
-        max = glm::max(glm::vec3 { v.x, v.y, v.z }, max);
-    }
+    // nearest and linear samplers
+    VkSamplerCreateInfo sampler{};
+    sampler.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+    sampler.magFilter = VK_FILTER_NEAREST;
+    sampler.minFilter = VK_FILTER_NEAREST;
 
-    // check the clip space box is within the view
-    if (min.z > 1.f || max.z < 0.f || min.x > 1.f || max.x < -1.f || min.y > 1.f || max.y < -1.f) {
-        return false;
-    } else {
-        return true;
-    }
+    vkCreateSampler(_device, &sampler, nullptr, &_defaultSamplerNearest);
+
+    sampler.magFilter = VK_FILTER_LINEAR;
+	sampler.minFilter = VK_FILTER_LINEAR;
+	vkCreateSampler(_device, &sampler, nullptr, &_defaultSamplerLinear);
+
+	_mainDeletionQueue.push_function([&](){
+		vkDestroySampler(_device, _defaultSamplerNearest,nullptr);
+		vkDestroySampler(_device, _defaultSamplerLinear,nullptr);
+
+		destroyImage(_whiteImage);
+		destroyImage(_greyImage);
+		destroyImage(_blackImage);
+		destroyImage(_errorCheckerboardImage);
+	});
+
+    GLTFMetallic_Roughness::MaterialResources materialResources;
+	// default the material textures
+	materialResources.colorImage = _whiteImage;
+	materialResources.colorSampler = _defaultSamplerLinear;
+	materialResources.metalRoughImage = _whiteImage;
+	materialResources.metalRoughSampler = _defaultSamplerLinear;
+
+	// set the uniform buffer for the material data
+	AllocatedBuffer materialConstants = createBuffer(sizeof(GLTFMetallic_Roughness::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+	// write the buffer
+	GLTFMetallic_Roughness::MaterialConstants* sceneUniformData = (GLTFMetallic_Roughness::MaterialConstants*)materialConstants.allocation->GetMappedData();
+	sceneUniformData->colorFactors = glm::vec4{1,1,1,1};
+	sceneUniformData->metal_rough_factors = glm::vec4{1,0.5,0,0};
+
+	_mainDeletionQueue.push_function([=]() {
+		destroyBuffer(materialConstants);
+	});
+
+	materialResources.dataBuffer = materialConstants.buffer;
+	materialResources.dataBufferOffset = 0;
+
+	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::MainColor, materialResources, _descriptorAllocator);
+
+    // creates a new parent node for every single mesh we have available
+    for (auto& m : testMeshes) {
+		std::shared_ptr<MeshNode> newNode = std::make_shared<MeshNode>();
+		newNode->mesh = m;
+
+		newNode->localTransform = glm::mat4{ 1.f };
+		newNode->worldTransform = glm::mat4{ 1.f };
+
+		for (auto& s : newNode->mesh->surfaces) {
+			s.material = std::make_shared<GLTFMaterial>();
+			s.material->data = defaultData;
+		}
+
+        // this is a root node that represents the beginning of a MeshNode
+		loadedNodes[m->name] = std::move(newNode);
+	}
 }
 
 void VulkanEngine::initVulkan() {
@@ -740,6 +726,45 @@ void VulkanEngine::initImgui() {
 /**********************************
 *        Helper Functions
 **********************************/
+
+bool is_visible(const RenderObject& obj, const glm::mat4& viewproj) {
+    std::array<glm::vec3, 8> corners {
+        glm::vec3 { 1, 1, 1 },
+        glm::vec3 { 1, 1, -1 },
+        glm::vec3 { 1, -1, 1 },
+        glm::vec3 { 1, -1, -1 },
+        glm::vec3 { -1, 1, 1 },
+        glm::vec3 { -1, 1, -1 },
+        glm::vec3 { -1, -1, 1 },
+        glm::vec3 { -1, -1, -1 },
+    };
+
+    glm::mat4 matrix = viewproj * obj.transform;
+
+    glm::vec3 min = { 1.5, 1.5, 1.5 };
+    glm::vec3 max = { -1.5, -1.5, -1.5 };
+
+    for (int c = 0; c < 8; c++) {
+        // project each corner into clip space
+        glm::vec4 v = matrix * glm::vec4(obj.bounds.origin + (corners[c] * obj.bounds.extents), 1.f);
+
+        // perspective correction
+        v.x = v.x / v.w;
+        v.y = v.y / v.w;
+        v.z = v.z / v.w;
+
+        min = glm::min(glm::vec3 { v.x, v.y, v.z }, min);
+        max = glm::max(glm::vec3 { v.x, v.y, v.z }, max);
+    }
+
+    // check the clip space box is within the view
+    if (min.z > 1.f || max.z < 0.f || min.x > 1.f || max.x < -1.f || min.y > 1.f || max.y < -1.f) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 // create swap chain
 void VulkanEngine::createSwapchain(uint32_t width, uint32_t height) {
     vkb::SwapchainBuilder swapchainBuilder { _physicalDevice, _device, _surface };
@@ -750,7 +775,7 @@ void VulkanEngine::createSwapchain(uint32_t width, uint32_t height) {
     // swap chain with desired format, present mode, and extent
     vkb::Swapchain swapchain = swapchainBuilder
         .set_desired_format(VkSurfaceFormatKHR{ .format = _swapchainImageFormat, .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
-        .set_desired_present_mode(VK_PRESENT_MODE_MAILBOX_KHR)
+        .set_desired_present_mode(VK_PRESENT_MODE_IMMEDIATE_KHR) // VK_PRESENT_MODE_MAILBOX_KHR
         .set_desired_extent(width, height)
         .add_image_usage_flags(VK_IMAGE_USAGE_TRANSFER_DST_BIT)
         .build()
@@ -1025,97 +1050,6 @@ void VulkanEngine::initMeshPipeline() {
 	});
 }
 
-// init a default triangle
-void VulkanEngine::initDefaultData() {
-    // init data
-    testMeshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
-
-    // white image
-    uint32_t white = glm::packUnorm4x8(glm::vec4(1, 1, 1, 1));
-    _whiteImage = createImage((void*)&white, VkExtent3D{ 1, 1, 1}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
-
-    // grey image
-    uint32_t grey = glm::packUnorm4x8(glm::vec4(0.66f, 0.66f, 0.66f, 1));
-	_greyImage = createImage((void*)&grey, VkExtent3D{ 1, 1, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
-
-    // black image
-	uint32_t black = glm::packUnorm4x8(glm::vec4(0, 0, 0, 0));
-	_blackImage = createImage((void*)&black, VkExtent3D{ 1, 1, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
-
-    //checkerboard image
-	uint32_t magenta = glm::packUnorm4x8(glm::vec4(1, 0, 1, 1));
-	std::array<uint32_t, 16 *16 > pixels; //for 16x16 checkerboard texture
-	for (int x = 0; x < 16; x++) {
-		for (int y = 0; y < 16; y++) {
-			pixels[y*16 + x] = ((x % 2) ^ (y % 2)) ? magenta : black;
-		}
-	}
-	_errorCheckerboardImage = createImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
-
-    // nearest and linear samplers
-    VkSamplerCreateInfo sampler{};
-    sampler.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    sampler.magFilter = VK_FILTER_NEAREST;
-    sampler.minFilter = VK_FILTER_NEAREST;
-
-    vkCreateSampler(_device, &sampler, nullptr, &_defaultSamplerNearest);
-
-    sampler.magFilter = VK_FILTER_LINEAR;
-	sampler.minFilter = VK_FILTER_LINEAR;
-	vkCreateSampler(_device, &sampler, nullptr, &_defaultSamplerLinear);
-
-	_mainDeletionQueue.push_function([&](){
-		vkDestroySampler(_device, _defaultSamplerNearest,nullptr);
-		vkDestroySampler(_device, _defaultSamplerLinear,nullptr);
-
-		destroyImage(_whiteImage);
-		destroyImage(_greyImage);
-		destroyImage(_blackImage);
-		destroyImage(_errorCheckerboardImage);
-	});
-
-    GLTFMetallic_Roughness::MaterialResources materialResources;
-	// default the material textures
-	materialResources.colorImage = _whiteImage;
-	materialResources.colorSampler = _defaultSamplerLinear;
-	materialResources.metalRoughImage = _whiteImage;
-	materialResources.metalRoughSampler = _defaultSamplerLinear;
-
-	// set the uniform buffer for the material data
-	AllocatedBuffer materialConstants = createBuffer(sizeof(GLTFMetallic_Roughness::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
-	// write the buffer
-	GLTFMetallic_Roughness::MaterialConstants* sceneUniformData = (GLTFMetallic_Roughness::MaterialConstants*)materialConstants.allocation->GetMappedData();
-	sceneUniformData->colorFactors = glm::vec4{1,1,1,1};
-	sceneUniformData->metal_rough_factors = glm::vec4{1,0.5,0,0};
-
-	_mainDeletionQueue.push_function([=]() {
-		destroyBuffer(materialConstants);
-	});
-
-	materialResources.dataBuffer = materialConstants.buffer;
-	materialResources.dataBufferOffset = 0;
-
-	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::MainColor, materialResources, _descriptorAllocator);
-
-    // creates a new parent node for every single mesh we have available
-    for (auto& m : testMeshes) {
-		std::shared_ptr<MeshNode> newNode = std::make_shared<MeshNode>();
-		newNode->mesh = m;
-
-		newNode->localTransform = glm::mat4{ 1.f };
-		newNode->worldTransform = glm::mat4{ 1.f };
-
-		for (auto& s : newNode->mesh->surfaces) {
-			s.material = std::make_shared<GLTFMaterial>();
-			s.material->data = defaultData;
-		}
-
-        // this is a root node that represents the beginning of a MeshNode
-		loadedNodes[m->name] = std::move(newNode);
-	}
-}
-
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     // clock
     stats.drawcall_count = 0;
@@ -1127,10 +1061,11 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     std::vector<uint32_t> opaqueDraws;
     opaqueDraws.reserve(mainDrawContext.OpaqueSurfaces.size());
 
+    // frustum culling
     for (uint32_t i = 0; i < mainDrawContext.OpaqueSurfaces.size(); i++) {
         if (is_visible(mainDrawContext.OpaqueSurfaces[i], sceneData.viewproj)) {
             opaqueDraws.push_back(i);
-       }
+        }
     }
 
     std::sort(opaqueDraws.begin(), opaqueDraws.end(), [&](const auto& iA, const auto& iB) {
@@ -1143,6 +1078,16 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             return A.material < B.material;
         }
     });
+
+    // transparent render object culling
+    std::vector<uint32_t> transparentDraws;
+    transparentDraws.reserve(mainDrawContext.TransparentSurfaces.size());
+
+    for (uint32_t i = 0; i < mainDrawContext.TransparentSurfaces.size(); i++) {
+        if (is_visible(mainDrawContext.TransparentSurfaces[i], sceneData.viewproj)) {
+            transparentDraws.push_back(i);
+        }
+    }
 
     VkRenderingAttachmentInfo colorAttachment{};
     colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -1247,9 +1192,10 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             
             vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
         }
-
+ 
         // transparent objects
-        for (const RenderObject& draw : mainDrawContext.TransparentSurfaces) {
+        for (auto& r : transparentDraws) {
+            const auto& draw = mainDrawContext.TransparentSurfaces[r];
             // rebind pipeline and descriptors if the material changed
             if (draw.material != lastMaterial) {
                 lastMaterial = draw.material;
@@ -1302,12 +1248,16 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             stats.drawcall_count++;
             stats.triangle_count += draw.indexCount / 3;   
         }
+
+        mainDrawContext.OpaqueSurfaces.clear();
+        mainDrawContext.TransparentSurfaces.clear();
+
 	vkCmdEndRendering(cmd);
 
     // clock
     auto end = std::chrono::system_clock::now();
-
     auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
     stats.mesh_draw_time = elapsed.count() / 1000.f;
 }
 
@@ -1712,13 +1662,6 @@ void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
 
 void VulkanEngine::updateScene() {
     // clock
-    stats.drawcall_count = 0;
-    stats.triangle_count = 0;
-
-    auto start = std::chrono::system_clock::now();
-
-	mainDrawContext.OpaqueSurfaces.clear();
-	mainDrawContext.TransparentSurfaces.clear();
     mainCamera.update();
 
     glm::mat4 view = mainCamera.getViewMatrix();
@@ -1729,14 +1672,6 @@ void VulkanEngine::updateScene() {
 	// camera projection
 	sceneData.proj = proj;
     sceneData.view = view;
-    glm::mat4 model = glm::rotate(glm::radians(1.0f) * _rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-
-    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    // loadedScenes["country"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-	// invert the Y direction on projection matrix so that we are more similar
-	// to opengl and gltf axis
-    // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
-    
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
@@ -1744,7 +1679,9 @@ void VulkanEngine::updateScene() {
 	sceneData.sunlightColor = glm::vec4(1.f);
 	sceneData.sunlightDirection = glm::vec4(0,1,0.5,1.f);
 
-    auto end = std::chrono::system_clock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    stats.scene_update_time = elapsed.count() / 1000.f;
+    // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+	// invert the Y direction on projection matrix so that we are more similar
+	// to opengl and gltf axis
+    loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
 }
