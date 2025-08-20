@@ -1,3 +1,0 @@
-C:\msys64\mingw64\bin\cmake.exe -E rm -f CMakeFiles\SDL2.dir/objects.a
-C:\msys64\mingw64\bin\ar.exe qc CMakeFiles\SDL2.dir/objects.a @CMakeFiles\SDL2.dir\objects1.rsp
-C:\msys64\mingw64\bin\gcc.exe  -idirafter "C:/Users/franc/Documents/Personal_Projects/Real-Time-Vulkan-Simulation-Engine/libraries/SDL/src/video/khronos"  -Wall -fno-strict-aliasing -Wdeclaration-after-statement -Wshadow -Wno-unused-local-typedefs -mmmx -m3dnow -msse -msse2 -msse3  -DSDL_BUILD_MAJOR_VERSION=2 -DSDL_BUILD_MINOR_VERSION=28 -DSDL_BUILD_MICRO_VERSION=4 -g -gdwarf-4 -static-libgcc -shared -o SDL2d.dll -Wl,--out-implib,libSDL2d.dll.a -Wl,--major-image-version,2,--minor-image-version,28 -Wl,--whole-archive CMakeFiles\SDL2.dir/objects.a -Wl,--no-whole-archive @CMakeFiles\SDL2.dir\linkLibs.rsp
