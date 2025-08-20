@@ -48,6 +48,8 @@ An onging C++17 Vulkan renderer.
 * CMake VERSION 3.26
 * Vulkan SDK (with volk)
 * C++17 Compiler
+* Delete .EXE in Build Folder
+* Include glfw3.dll in Build Folder (libraries/GLFW/bin)
 
 ## Additional Documentation and Acknowledgments
 * VkGuide
