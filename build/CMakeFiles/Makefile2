@@ -138,10 +138,10 @@ libraries/fmt/clean: libraries/fmt/CMakeFiles/fmt.dir/clean
 # Target rules for target CMakeFiles/real-time-vulkan-simulation-engine.dir
 
 # All Build rule for target.
-CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all
-CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/SDL/CMakeFiles/SDL2.dir/all
 CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/fastgltf/CMakeFiles/fastgltf.dir/all
+CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/SDL/CMakeFiles/SDL2.dir/all
 CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/fmt/CMakeFiles/fmt.dir/all
+CMakeFiles/real-time-vulkan-simulation-engine.dir/all: libraries/fastgltf/CMakeFiles/fastgltf_simdjson.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\real-time-vulkan-simulation-engine.dir\build.make CMakeFiles/real-time-vulkan-simulation-engine.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=C:\Users\franc\Documents\Personal_Projects\Real-Time-Vulkan-Simulation-Engine\build\CMakeFiles --progress-num=70,71,72,73,74,75 "Built target real-time-vulkan-simulation-engine"
