@@ -66,7 +66,6 @@ struct EngineStats {
     float frametime;
     int triangle_count;
     int drawcall_count;
-    float scene_update_time;
     float mesh_draw_time;
 };
 
@@ -75,6 +74,7 @@ public:
     bool _isInitialized { false };
     VkExtent2D _windowExtent{ 1700, 900 };
     int _rotation { 0 }; // imGui
+    VkSampleCountFlagBits _maxSamples;
     
 
     // glfw window
@@ -112,6 +112,7 @@ public:
     // memory allocator for buffers and images
     VmaAllocator _allocator;
     AllocatedImage _drawImage;
+    AllocatedImage _resolveImage;
     AllocatedImage _depthImage;
     VkExtent2D _drawExtent;
     float renderScale = 1.0f;
@@ -184,6 +185,7 @@ public:
     void initSwapchain();
     void createSwapchain(uint32_t width, uint32_t height);
     void createDrawImage(uint32_t width, uint32_t height);
+    void createResolveImage(uint32_t width, uint32_t height);
     void initCommands();
     void initSyncStructures();
     void initDescriptors();
@@ -193,14 +195,14 @@ public:
     void initMeshPipeline();
 
     // helpers
-    // void initWindow(GLFWwindow** window, int width, int height);
-    // void createSurface(VkInstance& instance, GLFWwindow*& window, VkSurfaceKHR* surface);
     void drawBackground(VkCommandBuffer commandBuffer);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
+    bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
+    VkSampleCountFlagBits getMaxUsableSampleCount();
 
     // cleanup
     void destroySwapchain();

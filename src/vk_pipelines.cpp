@@ -139,10 +139,10 @@ void PipelineBuilder::setMultisamplingNone() {
     _multisampling.alphaToOneEnable = VK_FALSE;
 }
 
-void PipelineBuilder::enableMultisampling() {
+void PipelineBuilder::enableMultisampling(VkSampleCountFlagBits sampleCount) {
     _multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     _multisampling.sampleShadingEnable = VK_FALSE;
-    _multisampling.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    _multisampling.rasterizationSamples = sampleCount;
     _multisampling.minSampleShading = 1.0f;
     _multisampling.pSampleMask = nullptr;
     // no alpha to coverage either

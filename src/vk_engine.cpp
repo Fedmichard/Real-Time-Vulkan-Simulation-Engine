@@ -69,10 +69,10 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
-    auto gmodFile = loadGltf(this, gmodPath);
-    assert(gmodFile.has_value());
-    loadedScenes["gmod"] = *gmodFile;
+    std::string structurePath = { "..\\assets\\structure.glb" };
+    auto structureFile = loadGltf(this, structurePath);
+    assert(structureFile.has_value());
+    loadedScenes["structure"] = *structureFile;
     
     /*
     std::string structurePath = { "..\\assets\\structure.glb" };
@@ -179,25 +179,29 @@ void VulkanEngine::draw() {
 
     // now we can record draw commands into buffer
     VK_CHECK(vkBeginCommandBuffer(cmd, &beginInfo));
-
-    // transition the image into one that can be drawn to
-    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
-
-    drawBackground(cmd);
-
+    /** need to implement a way to draw to the background later using instructions sent to cairo
+     * transition the image into one that can be drawn to
+     * vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+     * vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL); <-- _backgroundImage.image
+     * 
+     * drawBackground(cmd);
+    */
+    
     // transition to draw geometry
-    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    // transition to draw geometry for resolve image too
+    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition depth attachment image
     vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
 
     drawGeometry(cmd);
 
     // transition the _drawImage.image for transfer src
-    vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
     // transition _swapchainImages into transfer dst
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     // copy drawimage into swapchain image
-    vkutil::copyImageToImage(cmd, _drawImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
+    vkutil::copyImageToImage(cmd, _resolveImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
     // now that we copied from our draw image into swapchain image we transition it again so we can draw it correct format for imgui
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
@@ -325,28 +329,15 @@ void VulkanEngine::run() {
             
 			ImGui::SliderInt("Model Rotation", &_rotation, 0, 1800);
 
-            // temp
-            float yawToDegrees = (mainCamera.yaw * 180/M_PI);
-            float* yawDegrees = &(yawToDegrees);
-            float pitchToDegrees = (mainCamera.pitch * 180/M_PI);
-            float* pitchDegrees = &(pitchToDegrees);
-
             // stats
             ImGui::Begin("Stats");
 
             ImGui::Text("%f fps", 1000 / stats.frametime);
             ImGui::Text("frametime %f ms", stats.frametime);
             ImGui::Text("draw time %f ms", stats.mesh_draw_time);
-            ImGui::Text("update time %f ms", stats.scene_update_time);
             ImGui::Text("triangles %i", stats.triangle_count);
             ImGui::Text("draws %i", stats.drawcall_count);
 
-            // camera viewer
-			ImGui::Text("Camera Yaw: ", yawToDegrees);
-			ImGui::Text("Camera Pitch: ", pitchToDegrees);
-			ImGui::Text("Camera X: ", mainCamera.position.x);
-			ImGui::Text("Camera Y: ", mainCamera.position.y);
-			ImGui::Text("Camera Z: ", mainCamera.position.z);
             ImGui::End();
 		}
 
@@ -527,11 +518,16 @@ void VulkanEngine::initVulkan() {
 }
 
 void VulkanEngine::initSwapchain() {
+    _maxSamples = getMaxUsableSampleCount();
     createSwapchain(_windowExtent.width, _windowExtent.height);
+    createResolveImage(_windowExtent.width, _windowExtent.height);
     createDrawImage(_windowExtent.width, _windowExtent.height);
 
     // add to deletion queues
     _mainDeletionQueue.push_function([=]() {
+        vkDestroyImageView(_device, _resolveImage.imageView, nullptr);
+        vmaDestroyImage(_allocator, _resolveImage.image, _resolveImage.allocation);
+
         vkDestroyImageView(_device, _drawImage.imageView, nullptr);
         vmaDestroyImage(_allocator, _drawImage.image, _drawImage.allocation);
 
@@ -626,8 +622,8 @@ void VulkanEngine::initDescriptors() {
     _descriptorAllocator.init(_device, 10, sizes);
     _drawImageDescriptorSet = _descriptorAllocator.allocate(_device, _drawImageDescriptorLayout);
 
-    // update descriptor set
-    _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
+    // update descriptor set for background pipeline later
+    _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); // <-- _backgroundImage
     _descriptorWriter.updateSet(_device, _drawImageDescriptorSet);
 
     _mainDeletionQueue.push_function([&]() {
@@ -727,7 +723,35 @@ void VulkanEngine::initImgui() {
 *        Helper Functions
 **********************************/
 
-bool is_visible(const RenderObject& obj, const glm::mat4& viewproj) {
+VkSampleCountFlagBits VulkanEngine::getMaxUsableSampleCount() {
+    VkPhysicalDeviceProperties physicalDeviceProperties;
+    vkGetPhysicalDeviceProperties(_physicalDevice, &physicalDeviceProperties);
+
+    VkSampleCountFlags counts = physicalDeviceProperties.limits.framebufferColorSampleCounts & physicalDeviceProperties.limits.framebufferDepthSampleCounts;
+
+    if (counts & VK_SAMPLE_COUNT_64_BIT) {
+        return VK_SAMPLE_COUNT_64_BIT;
+    }
+    if (counts & VK_SAMPLE_COUNT_32_BIT) {
+        return VK_SAMPLE_COUNT_32_BIT;
+    }
+    if (counts & VK_SAMPLE_COUNT_16_BIT) {
+        return VK_SAMPLE_COUNT_16_BIT;
+    }
+    if (counts & VK_SAMPLE_COUNT_8_BIT) {
+        return VK_SAMPLE_COUNT_8_BIT;
+    }
+    if (counts & VK_SAMPLE_COUNT_4_BIT) {
+        return VK_SAMPLE_COUNT_4_BIT;
+    }
+    if (counts & VK_SAMPLE_COUNT_2_BIT) {
+        return VK_SAMPLE_COUNT_2_BIT;
+    }
+    
+    return VK_SAMPLE_COUNT_1_BIT;
+}
+
+bool VulkanEngine::is_visible(const RenderObject& obj, const glm::mat4& viewproj) {
     std::array<glm::vec3, 8> corners {
         glm::vec3 { 1, 1, 1 },
         glm::vec3 { 1, 1, -1 },
@@ -811,9 +835,9 @@ void VulkanEngine::createDrawImage(uint32_t width, uint32_t height) {
     imgInfo.imageType = VK_IMAGE_TYPE_2D;
     imgInfo.format = _drawImage.imageFormat;
     imgInfo.extent = drawImageExtent;
-    imgInfo.mipLevels = 1; // no mipmapping yet
+    imgInfo.mipLevels = 1;
     imgInfo.arrayLayers = 1;
-    imgInfo.samples = VK_SAMPLE_COUNT_1_BIT; // no multisampling yet
+    imgInfo.samples = _maxSamples; // no multisampling yet
     imgInfo.tiling = VK_IMAGE_TILING_OPTIMAL; // used for optimal gpu reading
     imgInfo.usage = drawImageUsages;
 
@@ -855,7 +879,7 @@ void VulkanEngine::createDrawImage(uint32_t width, uint32_t height) {
     depthInfo.extent = drawImageExtent;
     depthInfo.mipLevels = 1;
     depthInfo.arrayLayers = 1;
-    depthInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthInfo.samples = _maxSamples;
     depthInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
     depthInfo.usage = depthImageUsages;
 
@@ -873,6 +897,57 @@ void VulkanEngine::createDrawImage(uint32_t width, uint32_t height) {
     depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 
     VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthImage.imageView));
+}
+
+void VulkanEngine::createResolveImage(uint32_t width, uint32_t height) {
+    VkExtent3D drawImageExtent;
+    drawImageExtent.width = _windowExtent.width;
+    drawImageExtent.height = _windowExtent.height;
+    drawImageExtent.depth = 1;
+
+    // hard coding draw format to VK_FORMAT_R16G16B16A16_SFLOAT from VK_FORMAT_B8G8R8A8_UNORM
+    _resolveImage.imageFormat = VK_FORMAT_R16G16B16A16_SFLOAT;
+    _resolveImage.imageExtent = drawImageExtent;
+
+    VkImageUsageFlags resolveImageUsages{};
+	resolveImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+	resolveImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	resolveImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
+	resolveImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
+
+    // image create info
+    /* abstract later */
+    VkImageCreateInfo imgInfo{};
+    imgInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    imgInfo.imageType = VK_IMAGE_TYPE_2D;
+    imgInfo.format = _resolveImage.imageFormat;
+    imgInfo.extent = drawImageExtent;
+    imgInfo.mipLevels = 1;
+    imgInfo.arrayLayers = 1;
+    imgInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    imgInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    imgInfo.usage = resolveImageUsages;
+
+    // allocation info for gpu
+    VmaAllocationCreateInfo resolveAlloc{};
+    resolveAlloc.usage = VMA_MEMORY_USAGE_GPU_ONLY; 
+    resolveAlloc.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    // create the image and allocate it on the gpu 
+    vmaCreateImage(_allocator, &imgInfo, &resolveAlloc, &_resolveImage.image, &_resolveImage.allocation, nullptr);
+
+    VkImageViewCreateInfo resolveImgView{};
+    resolveImgView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    resolveImgView.image = _resolveImage.image;
+    resolveImgView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    resolveImgView.format = _resolveImage.imageFormat;
+    resolveImgView.subresourceRange.baseMipLevel = 0;
+    resolveImgView.subresourceRange.levelCount = 1;
+    resolveImgView.subresourceRange.baseArrayLayer = 0;
+    resolveImgView.subresourceRange.layerCount = 1;
+    resolveImgView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+    VK_CHECK(vkCreateImageView(_device, &resolveImgView, nullptr, &_resolveImage.imageView));
 }
 
 // init background pipelines
@@ -972,13 +1047,13 @@ void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer) {
     // bind the gradient drawing compute pipeline
     vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, backgroundEffects[currentBackgroundIndex].pipeline);
 
-    // bind the descriptor set containing the draw image for the compute pipeline
-    vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, _gradientPipelineLayout, 0, 1, &_drawImageDescriptorSet, 0, nullptr);
+        // bind the descriptor set containing the draw image for the compute pipeline
+        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, _gradientPipelineLayout, 0, 1, &_drawImageDescriptorSet, 0, nullptr);
 
-    vkCmdPushConstants(commandBuffer, _gradientPipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(ComputePushConstants), &effect.data);
+        vkCmdPushConstants(commandBuffer, _gradientPipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(ComputePushConstants), &effect.data);
 
-    // execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
-	vkCmdDispatch(commandBuffer, std::ceil(_drawExtent.width / 16.0), std::ceil(_drawExtent.height / 16.0), 1);
+        // execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
+        vkCmdDispatch(commandBuffer, std::ceil(_drawExtent.width / 16.0), std::ceil(_drawExtent.height / 16.0), 1);
 }
 
 // init pipeline for model loading
@@ -1024,7 +1099,8 @@ void VulkanEngine::initMeshPipeline() {
 	//no backface culling
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
 	//no multisampling
-	pipelineBuilder.setMultisamplingNone();
+	// pipelineBuilder.setMultisamplingNone();
+    pipelineBuilder.enableMultisampling(_maxSamples);
 	//no blending
 	pipelineBuilder.disableBlending();
     // pipelineBuilder.enableBlendingAdditive();
@@ -1093,8 +1169,13 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
     colorAttachment.imageView = _drawImage.imageView;
     colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    colorAttachment.resolveMode = VK_RESOLVE_MODE_AVERAGE_BIT;
+    colorAttachment.resolveImageView = _resolveImage.imageView;
+    colorAttachment.resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    // colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 
     VkRenderingAttachmentInfo depthAttachment{};
     depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -1491,6 +1572,7 @@ void VulkanEngine::recreateSwapChain() {
 
     // destroy the old draw image and depth image
     destroyImage(_drawImage);
+    destroyImage(_resolveImage);
     destroyImage(_depthImage);
 
     // get the new window size and set new resolution
@@ -1506,10 +1588,13 @@ void VulkanEngine::recreateSwapChain() {
     // create new swapchain and draw/depth image
 	createSwapchain(_windowExtent.width, _windowExtent.height);
     createDrawImage(_drawExtent.width, _drawExtent.height);
+    createResolveImage(_drawExtent.width, _drawExtent.height);
 
-    // rewrite the descriptor for background to new image
-    _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE);
-    _descriptorWriter.updateSet(_device, _drawImageDescriptorSet);
+    
+    /** rewrite the descriptor for background to new image
+     * _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); 
+     * _descriptorWriter.updateSet(_device, _drawImageDescriptorSet);
+    */
 
 	resizeReuqested = false;
 }
@@ -1582,7 +1667,8 @@ void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
 	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
-	pipelineBuilder.setMultisamplingNone();
+	// pipelineBuilder.setMultisamplingNone();
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
 	pipelineBuilder.disableBlending();
 	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
 
@@ -1679,8 +1765,8 @@ void VulkanEngine::updateScene() {
 	sceneData.sunlightColor = glm::vec4(1.f);
 	sceneData.sunlightDirection = glm::vec4(0,1,0.5,1.f);
 
-    // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
     loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);

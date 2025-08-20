@@ -30,7 +30,7 @@ public:
     void setDepthFormat(VkFormat format);
 
     // enable features
-    void enableMultisampling();
+    void enableMultisampling(VkSampleCountFlagBits sampleCount);
     void enableDepthTest(bool depthWriteEnable, VkCompareOp op);
     void enableBlendingAdditive();
     void enableBlendingAlpha();
