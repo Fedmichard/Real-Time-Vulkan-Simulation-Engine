@@ -3,46 +3,55 @@
 An onging C++17 Vulkan renderer.
 
 ## Features
- * Multiplatform (Windows, Linux, MacOS, 32bit and 64bit)
- * Multithreaded command buffers and thread safety
- * On the fly GLSL to SPIR-V compilation and reflection
- * Deferred physically based rendering (PBR)
- * Networking (HTTP, FTP, UDP, TCP)
- * Object serialization (JSON, XML)
- * Resource management using serialization
- * Event delegate callbacks with scoped functions
- * Bullet physics
- * Entity component system
- * Particle effect systems
- * File multi-path searching, and packaging
- * UI constraints system, and MSDF font rendering
- * Audio systems (flac, mp3, ogg, opus, wave)
- * Shadow mapping
- * Post effects pipeline (lensflare, glow, blur, SSAO, ...)
- * Model file loading (obj, glTF 2.0)
- * Animations loading (Collada)
- * Image file loading (png, jpeg, dng, tiff, OpenEXR, bmp, dds, ppm, tga)
+ *  Free Roam Camera System – Move and explore the scene freely
+ *  Draw Sorting – Efficient batching of opaque and transparent objects
+ *  Frustum Culling – Skip rendering objects outside the camera’s view
+ *  Anti-Aliasing (MSAA) – Up to 8× for smoother edges on my personal device
+ *  Texture Mipmapping – Better texture detail at varying distances
+ *  Custom Texture System – Manage texture assets with custom loaders
+ *  Mesh, GLTF, and GLB Loading – Import 3D models directly
+ *  Custom Compute Pipelines – Procedural background and experiments
+ *  Custom Graphics Pipelines – Opaque and transparent rendering paths
+ *  GPU Resource Helpers – Creation of buffers, uniform buffers, images, textures, etc
+ *  ImGui Integration – Real-time debug overlay and tools
+ *  RenderDoc Debugging Support – Frame capture and GPU analysis
+ *  Bindless rendering – Early work towards descriptor indexing and large-scale material/texture binding
 
 ## Screenshots
-
+<img width="1698" height="898" alt="image" src="https://github.com/user-attachments/assets/020423ae-d9a4-4e38-98a2-419eada35446" />
 
 ## Roadmap
-- [x] Add Changelog
-- [x] Add back to top links
-- [ ] Add Additional Templates w/ Examples
-- [ ] Add "components" document to easily copy & paste sections of the readme
+- [ ] GPU Driven Rendering
+- [ ] GPU Instancing
+- [ ] PBR Lighting and Shadings
+- [ ] Deferred Shading
+- [ ] Occlusion Culling
 - [ ] Anti-aliasing
     - [x] MSAA
     - [ ] TAA
     - [ ] SMAA
     - [ ] FXAA
+- [ ] UI Display
+    - [ ] Scene Changer
+    - [ ] Scene Graph View
+    - [ ] Dynamically Import Textures and Objects Into a Scene
+    - [ ] Debug Visualization
+    - [ ] Depth Buffer View
+    - [ ] Normal Map View
+    - [ ] UV Coordinate View
+    - [x] Scene Statistics
+    - [ ] Anti-aliasing Selection
+- [ ] GPU-Based Simulations
+- [ ] Engine Architecture Refactoring
      
 ## Installation and Compiling
-
-
+* CMake VERSION 3.26
+* Vulkan SDK (with volk)
+* C++17 Compiler
 
 ## Additional Documentation and Acknowledgments
-* Project folder on server:
-* Confluence link:
-* Asana board:
-* etc...
+* VkGuide
+* RenderDoc
+* Vulkan-Tutorial
+* Learnopengl
+* Vkdoc
