@@ -1,2 +1,0 @@
-C:\msys64\mingw64\bin\ar.exe qc libfastgltf.a CMakeFiles/fastgltf.dir/src/fastgltf.cpp.obj CMakeFiles/fastgltf.dir/src/base64.cpp.obj
-C:\msys64\mingw64\bin\ranlib.exe libfastgltf.a
