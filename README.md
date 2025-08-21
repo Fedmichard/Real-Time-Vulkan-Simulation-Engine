@@ -32,7 +32,6 @@ An onging C++17 Vulkan renderer.
     - [ ] SMAA
     - [ ] FXAA
     - [ ] SSAA
-    - [ ] ATAA
 - [ ] UI Display
     - [ ] Scene Changer
     - [ ] Scene Graph View

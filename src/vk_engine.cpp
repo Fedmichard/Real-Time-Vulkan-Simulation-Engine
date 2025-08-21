@@ -69,10 +69,10 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string structurePath = { "..\\assets\\structure.glb" };
-    auto structureFile = loadGltf(this, structurePath);
-    assert(structureFile.has_value());
-    loadedScenes["structure"] = *structureFile;
+    std::string gorillaPath = { "..\\assets\\gorilla-tag-map\\source\\gorilla_tag_map (1).glb" };
+    auto gorillaFile = loadGltf(this, gorillaPath);
+    assert(gorillaFile.has_value());
+    loadedScenes["gorilla"] = *gorillaFile;
     
     /*
     std::string structurePath = { "..\\assets\\structure.glb" };
@@ -388,11 +388,17 @@ void VulkanEngine::initDefaultData() {
 	}
 	_errorCheckerboardImage = createImage(pixels.data(), VkExtent3D{16, 16, 1}, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
 
+    // get max anisotropy via device
+    VkPhysicalDeviceProperties physicalDeviceProperties{};
+    vkGetPhysicalDeviceProperties(_physicalDevice, &physicalDeviceProperties);
+
     // nearest and linear samplers
     VkSamplerCreateInfo sampler{};
     sampler.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
     sampler.magFilter = VK_FILTER_NEAREST;
     sampler.minFilter = VK_FILTER_NEAREST;
+    sampler.anisotropyEnable = VK_TRUE;
+    sampler.maxAnisotropy = physicalDeviceProperties.limits.maxSamplerAnisotropy;
 
     vkCreateSampler(_device, &sampler, nullptr, &_defaultSamplerNearest);
 
@@ -483,12 +489,16 @@ void VulkanEngine::initVulkan() {
     features12.bufferDeviceAddress = VK_TRUE;
     features12.descriptorIndexing = VK_TRUE;
 
+    VkPhysicalDeviceFeatures features{};
+    features.samplerAnisotropy = VK_TRUE;
+
     // use vkbootstrap to select a physical device
     vkb::PhysicalDeviceSelector selector { instance };
     vkb::PhysicalDevice physicalDevice = selector
         .set_minimum_version(1, 3)
         .set_required_features_13(features13)
         .set_required_features_12(features12)
+        .set_required_features(features)
         .set_surface(_surface)
         .select()
         .value();
@@ -1765,7 +1775,8 @@ void VulkanEngine::updateScene() {
 	sceneData.sunlightColor = glm::vec4(1.f);
 	sceneData.sunlightDirection = glm::vec4(0,1,0.5,1.f);
 
-    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis
