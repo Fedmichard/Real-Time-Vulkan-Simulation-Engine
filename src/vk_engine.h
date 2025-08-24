@@ -119,6 +119,7 @@ public:
     AllocatedImage _drawImage;
     AllocatedImage _resolveImage;
     AllocatedImage _depthImage;
+    AllocatedImage _drawDepthImage;
     VkExtent2D _drawExtent;
     float renderScale = 1.0f;
 
@@ -152,9 +153,13 @@ public:
     std::vector<ComputeEffect> backgroundEffects;
     int currentBackgroundIndex{0};
 
-    // mesh pipeline
+    // pipelines
     VkPipeline _meshPipeline;
     VkPipelineLayout _meshPipelineLayout;
+    VkPipeline _depthPipeline;
+    VkPipelineLayout _depthPipelineLayout;
+
+    VkDescriptorSetLayout _depthDescriptorLayout;
 
     // test meshes
     std::vector<std::shared_ptr<MeshAsset>> testMeshes;
@@ -195,6 +200,7 @@ public:
     void createSwapchain(uint32_t width, uint32_t height);
     void createDrawImage(uint32_t width, uint32_t height);
     void createResolveImage(uint32_t width, uint32_t height);
+    void createDrawnDepthImage(uint32_t width, uint32_t height);
     void initCommands();
     void initSyncStructures();
     void initDescriptors();
@@ -202,12 +208,14 @@ public:
     void initBackgroundPipelines();
     void initImgui();
     void initMeshPipeline();
+    void initDepthPipeline();
 
     // helpers
     void drawBackground(VkCommandBuffer commandBuffer);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
+    void drawDepth(VkCommandBuffer cmd);
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);

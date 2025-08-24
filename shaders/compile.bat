@@ -6,4 +6,6 @@ C:/VulkanSDK/1.4.309.0/Bin/glslc.exe triangle_mesh.vert -o triangle_mesh.vert.sp
 C:/VulkanSDK/1.4.309.0/Bin/glslc.exe text_image.frag -o text_image.frag.spv
 C:/VulkanSDK/1.4.309.0/Bin/glslc.exe mesh.vert -o mesh.vert.spv
 C:/VulkanSDK/1.4.309.0/Bin/glslc.exe mesh.frag -o mesh.frag.spv
+C:/VulkanSDK/1.4.309.0/Bin/glslc.exe depth.vert -o depth.vert.spv
+C:/VulkanSDK/1.4.309.0/Bin/glslc.exe depth.frag -o depth.frag.spv
 pause
