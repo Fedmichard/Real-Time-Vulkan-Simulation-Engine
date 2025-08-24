@@ -15,11 +15,6 @@
 #include <thread>
 #include <iostream>
 
-#include "imgui.h"
-#include "imgui_impl_sdl2.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_vulkan.h"
-
 #include "VkBootstrap.h"
 
 #include "vk_types.h"
@@ -69,12 +64,17 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string gorillaPath = { "..\\assets\\gorilla-tag-map\\source\\gorilla_tag_map (1).glb" };
-    auto gorillaFile = loadGltf(this, gorillaPath);
-    assert(gorillaFile.has_value());
-    loadedScenes["gorilla"] = *gorillaFile;
+    std::string structurePath = { "..\\assets\\structure.glb" };
+    auto structureFile = loadGltf(this, structurePath);
+    assert(structureFile.has_value());
+    loadedScenes["structure"] = *structureFile;
     
     /*
+    std::string sponzaPath = { "..\\assets\\sponza\\source\\scene.gltf" };
+    auto sponzaFile = loadGltf(this, sponzaPath);
+    assert(sponzaFile.has_value());
+    loadedScenes["sponza"] = *sponzaFile;
+
     std::string structurePath = { "..\\assets\\structure.glb" };
     auto structureFile = loadGltf(this, structurePath);
     assert(structureFile.has_value());
@@ -205,6 +205,10 @@ void VulkanEngine::draw() {
     // now that we copied from our draw image into swapchain image we transition it again so we can draw it correct format for imgui
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
+    // for drawing to imgui
+    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
     drawImgui(cmd, _swapchainImageViews[swapchainImageIndex]);
 
     // now set swapchain image for presentation
@@ -326,8 +330,14 @@ void VulkanEngine::run() {
 			ImGui::InputFloat4("data2",(float*)& selected.data.data2);
 			ImGui::InputFloat4("data3",(float*)& selected.data.data3);
 			ImGui::InputFloat4("data4",(float*)& selected.data.data4);
-            
-			ImGui::SliderInt("Model Rotation", &_rotation, 0, 1800);
+
+            // auto depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+            // image views
+            ImGui::Text("Swapchain Image:");
+            ImGui::Image(_normalImageId, {320, 180}); // normal image
+            ImGui::Text("Depth Image:");
+            ImGui::Image(_depthImageId, {320, 180}); // depth image
 
             // stats
             ImGui::Begin("Stats");
@@ -721,6 +731,10 @@ void VulkanEngine::initImgui() {
 	initInfo.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
 
 	ImGui_ImplVulkan_Init(&initInfo);
+
+    // image views
+    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	// add the destroy the imgui created structures
 	_mainDeletionQueue.push_function([=]() {
@@ -1600,6 +1614,9 @@ void VulkanEngine::recreateSwapChain() {
     createDrawImage(_drawExtent.width, _drawExtent.height);
     createResolveImage(_drawExtent.width, _drawExtent.height);
 
+    // recreate image
+    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     
     /** rewrite the descriptor for background to new image
      * _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); 
@@ -1775,8 +1792,9 @@ void VulkanEngine::updateScene() {
 	sceneData.sunlightColor = glm::vec4(1.f);
 	sceneData.sunlightDirection = glm::vec4(0,1,0.5,1.f);
 
-    loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 	// invert the Y direction on projection matrix so that we are more similar
 	// to opengl and gltf axis

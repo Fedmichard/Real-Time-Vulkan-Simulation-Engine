@@ -5,6 +5,11 @@
 #include "vk_loader.h"
 #include "camera.h"
 
+#include "imgui.h"
+#include "imgui_impl_sdl2.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+
 constexpr unsigned int MAX_FRAMES = 2;
 
 struct GLTFMetallic_Roughness {
@@ -177,6 +182,10 @@ public:
 
     // engine
     EngineStats stats;
+
+    // imgui
+    ImTextureRef _normalImageId;
+    ImTextureRef _depthImageId;
 
     void updateScene();
 
