@@ -23,7 +23,7 @@
 #include "vk_pipelines.h"
 
 
-constexpr bool bUseValidationLayers = false;
+constexpr bool bUseValidationLayers = true;
 
 VulkanEngine* loadedEngine = nullptr;
 /**********************************
@@ -190,10 +190,9 @@ void VulkanEngine::draw() {
     // transition to draw geometry
     vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition to draw geometry for resolve image too
-    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_GENERAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition depth attachment image
     vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
-    vkutil::transitionImageLayout(cmd, _drawDepthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
     drawGeometry(cmd);
 
@@ -210,10 +209,8 @@ void VulkanEngine::draw() {
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
     // for drawing to imgui
-    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    
-    drawDepth(cmd);
+    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    // vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
     drawImgui(cmd, _swapchainImageViews[swapchainImageIndex]);
 
@@ -343,7 +340,7 @@ void VulkanEngine::run() {
             ImGui::Text("Swapchain Image:");
             ImGui::Image(_normalImageId, {320, 180}); // normal image
             ImGui::Text("Depth Image:");
-            ImGui::Image(_depthImageId, {320, 180}); // depth image
+            // ImGui::Image(_depthImageId, {320, 180}); // depth image
 
             // stats
             ImGui::Begin("Stats");
@@ -507,6 +504,9 @@ void VulkanEngine::initVulkan() {
 
     VkPhysicalDeviceFeatures features{};
     features.samplerAnisotropy = VK_TRUE;
+    // our draw image is used as an image storage in our background pipeline, and since its multisampled we need this enabled
+    // for it to properly work
+    features.shaderStorageImageMultisample = VK_TRUE;
 
     // use vkbootstrap to select a physical device
     vkb::PhysicalDeviceSelector selector { instance };
@@ -548,7 +548,7 @@ void VulkanEngine::initSwapchain() {
     createSwapchain(_windowExtent.width, _windowExtent.height);
     createResolveImage(_windowExtent.width, _windowExtent.height);
     createDrawImage(_windowExtent.width, _windowExtent.height);
-    createDrawnDepthImage(_windowExtent.width, _windowExtent.height);
+    // createDrawnDepthImage(_windowExtent.width, _windowExtent.height);
 
     // add to deletion queues
     _mainDeletionQueue.push_function([=]() {
@@ -683,7 +683,6 @@ void VulkanEngine::initDescriptors() {
 void VulkanEngine::initPipelines() {
     initBackgroundPipelines();
     initMeshPipeline();
-    initDepthPipeline();
     metalRoughMaterial.buildPipelines(this);
 }
 
@@ -740,9 +739,10 @@ void VulkanEngine::initImgui() {
 
 	ImGui_ImplVulkan_Init(&initInfo);
 
+    // vkutil::transitionImageLayout(cmd);
     // image views
     _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL);
 
 	// add the destroy the imgui created structures
 	_mainDeletionQueue.push_function([=]() {
@@ -947,6 +947,7 @@ void VulkanEngine::createResolveImage(uint32_t width, uint32_t height) {
 	resolveImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 	resolveImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
 	resolveImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
+    resolveImageUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
 
     // image create info
     /* abstract later */
@@ -981,53 +982,6 @@ void VulkanEngine::createResolveImage(uint32_t width, uint32_t height) {
     resolveImgView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
     VK_CHECK(vkCreateImageView(_device, &resolveImgView, nullptr, &_resolveImage.imageView));
-}
-
-
-void VulkanEngine::createDrawnDepthImage(uint32_t width, uint32_t height) {
-    VkExtent3D drawImageExtent;
-    drawImageExtent.width = _windowExtent.width;
-    drawImageExtent.height = _windowExtent.height;
-    drawImageExtent.depth = 1;
-
-    // hard coding draw format to VK_FORMAT_R16G16B16A16_SFLOAT from VK_FORMAT_B8G8R8A8_UNORM
-    _drawDepthImage.imageFormat = VK_FORMAT_R8G8B8A8_SRGB;
-    _drawDepthImage.imageExtent = drawImageExtent;
-
-    VkImageUsageFlags depthImageUsages{};
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
-	depthImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
-
-    VkImageCreateInfo imgInfo{};
-    imgInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    imgInfo.format = _drawDepthImage.imageFormat;
-    imgInfo.extent = drawImageExtent;
-    imgInfo.mipLevels = 1;
-    imgInfo.arrayLayers = 1;
-    imgInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    imgInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    imgInfo.usage = depthImageUsages;
-
-    VmaAllocationCreateInfo depthAlloc{};
-    depthAlloc.usage = VMA_MEMORY_USAGE_GPU_ONLY; 
-    depthAlloc.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    vmaCreateImage(_allocator, &imgInfo, &depthAlloc, &_drawDepthImage.image, &_drawDepthImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthView{};
-    depthView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthView.image = _drawDepthImage.image;
-    depthView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthView.format = _drawDepthImage.imageFormat;
-    depthView.subresourceRange.baseMipLevel = 0;
-    depthView.subresourceRange.levelCount = 1;
-    depthView.subresourceRange.baseArrayLayer = 0;
-    depthView.subresourceRange.layerCount = 1;
-    depthView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
-    VK_CHECK(vkCreateImageView(_device, &depthView, nullptr, &_drawDepthImage.imageView));
 }
 
 // init background pipelines
@@ -1422,98 +1376,6 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     stats.mesh_draw_time = elapsed.count() / 1000.f;
 }
 
-void VulkanEngine::initDepthPipeline() {
-    DescriptorLayoutBuilder depthLayout{};
-    depthLayout.addBinding(0, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_FRAGMENT_BIT);
-    _depthDescriptorLayout = depthLayout.build(_device);
-
-    VkPipelineLayoutCreateInfo createInfo{};
-    createInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    createInfo.setLayoutCount = 1;
-    createInfo.pSetLayouts = &_depthDescriptorLayout;
-
-    vkCreatePipelineLayout(_device, &createInfo, nullptr, &_depthPipelineLayout);
-
-    VkShaderModule triangleVertShader;
-    if (!vkutil::loadShaderModule("../shaders/depth.vert.spv", _device, &triangleVertShader)) {
-        fmt::println("error when building the triangle fragment vertex module");
-    } else {
-        fmt::println("triangle vertex shader loaded successfully!");
-    }
-
-    VkShaderModule triangleFragShader;
-    if (!vkutil::loadShaderModule("../shaders/depth.frag.spv", _device, &triangleFragShader)) {
-        fmt::println("error when building the triangle fragment vertex module");
-    } else {
-        fmt::println("triangle fragment shader loaded successfully!");
-    }
-
-    PipelineBuilder depthPipeline{};
-    depthPipeline._pipelineLayout = _depthPipelineLayout;
-	depthPipeline.setShaders(triangleVertShader, triangleFragShader);
-	depthPipeline.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-	depthPipeline.setPolygonMode(VK_POLYGON_MODE_FILL);
-	depthPipeline.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
-	depthPipeline.setMultisamplingNone();
-	depthPipeline.disableBlending();
-    depthPipeline.disableDepthtest();
-	depthPipeline.setColorAttachmentFormat(_drawDepthImage.imageFormat);
-    _depthPipeline = depthPipeline.buildPipeline(_device);
-    
-	//clean structures
-	vkDestroyShaderModule(_device, triangleFragShader, nullptr);
-	vkDestroyShaderModule(_device, triangleVertShader, nullptr);
-
-	_mainDeletionQueue.push_function([&]() {
-		vkDestroyPipelineLayout(_device, _depthPipelineLayout, nullptr);
-		vkDestroyPipeline(_device, _depthPipeline, nullptr);
-	});
-}
-
-void VulkanEngine::drawDepth(VkCommandBuffer cmd) {
-    VkRenderingAttachmentInfo colorAttachment{};
-    colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-    colorAttachment.imageView = _drawDepthImage.imageView;
-    colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-
-    VkRenderingInfo renderInfo{};
-    renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
-    renderInfo.colorAttachmentCount = 1;
-    renderInfo.pColorAttachments = &colorAttachment;
-
-    VkDescriptorSet globalDescriptor = getCurrentFrame()._frameDescriptors.allocate(_device, _depthDescriptorLayout);
-    DescriptorWriter writer;
-    writer.writeImage(0, _depthImage.imageView, _defaultSamplerLinear, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-    writer.updateSet(_device, globalDescriptor);
-
-    vkCmdBeginRendering(cmd, &renderInfo);
-        //set dynamic viewport and scissor
-        VkViewport viewport = {};
-        viewport.x = 0;
-        viewport.y = 0;
-        viewport.width = _drawExtent.width;
-        viewport.height = _drawExtent.height;
-        viewport.minDepth = 0.f;
-        viewport.maxDepth = 1.f;
-
-        vkCmdSetViewport(cmd, 0, 1, &viewport);
-
-        VkRect2D scissor = {};
-        scissor.offset.x = 0;
-        scissor.offset.y = 0;
-        scissor.extent.width = _drawExtent.width;
-        scissor.extent.height = _drawExtent.height;
-
-        vkCmdSetScissor(cmd, 0, 1, &scissor);
-
-        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _depthPipeline);
-        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, _depthPipelineLayout, 0, 1, &globalDescriptor, 0, nullptr);
-        vkCmdDraw(cmd, 3, 1, 0, 0);
-    vkCmdEndRendering(cmd);
-}
-
 // UI
 void VulkanEngine::drawImgui(VkCommandBuffer cmd, VkImageView targetImageView) {
     VkRenderingAttachmentInfo colorAttachment{};
@@ -1763,8 +1625,8 @@ void VulkanEngine::recreateSwapChain() {
     createResolveImage(_drawExtent.width, _drawExtent.height);
 
     // recreate image
-    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     
     /** rewrite the descriptor for background to new image
      * _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); 
@@ -1944,7 +1806,6 @@ void VulkanEngine::updateScene() {
     loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-	// invert the Y direction on projection matrix so that we are more similar
-	// to opengl and gltf axis
-    loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
+    
+    // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
 }
