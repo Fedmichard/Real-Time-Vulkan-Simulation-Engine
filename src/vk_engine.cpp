@@ -208,9 +208,8 @@ void VulkanEngine::draw() {
     // now that we copied from our draw image into swapchain image we transition it again so we can draw it correct format for imgui
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
-    // for drawing to imgui
-    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-    // vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    // for presenting images to imgui
+    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL); 
 
     drawImgui(cmd, _swapchainImageViews[swapchainImageIndex]);
 
@@ -340,7 +339,7 @@ void VulkanEngine::run() {
             ImGui::Text("Swapchain Image:");
             ImGui::Image(_normalImageId, {320, 180}); // normal image
             ImGui::Text("Depth Image:");
-            // ImGui::Image(_depthImageId, {320, 180}); // depth image
+            ImGui::Image(_depthImageId, {320, 180}); // depth image
 
             // stats
             ImGui::Begin("Stats");
@@ -1625,8 +1624,8 @@ void VulkanEngine::recreateSwapChain() {
     createResolveImage(_drawExtent.width, _drawExtent.height);
 
     // recreate image
-    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL);
     
     /** rewrite the descriptor for background to new image
      * _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); 
