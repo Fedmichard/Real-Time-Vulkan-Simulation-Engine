@@ -182,10 +182,10 @@ void VulkanEngine::draw() {
     /** need to implement a way to draw to the background later using instructions sent to cairo
      * transition the image into one that can be drawn to
      * vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
-     * vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL); <-- _backgroundImage.image
-     * 
-     * drawBackground(cmd);
     */
+
+    // vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+    // drawBackground(cmd);
     
     // transition to draw geometry
     vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
@@ -336,9 +336,9 @@ void VulkanEngine::run() {
             // auto depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
             // image views
-            ImGui::Text("Swapchain Image:");
+            ImGui::Text("Front Image Buffer:");
             ImGui::Image(_normalImageId, {320, 180}); // normal image
-            ImGui::Text("Depth Image:");
+            ImGui::Text("Z-Buffer:");
             ImGui::Image(_depthImageId, {320, 180}); // depth image
 
             // stats
@@ -649,7 +649,7 @@ void VulkanEngine::initDescriptors() {
     _drawImageDescriptorSet = _descriptorAllocator.allocate(_device, _drawImageDescriptorLayout);
 
     // update descriptor set for background pipeline later
-    _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); // <-- _backgroundImage
+    _descriptorWriter.writeImage(0, _resolveImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); // <-- _backgroundImage
     _descriptorWriter.updateSet(_device, _drawImageDescriptorSet);
 
     _mainDeletionQueue.push_function([&]() {
@@ -1561,7 +1561,7 @@ GPUMeshBuffers VulkanEngine::uploadMesh(std::vector<uint32_t> indices, std::vect
 	newSurface.vertexBuffer = createBuffer(vertexBufferSize, VK_BUFFER_USAGE_STORAGE_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_SHADER_DEVICE_ADDRESS_BIT,
 		VMA_MEMORY_USAGE_GPU_ONLY);
 
-	//find the adress of the vertex buffer
+	// find the adress of the vertex buffer
 	VkBufferDeviceAddressInfo deviceAdressInfo{ .sType = VK_STRUCTURE_TYPE_BUFFER_DEVICE_ADDRESS_INFO,.buffer = newSurface.vertexBuffer.buffer };
 	newSurface.vertexBufferAddress = vkGetBufferDeviceAddress(_device, &deviceAdressInfo);
 
