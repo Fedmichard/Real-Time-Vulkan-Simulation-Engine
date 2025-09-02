@@ -64,10 +64,10 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string gorillaPath = { "..\\assets\\gorilla-tag-map\\source\\gorilla_tag_map (1).glb" };
-    auto gorillaFile = loadGltf(this, gorillaPath);
-    assert(gorillaFile.has_value());
-    loadedScenes["gorilla"] = *gorillaFile;
+    std::string structurePath = { "..\\assets\\structure.glb" };
+    auto structureFile = loadGltf(this, structurePath);
+    assert(structureFile.has_value());
+    loadedScenes["structure"] = *structureFile;
     
     /*
     std::string sponzaPath = { "..\\assets\\sponza\\source\\scene.gltf" };
@@ -1802,8 +1802,8 @@ void VulkanEngine::updateScene() {
 	sceneData.sunlightDirection = glm::vec4(0,1,0.5,1.f);
 
     // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    // loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
     // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);

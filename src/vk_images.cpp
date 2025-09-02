@@ -20,7 +20,7 @@ void vkutil::transitionImageLayout(VkCommandBuffer commandBuffer, VkImage image,
     imageBarrier.subresourceRange.levelCount = VK_REMAINING_MIP_LEVELS;
     imageBarrier.subresourceRange.baseArrayLayer = 0;
     imageBarrier.subresourceRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
-    imageBarrier.image = image;
+    imageBarrier.image = image; // the image effected
 
     VkDependencyInfo depInfo{};
     depInfo.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
