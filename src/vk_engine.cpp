@@ -57,9 +57,6 @@ void VulkanEngine::init() {
 
     mainCamera.velocity = glm::vec3(0.f);
     mainCamera.position = glm::vec3(30.f, -00.f, -85.f);
-
-    mainCamera.pitch = 0;
-    mainCamera.yaw = 0;
     
     // everything was successful
     _isInitialized = true;
@@ -830,7 +827,7 @@ void VulkanEngine::createSwapchain(uint32_t width, uint32_t height) {
     // swap chain with desired format, present mode, and extent
     vkb::Swapchain swapchain = swapchainBuilder
         .set_desired_format(VkSurfaceFormatKHR{ .format = _swapchainImageFormat, .colorSpace = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR })
-        .set_desired_present_mode(VK_PRESENT_MODE_IMMEDIATE_KHR) // VK_PRESENT_MODE_MAILBOX_KHR
+        .set_desired_present_mode(VK_PRESENT_MODE_IMMEDIATE_KHR) // VK_PRESENT_MODE_MAILBOX_KHR - triple buffering
         .set_desired_extent(width, height)
         .add_image_usage_flags(VK_IMAGE_USAGE_TRANSFER_DST_BIT)
         .build()
