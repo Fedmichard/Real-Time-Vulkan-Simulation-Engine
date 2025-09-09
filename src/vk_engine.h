@@ -12,12 +12,45 @@
 
 constexpr unsigned int MAX_FRAMES = 2;
 
-struct GLTFMetallic_Roughness {
-	MaterialPipeline opaquePipeline;
+// object resources
+struct MaterialResourcesBase {
+    virtual ~MaterialResourcesBase() = default;
+};
+
+struct PBRResources : MaterialResourcesBase {
+    AllocatedImage colorImage;
+    VkSampler colorSampler;
+    AllocatedImage metalRoughImage;
+    VkSampler metalRoughSampler;
+    VkBuffer dataBuffer;
+    uint32_t dataBufferOffset;
+};
+
+struct EmitterResources : MaterialResourcesBase {
+    VkBuffer dataBuffer;
+    uint32_t dataBufferOffset;
+};
+
+struct Material {
+    MaterialPipeline opaquePipeline;
 	MaterialPipeline transparentPipeline;
 
 	VkDescriptorSetLayout materialLayout;
 
+	DescriptorWriter writer;
+
+	virtual void buildPipelines(VulkanEngine* engine) = 0;
+	virtual void clearResources(VkDevice device) = 0;
+
+	virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) = 0;
+};
+
+// object materials
+struct GLTFMetallic_Roughness : Material {
 	struct MaterialConstants {
 		glm::vec4 colorFactors;
 		glm::vec4 metal_rough_factors;
@@ -25,21 +58,31 @@ struct GLTFMetallic_Roughness {
 		glm::vec4 extra[14];
 	};
 
-	struct MaterialResources {
-		AllocatedImage colorImage;
-		VkSampler colorSampler;
-		AllocatedImage metalRoughImage;
-		VkSampler metalRoughSampler;
-		VkBuffer dataBuffer;
-		uint32_t dataBufferOffset;
+	virtual void buildPipelines(VulkanEngine* engine);
+	virtual void clearResources(VkDevice device);
+
+	virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
+};
+
+struct EmitterMaterial : Material {
+	struct MaterialConstants {
+		glm::vec4 colorFactors;
+		//padding, we need it anyway for uniform buffers
+		glm::vec4 extra[15];
 	};
 
-	DescriptorWriter writer;
+	virtual void buildPipelines(VulkanEngine* engine);
+	virtual void clearResources(VkDevice device);
 
-	void buildPipelines(VulkanEngine* engine);
-	void clearResources(VkDevice device);
-
-	MaterialInstance writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator);
+	virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
 };
 
 struct MeshNode : public Node {
@@ -158,6 +201,7 @@ public:
 
     // test meshes
     std::vector<std::shared_ptr<MeshAsset>> testMeshes;
+    std::vector<std::shared_ptr<MeshAsset>> emitterMeshes;
 
     // texture images
     AllocatedImage _whiteImage;
@@ -171,10 +215,13 @@ public:
     VkDescriptorSetLayout _singleImageDescriptorLayout;
 
     // gltf
+    MaterialInstance emitterData;
+    EmitterMaterial emitterMaterial;
     MaterialInstance defaultData;
     GLTFMetallic_Roughness metalRoughMaterial;
     DrawContext mainDrawContext;
     std::unordered_map<std::string, std::shared_ptr<Node>> loadedNodes;
+    std::unordered_map<std::string, std::shared_ptr<Node>> loadedEmitterNodes;
     std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> loadedScenes;
 
     // camera

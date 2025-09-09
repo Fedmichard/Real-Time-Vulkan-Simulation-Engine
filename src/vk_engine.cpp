@@ -124,7 +124,14 @@ void VulkanEngine::cleanup() {
             destroyBuffer(mesh->meshBuffers.vertexBuffer);
         }
 
+        for (auto& mesh : emitterMeshes) {
+            destroyBuffer(mesh->meshBuffers.indexBuffer);
+            destroyBuffer(mesh->meshBuffers.vertexBuffer);
+        }
+
         loadedScenes.clear();
+
+        emitterMaterial.clearResources(_device);
 
         metalRoughMaterial.clearResources(_device);
 
@@ -376,6 +383,7 @@ void VulkanEngine::run() {
 void VulkanEngine::initDefaultData() {
     // init data
     testMeshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
+    emitterMeshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
 
     // white image
     uint32_t white = glm::packUnorm4x8(glm::vec4(1, 1, 1, 1));
@@ -427,7 +435,8 @@ void VulkanEngine::initDefaultData() {
 		destroyImage(_errorCheckerboardImage);
 	});
 
-    GLTFMetallic_Roughness::MaterialResources materialResources;
+    /* metal rough materials */
+    PBRResources materialResources;
 	// default the material textures
 	materialResources.colorImage = _whiteImage;
 	materialResources.colorSampler = _defaultSamplerLinear;
@@ -451,7 +460,7 @@ void VulkanEngine::initDefaultData() {
 
 	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::MainColor, materialResources, _descriptorAllocator);
 
-    // creates a new parent node for every single mesh we have available
+    // creates a new parent node for every single normal mesh mesh we have available
     for (auto& m : testMeshes) {
 		std::shared_ptr<MeshNode> newNode = std::make_shared<MeshNode>();
 		newNode->mesh = m;
@@ -466,6 +475,45 @@ void VulkanEngine::initDefaultData() {
 
         // this is a root node that represents the beginning of a MeshNode
 		loadedNodes[m->name] = std::move(newNode);
+	}
+    
+    /* light emitting materials */
+    // define material resources with default images
+    EmitterResources emitterResources;
+
+    // create a buffer for material constants with just object color
+    AllocatedBuffer emitterConstants = createBuffer(sizeof(EmitterMaterial::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+    // write to that buffer
+    EmitterMaterial::MaterialConstants* emitterUniformData = (EmitterMaterial::MaterialConstants*)emitterConstants.allocation->GetMappedData();
+    emitterUniformData->colorFactors = glm::vec4{0.0f, 0.0f, 1.0f, 1.0f};
+
+    // destroy that buffer
+    _mainDeletionQueue.push_function([=]() {
+        destroyBuffer(emitterConstants);
+    });
+
+    // create emitter material instance to hold pipeline, material set, and material pass of emitters
+    emitterResources.dataBuffer = emitterConstants.buffer;
+    emitterResources.dataBufferOffset = 0;
+
+    emitterData = emitterMaterial.writeMaterial(_device, MaterialPass::MainColor, emitterResources, _descriptorAllocator);
+
+    // loop through test meshes and use emitter material instead for node creation
+    for (auto& m : emitterMeshes) {
+		std::shared_ptr<MeshNode> newNode = std::make_shared<MeshNode>();
+		newNode->mesh = m;
+
+		newNode->localTransform = glm::mat4{ 1.f };
+		newNode->worldTransform = glm::mat4{ 1.f };
+
+		for (auto& s : newNode->mesh->surfaces) {
+			s.material = std::make_shared<GLTFMaterial>();
+			s.material->data = emitterData;
+		}
+
+        // this is a root node that represents the beginning of a MeshNode
+		loadedEmitterNodes[m->name] = std::move(newNode);
 	}
 }
 
@@ -682,6 +730,7 @@ void VulkanEngine::initPipelines() {
     initBackgroundPipelines();
     initMeshPipeline();
     metalRoughMaterial.buildPipelines(this);
+    emitterMaterial.buildPipelines(this);
 }
 
 void VulkanEngine::initImgui() {
@@ -1745,8 +1794,11 @@ void GLTFMetallic_Roughness::clearResources(VkDevice device) {
 	vkDestroyPipeline(device, opaquePipeline.pipeline, nullptr);
 }
 
-MaterialInstance GLTFMetallic_Roughness::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResources& resources, DescriptorAllocator2& descriptorAllocator) {
-	MaterialInstance matData;
+MaterialInstance GLTFMetallic_Roughness::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
+	// Downcast to the actual resource type
+    const PBRResources& res = static_cast<const PBRResources&>(resources);
+
+    MaterialInstance matData;
 	matData.passType = pass;
 	if (pass == MaterialPass::Transparent) {
 		matData.pipeline = &transparentPipeline;
@@ -1759,9 +1811,113 @@ MaterialInstance GLTFMetallic_Roughness::writeMaterial(VkDevice device, Material
 
 
 	writer.clear();
-	writer.writeBuffer(0, resources.dataBuffer, sizeof(MaterialConstants), resources.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
-	writer.writeImage(1, resources.colorImage.imageView, resources.colorSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-	writer.writeImage(2, resources.metalRoughImage.imageView, resources.metalRoughSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+	writer.writeImage(1, res.colorImage.imageView, res.colorSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	writer.writeImage(2, res.metalRoughImage.imageView, res.metalRoughSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+
+	writer.updateSet(device, matData.materialSet);
+
+	return matData;
+}
+
+// emitter material
+void EmitterMaterial::buildPipelines(VulkanEngine* engine) {
+    VkPipelineLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+
+    // create new descriptor layout and push constant range
+    VkPushConstantRange matrixRange{};
+	matrixRange.offset = 0;
+	matrixRange.size = sizeof(GPUDrawPushConstants);
+	matrixRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    DescriptorLayoutBuilder layoutBuilder;
+    layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    materialLayout = layoutBuilder.build(engine->_device);
+
+    // set layouts and push constant
+    VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout, materialLayout };
+
+    layoutInfo.pushConstantRangeCount = 1;
+    layoutInfo.pPushConstantRanges = &matrixRange;
+    layoutInfo.setLayoutCount = 2;
+    layoutInfo.pSetLayouts = layouts;
+
+    // create and set pipeline layout
+    VkPipelineLayout newLayout;
+    vkCreatePipelineLayout(engine->_device, &layoutInfo, nullptr, &newLayout);
+
+    transparentPipeline.layout = newLayout;
+    opaquePipeline.layout = newLayout;
+
+    // shaders
+	VkShaderModule meshVertexShader;
+	if (!vkutil::loadShaderModule("../shaders/emitter.vert.spv", engine->_device, &meshVertexShader)) {
+		fmt::println("Error when building the triangle vertex shader module");
+	}
+
+    VkShaderModule meshFragShader;
+	if (!vkutil::loadShaderModule("../shaders/emitter.frag.spv", engine->_device, &meshFragShader)) {
+		fmt::println("Error when building the triangle fragment shader module");
+	}
+
+    // the pipeline know the shader modules per stage
+	PipelineBuilder pipelineBuilder;
+	pipelineBuilder._pipelineLayout = newLayout;
+	pipelineBuilder.setShaders(meshVertexShader, meshFragShader);
+	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
+	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+	// pipelineBuilder.setMultisamplingNone();
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
+	pipelineBuilder.disableBlending();
+	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
+
+	//render format
+	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+
+	// finally build the pipeline
+    opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+
+	// create the transparent variant
+	pipelineBuilder.enableBlendingAdditive();
+    // disable depth testing
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+
+    // finally build the pipeline
+	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+	
+	vkDestroyShaderModule(engine->_device, meshFragShader, nullptr);
+	vkDestroyShaderModule(engine->_device, meshVertexShader, nullptr);
+}
+
+void EmitterMaterial::clearResources(VkDevice device) {
+	vkDestroyDescriptorSetLayout(device, materialLayout, nullptr);
+	vkDestroyPipelineLayout(device, transparentPipeline.layout, nullptr);
+
+	vkDestroyPipeline(device, transparentPipeline.pipeline, nullptr);
+	vkDestroyPipeline(device, opaquePipeline.pipeline, nullptr);
+}
+
+MaterialInstance EmitterMaterial::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
+    // Downcast to the actual resource type
+    const EmitterResources& res = static_cast<const EmitterResources&>(resources);
+
+    MaterialInstance matData;
+	matData.passType = pass;
+	if (pass == MaterialPass::Transparent) {
+		matData.pipeline = &transparentPipeline;
+	}
+	else {
+		matData.pipeline = &opaquePipeline;
+	}
+
+	matData.materialSet = descriptorAllocator.allocate(device, materialLayout);
+
+
+	writer.clear();
+	writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 
 	writer.updateSet(device, matData.materialSet);
 
@@ -1807,17 +1963,18 @@ void VulkanEngine::updateScene() {
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.1f);
-	sceneData.sunlightColor = glm::vec4(1.f);
-	sceneData.sunlightDirection = glm::vec4(0,1,0.5,1.f);
+	sceneData.ambientColor = glm::vec4(1.f);
+	sceneData.sunlightColor = glm::vec4(1.0f);
+	sceneData.sunlightDirection = glm::vec4(0.0f, 1.0f, 0.5f, 1.0f);
 
     // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
-    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, -10.0f));
+    // glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, -10.0f));
     glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, -126.0f, 0.0f));
 
-    loadedNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
-    loadedNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
+    // loadedNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
+    // loadedNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
+    loadedEmitterNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
 }

@@ -376,7 +376,7 @@ std::optional<std::shared_ptr<LoadedGLTF>> loadGltf(VulkanEngine* engine, std::s
             passType = MaterialPass::Transparent;
         }
 
-        GLTFMetallic_Roughness::MaterialResources materialResources;
+        PBRResources materialResources;
         // default the material textures
         materialResources.colorImage = engine->_greyImage;
         materialResources.colorSampler = engine->_defaultSamplerLinear;
