@@ -1,5 +1,7 @@
 #include "camera.h"
 #define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_FORCE_RIGHT_HANDED
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -26,13 +28,14 @@ glm::mat4 Camera::getRotationMatrix() const
 
 void Camera::processSDLEvent(SDL_Event& e)
 {
+    const float camSpeed = 0.1f;
     if (e.type == SDL_KEYDOWN) {
-        if (e.key.keysym.sym == SDLK_w) { velocity.z = -0.25f; }
-        if (e.key.keysym.sym == SDLK_s) { velocity.z = 0.25f; }
-        if (e.key.keysym.sym == SDLK_a) { velocity.x = -0.25f; }
-        if (e.key.keysym.sym == SDLK_d) { velocity.x = 0.25f; }
-        if (e.key.keysym.sym == SDLK_LCTRL) { velocity.y = -0.25f; }
-        if (e.key.keysym.sym == SDLK_SPACE) { velocity.y = 0.25f; }
+        if (e.key.keysym.sym == SDLK_w) { velocity.z = -camSpeed; }
+        if (e.key.keysym.sym == SDLK_s) { velocity.z = camSpeed; }
+        if (e.key.keysym.sym == SDLK_a) { velocity.x = -camSpeed; }
+        if (e.key.keysym.sym == SDLK_d) { velocity.x = camSpeed; }
+        if (e.key.keysym.sym == SDLK_LCTRL) { velocity.y = -camSpeed; }
+        if (e.key.keysym.sym == SDLK_SPACE) { velocity.y = camSpeed; }
     }
 
     if (e.type == SDL_KEYUP) {

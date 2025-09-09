@@ -7,6 +7,8 @@
 #include "vk_initializers.h"
 #include "vk_types.h"
 #define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_RIGHT_HANDED
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/gtx/quaternion.hpp>
 
 #include <fastgltf/glm_element_traits.hpp>
@@ -131,8 +133,12 @@ std::optional<std::vector<std::shared_ptr<MeshAsset>>> loadGltfMeshes(VulkanEngi
     fastgltf::GltfDataBuffer data;
     data.loadFromFile(filePath);
 
-    constexpr auto gltfOptions = fastgltf::Options::LoadGLBBuffers
-        | fastgltf::Options::LoadExternalBuffers;
+    constexpr auto gltfOptions =
+        fastgltf::Options::DontRequireValidAssetMember |
+        fastgltf::Options::AllowDouble |
+        fastgltf::Options::LoadGLBBuffers |
+        fastgltf::Options::LoadExternalBuffers |
+        fastgltf::Options::LoadExternalImages;
 
     fastgltf::Asset gltf;
     fastgltf::Parser parser {};
@@ -256,8 +262,12 @@ std::optional<std::shared_ptr<LoadedGLTF>> loadGltf(VulkanEngine* engine, std::s
 
     fastgltf::Parser parser {};
 
-    constexpr auto gltfOptions = fastgltf::Options::DontRequireValidAssetMember | fastgltf::Options::AllowDouble | fastgltf::Options::LoadGLBBuffers | fastgltf::Options::LoadExternalBuffers;
-    // fastgltf::Options::LoadExternalImages;
+    constexpr auto gltfOptions =
+        fastgltf::Options::DontRequireValidAssetMember |
+        fastgltf::Options::AllowDouble |
+        fastgltf::Options::LoadGLBBuffers |
+        fastgltf::Options::LoadExternalBuffers |
+        fastgltf::Options::LoadExternalImages;
 
     fastgltf::GltfDataBuffer data;
     data.loadFromFile(filePath);
@@ -332,7 +342,7 @@ std::optional<std::shared_ptr<LoadedGLTF>> loadGltf(VulkanEngine* engine, std::s
             else {
                 // we failed to load, so lets give the slot a default white texture to not
                 // completely break loading
-                images.push_back(engine->_errorCheckerboardImage);
+                images.push_back(engine->_greyImage);
                 std::cout << "gltf failed to load texture " << image.name << std::endl;
             }
         }
@@ -368,9 +378,9 @@ std::optional<std::shared_ptr<LoadedGLTF>> loadGltf(VulkanEngine* engine, std::s
 
         GLTFMetallic_Roughness::MaterialResources materialResources;
         // default the material textures
-        materialResources.colorImage = engine->_errorCheckerboardImage;
+        materialResources.colorImage = engine->_greyImage;
         materialResources.colorSampler = engine->_defaultSamplerLinear;
-        materialResources.metalRoughImage = engine->_errorCheckerboardImage;
+        materialResources.metalRoughImage = engine->_greyImage;
         materialResources.metalRoughSampler = engine->_defaultSamplerLinear;
 
         // set the uniform buffer for the material data
@@ -569,7 +579,7 @@ void LoadedGLTF::clearAll() {
 
     for (auto& [k, v] : images) {
         
-        if (v.image == creator->_errorCheckerboardImage.image) {
+        if (v.image == creator->_greyImage.image) {
             //dont destroy the default images
             continue;
         }

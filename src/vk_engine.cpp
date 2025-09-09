@@ -7,6 +7,8 @@
 #include "vk_mem_alloc.h"
 #define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_FORCE_RIGHT_HANDED
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
@@ -61,11 +63,11 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string structurePath = { "..\\assets\\structure.glb" };
-    auto structureFile = loadGltf(this, structurePath);
-    assert(structureFile.has_value());
-    loadedScenes["structure"] = *structureFile;
-    
+    std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
+    auto gmodFile = loadGltf(this, gmodPath);
+    assert(gmodFile.has_value());
+    loadedScenes["gmod"] = *gmodFile;
+
     /*
     std::string sponzaPath = { "..\\assets\\sponza\\source\\scene.gltf" };
     auto sponzaFile = loadGltf(this, sponzaPath);
@@ -122,7 +124,7 @@ void VulkanEngine::cleanup() {
             destroyBuffer(mesh->meshBuffers.vertexBuffer);
         }
 
-        loadedScenes[0]->~LoadedGLTF();
+        loadedScenes.clear();
 
         metalRoughMaterial.clearResources(_device);
 
@@ -780,41 +782,52 @@ VkSampleCountFlagBits VulkanEngine::getMaxUsableSampleCount() {
 }
 
 bool VulkanEngine::is_visible(const RenderObject& obj, const glm::mat4& viewproj) {
-    std::array<glm::vec3, 8> corners {
-        glm::vec3 { 1, 1, 1 },
-        glm::vec3 { 1, 1, -1 },
-        glm::vec3 { 1, -1, 1 },
-        glm::vec3 { 1, -1, -1 },
-        glm::vec3 { -1, 1, 1 },
-        glm::vec3 { -1, 1, -1 },
-        glm::vec3 { -1, -1, 1 },
-        glm::vec3 { -1, -1, -1 },
-    };
+    // extract bounding sphere (center and radius)
+    glm::vec3 center = glm::vec3(obj.transform * glm::vec4(obj.bounds.origin, 1.0f));
+    float radius = glm::length(obj.bounds.extents); // approx radius from extents
 
-    glm::mat4 matrix = viewproj * obj.transform;
+    // extract planes from viewproj matrix
+    glm::vec4 planes[6];
+    glm::mat4 m = viewproj * obj.transform;
 
-    glm::vec3 min = { 1.5, 1.5, 1.5 };
-    glm::vec3 max = { -1.5, -1.5, -1.5 };
+    // left
+    planes[0] = glm::vec4(m[0][3] + m[0][0],
+                          m[1][3] + m[1][0],
+                          m[2][3] + m[2][0],
+                          m[3][3] + m[3][0]);
+    // right
+    planes[1] = glm::vec4(m[0][3] - m[0][0],
+                          m[1][3] - m[1][0],
+                          m[2][3] - m[2][0],
+                          m[3][3] - m[3][0]);
+    // bottom
+    planes[2] = glm::vec4(m[0][3] + m[0][1],
+                          m[1][3] + m[1][1],
+                          m[2][3] + m[2][1],
+                          m[3][3] + m[3][1]);
+    // top
+    planes[3] = glm::vec4(m[0][3] - m[0][1],
+                          m[1][3] - m[1][1],
+                          m[2][3] - m[2][1],
+                          m[3][3] - m[3][1]);
+    // near
+    planes[4] = glm::vec4(m[0][3] + m[0][2],
+                          m[1][3] + m[1][2],
+                          m[2][3] + m[2][2],
+                          m[3][3] + m[3][2]);
+    // far
+    planes[5] = glm::vec4(m[0][3] - m[0][2],
+                          m[1][3] - m[1][2],
+                          m[2][3] - m[2][2],
+                          m[3][3] - m[3][2]);
 
-    for (int c = 0; c < 8; c++) {
-        // project each corner into clip space
-        glm::vec4 v = matrix * glm::vec4(obj.bounds.origin + (corners[c] * obj.bounds.extents), 1.f);
-
-        // perspective correction
-        v.x = v.x / v.w;
-        v.y = v.y / v.w;
-        v.z = v.z / v.w;
-
-        min = glm::min(glm::vec3 { v.x, v.y, v.z }, min);
-        max = glm::max(glm::vec3 { v.x, v.y, v.z }, max);
+    // normalize planes
+    for (int i = 0; i < 6; i++) {
+        float length = glm::length(glm::vec3(planes[i]));
+        planes[i] /= length;
     }
 
-    // check the clip space box is within the view
-    if (min.z > 1.f || max.z < 0.f || min.x > 1.f || max.x < -1.f || min.y > 1.f || max.y < -1.f) {
-        return false;
-    } else {
-        return true;
-    }
+    return true; // inside or intersecting
 }
 
 // create swap chain
@@ -1784,7 +1797,7 @@ void VulkanEngine::updateScene() {
     mainCamera.update();
 
     glm::mat4 view = mainCamera.getViewMatrix();
-    glm::mat4 proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 10000.0f);
+    glm::mat4 proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 1000.0f);
 
     proj[1][1] *= -1;
 
@@ -1800,8 +1813,11 @@ void VulkanEngine::updateScene() {
 
     // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
-    // loadedNodes["Suzanne"]->Draw(glm::mat4{1.f}, mainDrawContext);
+    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, -10.0f));
+    glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, -126.0f, 0.0f));
+
+    loadedNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
+    loadedNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
 }
