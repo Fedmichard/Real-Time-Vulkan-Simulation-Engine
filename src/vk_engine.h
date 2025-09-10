@@ -233,6 +233,13 @@ public:
     // imgui
     ImTextureRef _normalImageId;
     ImTextureRef _depthImageId;
+    float sunlightDirectionX{ 0.0f };
+    float sunlightDirectionY{ 1.0f };
+    float sunlightDirectionZ{ 0.5f };
+
+    float emitterPosX{ 0.0f };
+    float emitterPosY{ -5.0f };
+    float emitterPosZ{ 86.0f };
 
     void updateScene();
 

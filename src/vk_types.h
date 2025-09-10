@@ -96,6 +96,11 @@ struct MaterialInstance {
     MaterialPass passType;
 };
 
+struct GPULight {
+    glm::vec4 pos;
+    glm::vec4 color;
+};
+
 /* object draws */
 // holds scene data
 struct GPUSceneData {
@@ -105,6 +110,8 @@ struct GPUSceneData {
     glm::vec4 ambientColor;
     glm::vec4 sunlightDirection; // w for sun power
     glm::vec4 sunlightColor;
+
+    GPULight emitter;
 };
 
 // holds the resources needed for a mesh

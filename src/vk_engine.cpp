@@ -63,10 +63,10 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
-    auto gmodFile = loadGltf(this, gmodPath);
-    assert(gmodFile.has_value());
-    loadedScenes["gmod"] = *gmodFile;
+    std::string structurePath = { "..\\assets\\structure.glb" };
+    auto structureFile = loadGltf(this, structurePath);
+    assert(structureFile.has_value());
+    loadedScenes["structure"] = *structureFile;
 
     /*
     std::string sponzaPath = { "..\\assets\\sponza\\source\\scene.gltf" };
@@ -102,7 +102,8 @@ void VulkanEngine::init() {
     std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
     auto gmodFile = loadGltf(this, gmodPath);
     assert(gmodFile.has_value());
-    loadedScenes["gmod"] = *gmodFile; */
+    loadedScenes["gmod"] = *gmodFile; 
+    */
 }
 
 void VulkanEngine::cleanup() {
@@ -327,6 +328,7 @@ void VulkanEngine::run() {
         ImGui::NewFrame();
 
         if (ImGui::Begin("background")) {
+            /*
             ImGui::SliderFloat("Render Scale",&renderScale, 0.3f, 1.f);
 			ComputeEffect& selected = backgroundEffects[currentBackgroundIndex];
 		
@@ -338,6 +340,15 @@ void VulkanEngine::run() {
 			ImGui::InputFloat4("data2",(float*)& selected.data.data2);
 			ImGui::InputFloat4("data3",(float*)& selected.data.data3);
 			ImGui::InputFloat4("data4",(float*)& selected.data.data4);
+            */
+            
+			ImGui::SliderFloat("Sunlight Direction X: ", &sunlightDirectionX, -1, 1);
+			ImGui::SliderFloat("Sunlight Direction Y: ", &sunlightDirectionY, -1, 1);
+			ImGui::SliderFloat("Sunlight Direction Z: ", &sunlightDirectionZ, -1, 1);
+            
+			ImGui::SliderFloat("Blue Emitter X: ", &emitterPosX, -360, 360);
+			ImGui::SliderFloat("Blue Emitter Y: ", &emitterPosY, -360, 360);
+			ImGui::SliderFloat("Blue Emitter Z: ", &emitterPosZ, -360, 360);
 
             // auto depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
@@ -486,7 +497,7 @@ void VulkanEngine::initDefaultData() {
 
     // write to that buffer
     EmitterMaterial::MaterialConstants* emitterUniformData = (EmitterMaterial::MaterialConstants*)emitterConstants.allocation->GetMappedData();
-    emitterUniformData->colorFactors = glm::vec4{0.0f, 0.0f, 1.0f, 1.0f};
+    emitterUniformData->colorFactors = glm::vec4{0.0f, 0.6f, 1.f, 1.0f};
 
     // destroy that buffer
     _mainDeletionQueue.push_function([=]() {
@@ -1952,8 +1963,23 @@ void VulkanEngine::updateScene() {
     // clock
     mainCamera.update();
 
+    
+    // some logic to keep track, in seconds, since rendering has started
+    static auto startTime = std::chrono::high_resolution_clock::now();
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
+    // defaults
     glm::mat4 view = mainCamera.getViewMatrix();
     glm::mat4 proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 1000.0f);
+
+    // positions
+    float speed = 1.0f; // smaller = slower, larger = faster
+    float minX = 0.0f;
+    float maxX = 10.0f;
+
+    emitterPosX = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
+    glm::vec3 sphere2pos = glm::vec3(emitterPosX, emitterPosY, emitterPosZ);
 
     proj[1][1] *= -1;
 
@@ -1963,18 +1989,21 @@ void VulkanEngine::updateScene() {
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(1.f);
+	sceneData.ambientColor = glm::vec4(.1f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
-	sceneData.sunlightDirection = glm::vec4(0.0f, 1.0f, 0.5f, 1.0f);
+	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
+    sceneData.emitter.pos = glm::vec4(sphere2pos, 1.0f);
+    sceneData.emitter.color = glm::vec4{0.0f, 0.6f, 1.f, 1.0f};
 
     // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
-    // glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, -10.0f));
-    glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, -126.0f, 0.0f));
+    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, -10.0f));
+    glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, sphere2pos);
 
-    // loadedNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
+    loadedNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
     // loadedNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
     loadedEmitterNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
 }
