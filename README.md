@@ -19,7 +19,6 @@ An onging C++17 Vulkan renderer.
 
 ## Screenshots
 <img width="1698" height="898" alt="image" src="https://github.com/user-attachments/assets/020423ae-d9a4-4e38-98a2-419eada35446" />
-Light Emittors
 ![me](https://github.com/user-attachments/assets/9fcd441a-7eb7-4512-b87a-80bdc4e3acac)
 
 
