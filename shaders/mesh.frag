@@ -11,6 +11,7 @@ layout (location = 3) in vec3 inFragPos;
 layout (location = 0) out vec4 outFragColor;
 
 void main()  {
+	vec3 norm = normalize(inNormal);
 	float lightValue = max(dot(inNormal, sceneData.sunlightDirection.xyz), 0.1f);
 
 	// object color
@@ -32,9 +33,9 @@ void main()  {
 	// calculate specular
 	float specStrength = 0.5;
 	vec3 viewDir = normalize(sceneData.cameraPos.xyz - inFragPos);
-	vec3 reflectDir = reflect(lightDir, inNormal);
-	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
-	vec3 specular = spec * sceneData.emitter.color.xyz * specStrength;
+	vec3 reflectDir = reflect(-lightDir, norm);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+	vec3 specular = spec * sceneData.emitter.color.xyz * specStrength * attenuation;
 
-	outFragColor = vec4((ambient + diffuse) * color, 1.0f);
+	outFragColor = vec4((ambient + diffuse + specular) * color, 1.0f);
 }
