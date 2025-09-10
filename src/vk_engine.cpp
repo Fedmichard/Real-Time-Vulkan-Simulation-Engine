@@ -497,7 +497,7 @@ void VulkanEngine::initDefaultData() {
 
     // write to that buffer
     EmitterMaterial::MaterialConstants* emitterUniformData = (EmitterMaterial::MaterialConstants*)emitterConstants.allocation->GetMappedData();
-    emitterUniformData->colorFactors = glm::vec4{0.0f, 0.6f, 1.f, 1.0f};
+    emitterUniformData->colorFactors = glm::vec4{1.0f, 1.0f, 0.0f, 1.0f};
 
     // destroy that buffer
     _mainDeletionQueue.push_function([=]() {
@@ -1992,15 +1992,16 @@ void VulkanEngine::updateScene() {
 	sceneData.ambientColor = glm::vec4(.1f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
+    sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
     sceneData.emitter.pos = glm::vec4(sphere2pos, 1.0f);
-    sceneData.emitter.color = glm::vec4{0.0f, 0.6f, 1.f, 1.0f};
+    sceneData.emitter.color = glm::vec4{1.0f, 1.0f, 0.0f, 1.0f};
 
     // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
-    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 0.0f, -10.0f));
+    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 86.0f));
     glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, sphere2pos);
 
     loadedNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
