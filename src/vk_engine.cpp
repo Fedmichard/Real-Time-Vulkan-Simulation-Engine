@@ -497,7 +497,7 @@ void VulkanEngine::initDefaultData() {
 
     // write to that buffer
     EmitterMaterial::MaterialConstants* emitterUniformData = (EmitterMaterial::MaterialConstants*)emitterConstants.allocation->GetMappedData();
-    emitterUniformData->colorFactors = glm::vec4{1.0f, 1.0f, 0.0f, 1.0f};
+    emitterUniformData->colorFactors = glm::vec4{1.0f, 1.0f, 1.0f, 1.0f};
 
     // destroy that buffer
     _mainDeletionQueue.push_function([=]() {
@@ -1979,6 +1979,13 @@ void VulkanEngine::updateScene() {
     float maxX = 10.0f;
 
     emitterPosX = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
+    
+    speed = 1.5f;
+    minX = -3.0f;
+    maxX = 7.0f;
+
+    float emitter2PosY = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
+    glm::vec3 sphere1pos = glm::vec3(-2.0f, emitter2PosY, 86.0f);
     glm::vec3 sphere2pos = glm::vec3(emitterPosX, emitterPosY, emitterPosZ);
 
     proj[1][1] *= -1;
@@ -1989,22 +1996,26 @@ void VulkanEngine::updateScene() {
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.01f);
+	sceneData.ambientColor = glm::vec4(.02f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
-    sceneData.emitter.pos = glm::vec4(sphere2pos, 1.0f);
-    sceneData.emitter.color = glm::vec4{1.0f, 1.0f, 0.0f, 1.0f};
+    sceneData.emitter[0].pos = glm::vec4(sphere1pos, 1.0f);
+    sceneData.emitter[0].color = glm::vec4{1.0f, 0.0f, 1.0f, 1.0f};
+    sceneData.emitter[1].pos = glm::vec4(sphere2pos, 1.0f);
+    sceneData.emitter[1].color = glm::vec4{0.0f, 1.0f, 0.0f, 1.0f};
 
     // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
-    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 86.0f));
+    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 86.0f));
+    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, sphere1pos);
     glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, sphere2pos);
 
-    loadedNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
+    loadedNodes["Sphere"]->Draw(testSphere, mainDrawContext);
     // loadedNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
+    loadedEmitterNodes["Sphere"]->Draw(sphereTransform1, mainDrawContext);
     loadedEmitterNodes["Sphere"]->Draw(sphereTransform2, mainDrawContext);
 }

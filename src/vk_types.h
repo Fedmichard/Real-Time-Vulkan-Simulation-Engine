@@ -111,7 +111,7 @@ struct GPUSceneData {
     glm::vec4 sunlightDirection; // w for sun power
     glm::vec4 sunlightColor;
 	glm::vec4 cameraPos;
-    GPULight emitter;
+    GPULight emitter[16];
 };
 
 // holds the resources needed for a mesh

@@ -103,6 +103,11 @@ struct RenderObject {
 	VkDeviceAddress vertexBufferAddress;
 };
 
+struct LightObject : RenderObject {
+    glm::vec4 position;
+    glm::vec4 color;
+};
+
 // temporary structure that holds everything that'll be drawn in a single frame
 struct DrawContext {
 	std::vector<RenderObject> OpaqueSurfaces;
