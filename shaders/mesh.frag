@@ -14,7 +14,7 @@ void main()  {
 	float lightValue = max(dot(inNormal, sceneData.sunlightDirection.xyz), 0.1f);
 
 	// object color
-	vec3 color = inColor * texture(colorTex,inUV).xyz;
+	vec3 color = inColor * texture(colorTex, inUV).xyz;
 	// calculate light direction
 	vec3 lightDir = normalize(sceneData.emitter.pos.xyz - inFragPos);
 
@@ -36,5 +36,5 @@ void main()  {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), 64);
 	vec3 specular = spec * sceneData.emitter.color.xyz * specStrength;
 
-	outFragColor = vec4((ambient + diffuse + specular) * color, 1.0f);
+	outFragColor = vec4((ambient + diffuse) * color, 1.0f);
 }
