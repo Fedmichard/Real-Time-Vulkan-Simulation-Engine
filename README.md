@@ -20,7 +20,8 @@ An onging C++17 Vulkan renderer.
 ## Screenshots
 <img width="1698" height="898" alt="image" src="https://github.com/user-attachments/assets/020423ae-d9a4-4e38-98a2-419eada35446" />
 
-<img width="1494" height="899" alt="image" src="https://github.com/user-attachments/assets/be1dd1b1-1cbd-4a27-b388-3641ede1302b" />
+<img width="1189" height="849" alt="image" src="https://github.com/user-attachments/assets/d0f2dea9-1209-4967-aab6-9f3d3dbcdc61" />
+
 
 
 ## Roadmap
