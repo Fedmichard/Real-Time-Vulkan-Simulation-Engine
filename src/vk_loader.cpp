@@ -62,13 +62,14 @@ std::optional<AllocatedImage> loadImage(VulkanEngine* engine, fastgltf::Asset& a
                 const std::string path(filePath.uri.path().begin(),
                     filePath.uri.path().end()); // Thanks C++.
                 unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 4);
+                fmt::print("Loaded image {} {}x{} channels={}\n", path, width, height, nrChannels);
                 if (data) {
                     VkExtent3D imagesize;
                     imagesize.width = width;
                     imagesize.height = height;
                     imagesize.depth = 1;
 
-                    newImage = engine->createImage(data, imagesize, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT,false);
+                    newImage = engine->createImage(data, imagesize, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, true);
 
                     stbi_image_free(data);
                 }
@@ -76,13 +77,15 @@ std::optional<AllocatedImage> loadImage(VulkanEngine* engine, fastgltf::Asset& a
             [&](fastgltf::sources::Vector& vector) {
                 unsigned char* data = stbi_load_from_memory(vector.bytes.data(), static_cast<int>(vector.bytes.size()),
                     &width, &height, &nrChannels, 4);
+                        fmt::print("Loaded image (Vector) {}x{} channels={}\n",
+                        width, height, nrChannels);
                 if (data) {
                     VkExtent3D imagesize;
                     imagesize.width = width;
                     imagesize.height = height;
                     imagesize.depth = 1;
 
-                    newImage = engine->createImage(data, imagesize, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT,false);
+                    newImage = engine->createImage(data, imagesize, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT, true);
 
                     stbi_image_free(data);
                 }
@@ -99,6 +102,8 @@ std::optional<AllocatedImage> loadImage(VulkanEngine* engine, fastgltf::Asset& a
                                    unsigned char* data = stbi_load_from_memory(vector.bytes.data() + bufferView.byteOffset,
                                        static_cast<int>(bufferView.byteLength),
                                        &width, &height, &nrChannels, 4);
+                                            fmt::print("Loaded image (BufferView) {}x{} channels={}\n",
+                                            width, height, nrChannels);
                                    if (data) {
                                        VkExtent3D imagesize;
                                        imagesize.width = width;
@@ -106,7 +111,7 @@ std::optional<AllocatedImage> loadImage(VulkanEngine* engine, fastgltf::Asset& a
                                        imagesize.depth = 1;
 
                                        newImage = engine->createImage(data, imagesize, VK_FORMAT_R8G8B8A8_UNORM,
-                                           VK_IMAGE_USAGE_SAMPLED_BIT,false);
+                                           VK_IMAGE_USAGE_SAMPLED_BIT, true);
 
                                        stbi_image_free(data);
                                    }
@@ -331,20 +336,17 @@ std::optional<std::shared_ptr<LoadedGLTF>> loadGltf(VulkanEngine* engine, std::s
     std::vector<std::shared_ptr<GLTFMaterial>> materials;
     std::vector<AllocatedImage> images;
 
+    // Just ONE loop is needed
     for (fastgltf::Image& image : gltf.images) {
-        for (fastgltf::Image& image : gltf.images) {
-            std::optional<AllocatedImage> img = loadImage(engine, gltf, image);
+        // Pass 'true' for isSRGB for base color textures. This is a major quality improvement.
+        std::optional<AllocatedImage> img = loadImage(engine, gltf, image); 
 
-            if (img.has_value()) {
-                images.push_back(*img);
-                file.images[image.name.c_str()] = *img;
-            }
-            else {
-                // we failed to load, so lets give the slot a default white texture to not
-                // completely break loading
-                images.push_back(engine->_greyImage);
-                std::cout << "gltf failed to load texture " << image.name << std::endl;
-            }
+        if (img.has_value()) {
+            images.push_back(*img);
+            file.images[image.name.c_str()] = *img;
+        } else {
+            images.push_back(engine->_greyImage);
+            std::cout << "gltf failed to load texture " << image.name << std::endl;
         }
     }
 

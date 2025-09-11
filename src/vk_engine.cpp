@@ -63,10 +63,10 @@ void VulkanEngine::init() {
     // everything was successful
     _isInitialized = true;
 
-    std::string structurePath = { "..\\assets\\structure.glb" };
-    auto structureFile = loadGltf(this, structurePath);
-    assert(structureFile.has_value());
-    loadedScenes["structure"] = *structureFile;
+    std::string countryPath = { "..\\assets\\countryside-scene-free\\source\\untitled.glb" };
+    auto countryFile = loadGltf(this, countryPath);
+    assert(countryFile.has_value());
+    loadedScenes["structure"] = *countryFile;
 
     /*
     std::string sponzaPath = { "..\\assets\\sponza\\source\\scene.gltf" };
@@ -487,33 +487,23 @@ void VulkanEngine::initDefaultData() {
         // this is a root node that represents the beginning of a MeshNode
 		loadedNodes[m->name] = std::move(newNode);
 	}
-    
-    /* light emitting materials */
-    // define material resources with default images
-    EmitterResources emitterResources;
 
-    // create a buffer for material constants with just object color
-    AllocatedBuffer emitterConstants = createBuffer(sizeof(EmitterMaterial::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
-    // write to that buffer
-    EmitterMaterial::MaterialConstants* emitterUniformData = (EmitterMaterial::MaterialConstants*)emitterConstants.allocation->GetMappedData();
-    emitterUniformData->colorFactors = glm::vec4{1.0f, 1.0f, 1.0f, 1.0f};
-
-    // destroy that buffer
-    _mainDeletionQueue.push_function([=]() {
-        destroyBuffer(emitterConstants);
-    });
-
-    // loop through test meshes and use emitter material instead for node creation
+    // loop through emitter meshes and set emitter mesh names so we can reference for creation
     for (auto& m : emitterMeshes) {
         emitterMeshesNames[m->name] = m;
-        glm::vec4 initialColor = glm::vec4(1.0f);
-
-        auto emitterNode = createEmitterNode(m, initialColor);
-
-        // this is a root node that represents the beginning of a MeshNode
-		loadedEmitterNodes[m->name] = std::move(emitterNode);
 	}
+
+    // meshes
+    auto sphereMesh = emitterMeshesNames["Sphere"];
+
+    // load nodes
+    auto redSphere = createEmitterNode(sphereMesh, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
+    auto blueSphere = createEmitterNode(sphereMesh, glm::vec4{0.0f, 1.0f, 1.0f, 1.0f});
+    auto greenSphere = createEmitterNode(sphereMesh, glm::vec4{0.043f, 1.0f, 0.0f, 1.0f});
+
+    loadedEmitterNodes["Red Sphere"] = redSphere;
+    loadedEmitterNodes["Blue Sphere"] = blueSphere;
+    loadedEmitterNodes["Green Sphere"] = greenSphere;
 }
 
 void VulkanEngine::initVulkan() {
@@ -2012,30 +2002,21 @@ void EmitterNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
 void VulkanEngine::updateScene() {
     // clock
     mainCamera.update();
-
-    // meshes and lights
-    auto sphereMesh = emitterMeshesNames["Sphere"];
     
     // some logic to keep track, in seconds, since rendering has started
     static auto startTime = std::chrono::high_resolution_clock::now();
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
-    // defaults
-    glm::mat4 view = mainCamera.getViewMatrix();
-    glm::mat4 proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 1000.0f);
-
     // positions
     float speed = 1.0f; // smaller = slower, larger = faster
     float minX = 0.0f;
     float maxX = 10.0f;
-
     emitterPosX = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
     
     speed = 1.5f;
     minX = -3.0f;
     maxX = 7.0f;
-
     float emitter2PosY = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
     
     // sphere positions
@@ -2044,6 +2025,9 @@ void VulkanEngine::updateScene() {
     glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, sphere1pos);
     glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, sphere2pos);
 
+    // defaults
+    glm::mat4 view = mainCamera.getViewMatrix();
+    glm::mat4 proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 1000.0f);
     proj[1][1] *= -1;
 
 	// camera projection
@@ -2052,7 +2036,7 @@ void VulkanEngine::updateScene() {
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.02f);
+	sceneData.ambientColor = glm::vec4(.5f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
@@ -2071,13 +2055,9 @@ void VulkanEngine::updateScene() {
     glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 86.0f));
 
     // loadedNodes["Sphere"]->Draw(testSphere, mainDrawContext);
-    loadedNodes["Cube"]->Draw(testSphere, mainDrawContext);
+    loadedNodes["Suzanne"]->Draw(testSphere, mainDrawContext);
 
-    auto redSphere = createEmitterNode(sphereMesh, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
-    auto blueSphere = createEmitterNode(sphereMesh, glm::vec4{0.0f, 1.0f, 1.0f, 1.0f});
-    auto greenSphere = createEmitterNode(sphereMesh, glm::vec4{0.043f, 1.0f, 0.0f, 1.0f});
-
-    redSphere->Draw(sphereTransform1, mainDrawContext);
-    blueSphere->Draw(sphereTransform2, mainDrawContext);
-    greenSphere->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 91.0f)), mainDrawContext);
+    loadedEmitterNodes["Red Sphere"]->Draw(sphereTransform1, mainDrawContext);
+    loadedEmitterNodes["Blue Sphere"]->Draw(sphereTransform2, mainDrawContext);
+    loadedEmitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 91.0f)), mainDrawContext);
 }
