@@ -36,7 +36,6 @@ struct Material {
 	MaterialPipeline transparentPipeline;
 
 	VkDescriptorSetLayout materialLayout;
-
 	DescriptorWriter writer;
 
 	virtual void buildPipelines(VulkanEngine* engine) = 0;
@@ -106,6 +105,14 @@ struct MeshNode : public Node {
 	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
 };
 
+struct RenderComponent : public Node {
+	std::shared_ptr<MeshAsset> mesh; // loaded mesh that we want to render
+
+    AllocatedBuffer emitterConstants; // buffer with material constants
+    void* mappedConstants = nullptr; // pointer to material constants we can edit when we create this node
+    MaterialInstance materialInstance; // where we can write material to data to buffer and it'll automatically update
+};
+
 struct RenderObject {
 	uint32_t indexCount;
 	uint32_t firstIndex;
@@ -115,11 +122,6 @@ struct RenderObject {
     Bounds bounds;
 	glm::mat4 transform;
 	VkDeviceAddress vertexBufferAddress;
-};
-
-struct LightObject : RenderObject {
-    glm::vec4 position;
-    glm::vec4 color;
 };
 
 // temporary structure that holds everything that'll be drawn in a single frame
