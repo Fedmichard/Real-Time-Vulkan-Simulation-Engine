@@ -91,6 +91,7 @@ struct EmitterNode : public Node {
     AllocatedBuffer emitterConstants;
     EmitterMaterial::MaterialConstants* mappedConstants = nullptr;
     MaterialInstance materialInstance;
+    VulkanEngine* engine;
 
 	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
 

@@ -125,17 +125,21 @@ void VulkanEngine::cleanup() {
             _frames[i]._deletionQueue.flush();
         }
 
-        for (auto& mesh : meshes) {
-            destroyBuffer(mesh->meshBuffers.indexBuffer);
-            destroyBuffer(mesh->meshBuffers.vertexBuffer);
-        }
-
         for (auto& mesh : emitterMeshes) {
             destroyBuffer(mesh->meshBuffers.indexBuffer);
             destroyBuffer(mesh->meshBuffers.vertexBuffer);
         }
 
-        loadedScenes.clear();
+        for (auto& mesh : meshes) {
+            destroyBuffer(mesh->meshBuffers.indexBuffer);
+            destroyBuffer(mesh->meshBuffers.vertexBuffer);
+        }
+
+        loadedEmitterNodes.clear();
+
+        loadedNodes.clear();
+
+        loadedScenes[0]->~LoadedGLTF();
 
         emitterMaterial.clearResources(_device);
 
