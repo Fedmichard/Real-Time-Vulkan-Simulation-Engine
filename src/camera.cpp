@@ -28,7 +28,7 @@ glm::mat4 Camera::getRotationMatrix() const
 
 void Camera::processSDLEvent(SDL_Event& e)
 {
-    const float camSpeed = 0.3f;
+    const float camSpeed = 0.0125f;
     if (e.type == SDL_KEYDOWN) {
         if (e.key.keysym.sym == SDLK_w) { velocity.z = -camSpeed; }
         if (e.key.keysym.sym == SDLK_s) { velocity.z = camSpeed; }

@@ -58,18 +58,23 @@ void VulkanEngine::init() {
     initImgui(); // init gui
 
     mainCamera.velocity = glm::vec3(0.f);
-    mainCamera.position = glm::vec3(30.f, -00.f, -85.f);
+    mainCamera.position = glm::vec3(5.f, 6.f, 0.f);
     
     // everything was successful
     _isInitialized = true;
 
-    std::string countryPath = { "..\\assets\\countryside-scene-free\\source\\untitled.glb" };
-    auto countryFile = loadGltf(this, countryPath);
-    assert(countryFile.has_value());
-    loadedScenes["structure"] = *countryFile;
+    std::string sponzaPath = { "..\\assets\\sponza_palace.glb" };
+    auto sponzaFile = loadGltf(this, sponzaPath);
+    assert(sponzaFile.has_value());
+    loadedScenes["sponza"] = *sponzaFile;
 
     /*
-    std::string sponzaPath = { "..\\assets\\sponza\\source\\scene.gltf" };
+    std::string bistroPath = { "..\\assets\\Bistro\\Textures\\untitled.glb" };
+    auto bistroFile = loadGltf(this, bistroPath);
+    assert(bistroFile.has_value());
+    loadedScenes["bistro"] = *bistroFile;
+
+    std::string sponzaPath = { "..\\assets\\sponza_palace.glb" };
     auto sponzaFile = loadGltf(this, sponzaPath);
     assert(sponzaFile.has_value());
     loadedScenes["sponza"] = *sponzaFile;
@@ -2015,13 +2020,13 @@ void VulkanEngine::updateScene() {
     emitterPosX = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
     
     speed = 1.5f;
-    minX = -3.0f;
-    maxX = 7.0f;
+    minX = 3.0f;
+    maxX = 8.0f;
     float emitter2PosY = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
     
     // sphere positions
-    glm::vec3 sphere1pos = glm::vec3(-2.0f, emitter2PosY, 86.0f);
-    glm::vec3 sphere2pos = glm::vec3(emitterPosX, emitterPosY, emitterPosZ);
+    glm::vec3 sphere1pos = glm::vec3(-2.0f, emitter2PosY, 0.0f);
+    glm::vec3 sphere2pos = glm::vec3(emitterPosX, 1.5f, 0.0f);
     glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, sphere1pos);
     glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, sphere2pos);
 
@@ -2036,7 +2041,7 @@ void VulkanEngine::updateScene() {
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.5f);
+	sceneData.ambientColor = glm::vec4(.01f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
@@ -2044,20 +2049,20 @@ void VulkanEngine::updateScene() {
     sceneData.emitter[0].color = glm::vec4{1.0f, 0.0f, 0.0f, 1.0f};
     sceneData.emitter[1].pos = glm::vec4(sphere2pos, 1.0f);
     sceneData.emitter[1].color = glm::vec4{0.0f, 1.0f, 1.0f, 1.0f};
-    sceneData.emitter[2].pos = glm::vec4(-2.0f, -5.0f, 91.0f, 1.0f);
+    sceneData.emitter[2].pos = glm::vec4(-8.0f, 1.5f, 0.0f, 1.0f);
     sceneData.emitter[2].color = glm::vec4{0.043f, 1.0f, 0.0f, 1.0f};
 
     // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["structure"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
-    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 86.0f));
+    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, 1.5f, 0.0f));
 
     // loadedNodes["Sphere"]->Draw(testSphere, mainDrawContext);
-    loadedNodes["Suzanne"]->Draw(testSphere, mainDrawContext);
+    loadedNodes["Cube"]->Draw(testSphere, mainDrawContext);
 
     loadedEmitterNodes["Red Sphere"]->Draw(sphereTransform1, mainDrawContext);
     loadedEmitterNodes["Blue Sphere"]->Draw(sphereTransform2, mainDrawContext);
-    loadedEmitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, -5.0f, 91.0f)), mainDrawContext);
+    loadedEmitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-8.0f, 1.5f, 0.0f)), mainDrawContext);
 }
