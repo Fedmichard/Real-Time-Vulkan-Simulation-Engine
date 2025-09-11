@@ -26,7 +26,7 @@ void main()  {
 
 	vec3 lighting = ambient;
 
-	for (int i = 0; i < 1 + 1; i++) {
+	for (int i = 0; i < 2 + 1; i++) {
 		// calculate light direction
 		vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
 

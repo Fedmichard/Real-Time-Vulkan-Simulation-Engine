@@ -85,8 +85,21 @@ struct EmitterMaterial : Material {
         DescriptorAllocator2& descriptorAllocator) override;
 };
 
-struct MeshNode : public Node {
+struct EmitterNode : public Node {
+	std::shared_ptr<MeshAsset> mesh;
 
+    AllocatedBuffer emitterConstants;
+    EmitterMaterial::MaterialConstants* mappedConstants = nullptr;
+    MaterialInstance materialInstance;
+
+	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
+
+    void setColor(const glm::vec4& color) {
+        mappedConstants->colorFactors = color;
+    }
+};
+
+struct MeshNode : public Node {
 	std::shared_ptr<MeshAsset> mesh;
 
 	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
@@ -205,8 +218,9 @@ public:
     VkPipelineLayout _meshPipelineLayout;
 
     // test meshes
-    std::vector<std::shared_ptr<MeshAsset>> testMeshes;
+    std::vector<std::shared_ptr<MeshAsset>> meshes;
     std::vector<std::shared_ptr<MeshAsset>> emitterMeshes;
+    std::unordered_map<std::string, std::shared_ptr<MeshAsset>> emitterMeshesNames;
 
     // texture images
     AllocatedImage _whiteImage;
@@ -225,9 +239,11 @@ public:
     MaterialInstance defaultData;
     GLTFMetallic_Roughness metalRoughMaterial;
     DrawContext mainDrawContext;
-    std::unordered_map<std::string, std::shared_ptr<Node>> loadedNodes;
-    std::unordered_map<std::string, std::shared_ptr<Node>> loadedEmitterNodes;
+    std::unordered_map<std::string, std::shared_ptr<MeshNode>> loadedNodes;
+    std::unordered_map<std::string, std::shared_ptr<EmitterNode>> loadedEmitterNodes;
     std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> loadedScenes;
+
+    // 
 
     // camera
     Camera mainCamera;
@@ -270,6 +286,7 @@ public:
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
+    std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh, const glm::vec4& initialColor);
     VkSampleCountFlagBits getMaxUsableSampleCount();
 
     // cleanup
