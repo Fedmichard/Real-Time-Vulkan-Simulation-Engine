@@ -102,15 +102,12 @@ struct EmitterNode : public Node {
 struct MeshNode : public Node {
 	std::shared_ptr<MeshAsset> mesh;
 
+    AllocatedBuffer constants;
+    void* mappedConstants = nullptr;
+    MaterialInstance materialInstance;
+    VulkanEngine* engine;
+
 	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
-};
-
-struct RenderComponent : public Node {
-	std::shared_ptr<MeshAsset> mesh; // loaded mesh that we want to render
-
-    AllocatedBuffer emitterConstants; // buffer with material constants
-    void* mappedConstants = nullptr; // pointer to material constants we can edit when we create this node
-    MaterialInstance materialInstance; // where we can write material to data to buffer and it'll automatically update
 };
 
 struct RenderObject {
@@ -137,6 +134,9 @@ struct EngineStats {
     int drawcall_count;
     float mesh_draw_time;
 };
+
+template<typename MaterialConstants, typename MaterialType, typename MaterialResources>
+std::shared_ptr<MeshNode> createNode(std::shared_ptr<MeshAsset> mesh, MaterialType& materialType, MaterialResources& resources, VulkanEngine* engine);
 
 class VulkanEngine {
 public:
@@ -243,6 +243,7 @@ public:
     GLTFMetallic_Roughness metalRoughMaterial;
     DrawContext mainDrawContext;
     std::unordered_map<std::string, std::shared_ptr<MeshNode>> loadedNodes;
+    std::unordered_map<std::string, std::shared_ptr<MeshNode>> sceneNodes;
     std::unordered_map<std::string, std::shared_ptr<EmitterNode>> loadedEmitterNodes;
     std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> loadedScenes;
     

@@ -504,6 +504,7 @@ void VulkanEngine::initDefaultData() {
 
     // meshes
     auto sphereMesh = emitterMeshesNames["Sphere"];
+    auto monkeyMesh = emitterMeshesNames["Suzanne"];
 
     // load nodes
     auto redSphere = createEmitterNode(sphereMesh, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
@@ -513,6 +514,22 @@ void VulkanEngine::initDefaultData() {
     loadedEmitterNodes["Red Sphere"] = redSphere;
     loadedEmitterNodes["Blue Sphere"] = blueSphere;
     loadedEmitterNodes["Green Sphere"] = greenSphere;
+
+    // texture resources for material
+    PBRResources resources{};
+    resources.colorImage = _whiteImage;
+    resources.colorSampler = _defaultSamplerLinear;
+    resources.metalRoughImage = _whiteImage;
+    resources.metalRoughSampler = _defaultSamplerLinear;
+
+    // create material with 
+    auto yellowSphere = createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, metalRoughMaterial, resources, this);
+    sceneNodes["Yellow Sphere"] = yellowSphere;
+
+    // new
+    EmitterResources resources2{};
+    auto yellowMonkey = createNode<EmitterMaterial::MaterialConstants>(monkeyMesh, emitterMaterial, resources2, this);
+    sceneNodes["Yellow Monkey"] = yellowMonkey;
 }
 
 void VulkanEngine::initVulkan() {
@@ -799,6 +816,49 @@ void VulkanEngine::initImgui() {
 /**********************************
 *        Helper Functions
 **********************************/
+template<typename MaterialConstants, typename MaterialType, typename MaterialResources>
+std::shared_ptr<MeshNode> createNode(std::shared_ptr<MeshAsset> mesh, MaterialType& materialType, MaterialResources& resources, VulkanEngine* engine) {
+    auto node = std::make_shared<MeshNode>();
+    node->mesh = mesh;
+
+    // 1. Allocate uniform buffer for *this material's constants*
+    node->constants = engine->createBuffer(
+        sizeof(MaterialConstants),
+        VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+        VMA_MEMORY_USAGE_CPU_TO_GPU
+    );
+    node->mappedConstants = reinterpret_cast<MaterialConstants*>(
+        node->constants.info.pMappedData
+    );
+
+    // 2. Fill resources struct for this material
+    resources.dataBuffer = node->constants.buffer;
+    resources.dataBufferOffset = 0;
+
+    // 3. Create descriptor-backed material instance
+    node->materialInstance = materialType.writeMaterial(
+        engine->_device,
+        MaterialPass::MainColor,
+        resources,
+        engine->_descriptorAllocator
+    );
+
+    // 4. Assign to mesh surfaces
+    for (auto& s : node->mesh->surfaces) {
+        s.material = std::make_shared<GLTFMaterial>();
+        s.material->data = node->materialInstance;
+    }
+
+    node->localTransform = glm::mat4(1.0f);
+    node->worldTransform = glm::mat4{ 1.f };
+
+    // 5. Cleanup
+    engine->_mainDeletionQueue.push_function([=]() {
+        engine->destroyBuffer(node->constants);
+    });
+
+    return node;
+}
 
 std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh, const glm::vec4& initialColor) {
     auto node = std::make_shared<EmitterNode>();
@@ -2016,23 +2076,31 @@ void VulkanEngine::updateScene() {
     static auto startTime = std::chrono::high_resolution_clock::now();
     auto currentTime = std::chrono::high_resolution_clock::now();
     float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+    
+    // load scenes
+    loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
 
-    // positions
+    // load meshes
+    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, 1.5f, 0.0f));
+    loadedNodes["Cube"]->Draw(testSphere, mainDrawContext);
+    
+    // load emitters
     float speed = 1.0f; // smaller = slower, larger = faster
     float minX = 0.0f;
     float maxX = 10.0f;
     emitterPosX = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
-    
     speed = 1.5f;
     minX = 3.0f;
     maxX = 8.0f;
     float emitter2PosY = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
-    
-    // sphere positions
-    glm::vec3 sphere1pos = glm::vec3(-2.0f, emitter2PosY, 0.0f);
-    glm::vec3 sphere2pos = glm::vec3(emitterPosX, 1.5f, 0.0f);
-    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, sphere1pos);
-    glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, sphere2pos);
+
+    glm::vec4 sphere1pos = glm::vec4(-2.0f, emitter2PosY, 0.0f, 1.0f);
+    glm::vec4 sphere2pos = glm::vec4(emitterPosX, 1.5f, 0.0f, 1.0f);
+    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, {sphere1pos.x, sphere1pos.y, sphere1pos.z});
+    glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, {sphere2pos.x, sphere2pos.y, sphere2pos.z});
+    loadedEmitterNodes["Red Sphere"]->Draw(sphereTransform1, mainDrawContext);
+    loadedEmitterNodes["Blue Sphere"]->Draw(sphereTransform2, mainDrawContext);
+    loadedEmitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-8.0f, 1.5f, 0.0f)), mainDrawContext);
 
     // defaults
     glm::mat4 view = mainCamera.getViewMatrix();
@@ -2045,28 +2113,23 @@ void VulkanEngine::updateScene() {
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.01f);
+	sceneData.ambientColor = glm::vec4(.51f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
-    sceneData.emitter[0].pos = glm::vec4(sphere1pos, 1.0f);
+    sceneData.emitter[0].pos = sphere1pos;
     sceneData.emitter[0].color = glm::vec4{1.0f, 0.0f, 0.0f, 1.0f};
-    sceneData.emitter[1].pos = glm::vec4(sphere2pos, 1.0f);
+    sceneData.emitter[1].pos = sphere2pos;
     sceneData.emitter[1].color = glm::vec4{0.0f, 1.0f, 1.0f, 1.0f};
     sceneData.emitter[2].pos = glm::vec4(-8.0f, 1.5f, 0.0f, 1.0f);
     sceneData.emitter[2].color = glm::vec4{0.043f, 1.0f, 0.0f, 1.0f};
 
-    // loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    // loadedScenes["gorilla"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    // loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-    
-    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, 1.5f, 0.0f));
+    // reinterpret void* back to specific material constant before changing factors
+    auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Yellow Sphere"]->mappedConstants);
+    factors->colorFactors = glm::vec4{1.f, .0f, .0f, 1.f};
+    sceneNodes["Yellow Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(2.0f, 2.f, 0.0f)), mainDrawContext);
 
-    // loadedNodes["Sphere"]->Draw(testSphere, mainDrawContext);
-    loadedNodes["Cube"]->Draw(testSphere, mainDrawContext);
-
-    loadedEmitterNodes["Red Sphere"]->Draw(sphereTransform1, mainDrawContext);
-    loadedEmitterNodes["Blue Sphere"]->Draw(sphereTransform2, mainDrawContext);
-    loadedEmitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-8.0f, 1.5f, 0.0f)), mainDrawContext);
+    auto factors2 = reinterpret_cast<EmitterMaterial::MaterialConstants*>(sceneNodes["Yellow Monkey"]->mappedConstants);
+    factors2->colorFactors = glm::vec4{1.f, 1.f, .0f, 1.f};
+    sceneNodes["Yellow Monkey"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 8.f, 0.0f)), mainDrawContext);
 }
