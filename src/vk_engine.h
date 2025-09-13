@@ -31,6 +31,11 @@ struct EmitterResources : MaterialResourcesBase {
     uint32_t dataBufferOffset;
 };
 
+struct OpenGLResources : MaterialResourcesBase {
+    VkBuffer dataBuffer;
+    uint32_t dataBufferOffset;
+};
+
 struct Material {
     MaterialPipeline opaquePipeline;
 	MaterialPipeline transparentPipeline;
@@ -73,6 +78,26 @@ struct EmitterMaterial : Material {
 		//padding, we need it anyway for uniform buffers
 		glm::vec4 extra[15];
 	};
+
+	virtual void buildPipelines(VulkanEngine* engine);
+	virtual void clearResources(VkDevice device);
+
+	virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
+};
+
+struct OpenGLMaterial : Material {
+    struct MaterialConstants {
+        glm::vec4 colorFactors;
+        glm::vec4 ambient;
+        glm::vec4 diffuse;
+        glm::vec4 specular;
+        float shininess;
+        glm::vec4 extra[11];
+    };
 
 	virtual void buildPipelines(VulkanEngine* engine);
 	virtual void clearResources(VkDevice device);
@@ -237,8 +262,8 @@ public:
     VkDescriptorSetLayout _singleImageDescriptorLayout;
 
     // gltf
-    MaterialInstance emitterData;
     EmitterMaterial emitterMaterial;
+    OpenGLMaterial openglMaterial;
     MaterialInstance defaultData;
     GLTFMetallic_Roughness metalRoughMaterial;
     DrawContext mainDrawContext;

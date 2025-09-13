@@ -505,6 +505,7 @@ void VulkanEngine::initDefaultData() {
     // meshes
     auto sphereMesh = emitterMeshesNames["Sphere"];
     auto monkeyMesh = emitterMeshesNames["Suzanne"];
+    auto cubeMesh = emitterMeshesNames["Cube"];
 
     // load nodes
     auto redSphere = createEmitterNode(sphereMesh, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
@@ -521,10 +522,13 @@ void VulkanEngine::initDefaultData() {
     resources.colorSampler = _defaultSamplerLinear;
     resources.metalRoughImage = _whiteImage;
     resources.metalRoughSampler = _defaultSamplerLinear;
-
-    // create material with 
     auto yellowSphere = createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, metalRoughMaterial, resources, this);
     sceneNodes["Yellow Sphere"] = yellowSphere;
+
+    // opengl texture test
+    OpenGLResources resources3{};
+    auto cube = createNode<OpenGLMaterial::MaterialConstants>(cubeMesh, openglMaterial, resources3, this);
+    sceneNodes["Cube"] = cube;
 
     // new
     EmitterResources resources2{};
@@ -743,9 +747,9 @@ void VulkanEngine::initDescriptors() {
 
 void VulkanEngine::initPipelines() {
     initBackgroundPipelines();
-    initMeshPipeline();
     metalRoughMaterial.buildPipelines(this);
     emitterMaterial.buildPipelines(this);
+    openglMaterial.buildPipelines(this);
 }
 
 void VulkanEngine::initImgui() {
@@ -1138,6 +1142,10 @@ void VulkanEngine::createResolveImage(uint32_t width, uint32_t height) {
     VK_CHECK(vkCreateImageView(_device, &resolveImgView, nullptr, &_resolveImage.imageView));
 }
 
+void VulkanEngine::createNormalImage(uint32_t width, uint32_t height) {
+
+}
+
 // init background pipelines
 void VulkanEngine::initBackgroundPipelines() {
     // global for all pipelines
@@ -1242,76 +1250,6 @@ void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer) {
 
         // execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
         vkCmdDispatch(commandBuffer, std::ceil(_drawExtent.width / 16.0), std::ceil(_drawExtent.height / 16.0), 1);
-}
-
-// init pipeline for model loading
-void VulkanEngine::initMeshPipeline() {
-    VkPipelineLayoutCreateInfo pipelineInfo{};
-    pipelineInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-
-    VkPushConstantRange bufferRange{};
-    bufferRange.offset = 0;
-    bufferRange.size = sizeof(GPUDrawPushConstants);
-    bufferRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
-    
-    pipelineInfo.pushConstantRangeCount = 1;
-    pipelineInfo.pPushConstantRanges = &bufferRange;
-    pipelineInfo.setLayoutCount = 1;
-    pipelineInfo.pSetLayouts = &_singleImageDescriptorLayout;
-    
-    VK_CHECK(vkCreatePipelineLayout(_device, &pipelineInfo, nullptr, &_meshPipelineLayout));
-
-    VkShaderModule triangleVertShader;
-    if (!vkutil::loadShaderModule("../shaders/triangle_mesh.vert.spv", _device, &triangleVertShader)) {
-        fmt::println("error when building the triangle fragment vertex module");
-    } else {
-        fmt::println("triangle vertex shader loaded successfully!");
-    }
-
-    VkShaderModule triangleFragShader;
-    if (!vkutil::loadShaderModule("../shaders/text_image.frag.spv", _device, &triangleFragShader)) {
-        fmt::println("error when building the triangle fragment vertex module");
-    } else {
-        fmt::println("triangle fragment shader loaded successfully!");
-    }
-    
-    PipelineBuilder pipelineBuilder;
-    //use the triangle layout we created
-    pipelineBuilder._pipelineLayout = _meshPipelineLayout;
-    //connecting the vertex and pixel shaders to the pipeline
-	pipelineBuilder.setShaders(triangleVertShader, triangleFragShader);
-	//it will draw triangles
-	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
-	//filled triangles
-	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
-	//no backface culling
-	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
-	//no multisampling
-	// pipelineBuilder.setMultisamplingNone();
-    pipelineBuilder.enableMultisampling(_maxSamples);
-	//no blending
-	pipelineBuilder.disableBlending();
-    // pipelineBuilder.enableBlendingAdditive();
-    // pipelineBuilder.enableBlendingAlpha();
-    // depth testing
-	// pipelineBuilder.disableDepthtest();
-    pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_GREATER_OR_EQUAL);
-
-	//connect the image format we will draw into, from draw image
-	pipelineBuilder.setColorAttachmentFormat(_drawImage.imageFormat);
-	pipelineBuilder.setDepthFormat(_depthImage.imageFormat);
-
-	//finally build the pipeline
-	_meshPipeline = pipelineBuilder.buildPipeline(_device);
-
-	//clean structures
-	vkDestroyShaderModule(_device, triangleFragShader, nullptr);
-	vkDestroyShaderModule(_device, triangleVertShader, nullptr);
-
-	_mainDeletionQueue.push_function([&]() {
-		vkDestroyPipelineLayout(_device, _meshPipelineLayout, nullptr);
-		vkDestroyPipeline(_device, _meshPipeline, nullptr);
-	});
 }
 
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
@@ -2020,6 +1958,109 @@ MaterialInstance EmitterMaterial::writeMaterial(VkDevice device, MaterialPass pa
 	return matData;
 }
 
+void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
+    VkPipelineLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+
+    // create new descriptor layout and push constant range
+    VkPushConstantRange matrixRange{};
+	matrixRange.offset = 0;
+	matrixRange.size = sizeof(GPUDrawPushConstants);
+	matrixRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    DescriptorLayoutBuilder layoutBuilder;
+    layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    materialLayout = layoutBuilder.build(engine->_device);
+
+    // set layouts and push constant
+    VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout, materialLayout };
+
+    layoutInfo.pushConstantRangeCount = 1;
+    layoutInfo.pPushConstantRanges = &matrixRange;
+    layoutInfo.setLayoutCount = 2;
+    layoutInfo.pSetLayouts = layouts;
+
+    // create and set pipeline layout
+    VkPipelineLayout newLayout;
+    vkCreatePipelineLayout(engine->_device, &layoutInfo, nullptr, &newLayout);
+
+    transparentPipeline.layout = newLayout;
+    opaquePipeline.layout = newLayout;
+
+    // shaders
+	VkShaderModule meshVertexShader;
+	if (!vkutil::loadShaderModule("../shaders/opengl.vert.spv", engine->_device, &meshVertexShader)) {
+		fmt::println("Error when building the triangle vertex shader module");
+	}
+
+    VkShaderModule meshFragShader;
+	if (!vkutil::loadShaderModule("../shaders/opengl.frag.spv", engine->_device, &meshFragShader)) {
+		fmt::println("Error when building the triangle fragment shader module");
+	}
+
+    // the pipeline know the shader modules per stage
+	PipelineBuilder pipelineBuilder;
+	pipelineBuilder._pipelineLayout = newLayout;
+	pipelineBuilder.setShaders(meshVertexShader, meshFragShader);
+	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
+	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+	// pipelineBuilder.setMultisamplingNone();
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
+	pipelineBuilder.disableBlending();
+	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
+
+	//render format
+	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+
+	// finally build the pipeline
+    opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+
+	// create the transparent variant
+	pipelineBuilder.enableBlendingAdditive();
+    // disable depth testing
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+
+    // finally build the pipeline
+	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+	
+	vkDestroyShaderModule(engine->_device, meshFragShader, nullptr);
+	vkDestroyShaderModule(engine->_device, meshVertexShader, nullptr);
+}
+
+void OpenGLMaterial::clearResources(VkDevice device) {
+	vkDestroyDescriptorSetLayout(device, materialLayout, nullptr);
+	vkDestroyPipelineLayout(device, transparentPipeline.layout, nullptr);
+
+	vkDestroyPipeline(device, transparentPipeline.pipeline, nullptr);
+	vkDestroyPipeline(device, opaquePipeline.pipeline, nullptr);
+}
+
+MaterialInstance OpenGLMaterial::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
+    // Downcast to the actual resource type
+    const OpenGLResources& res = static_cast<const OpenGLResources&>(resources);
+
+    MaterialInstance matData;
+	matData.passType = pass;
+	if (pass == MaterialPass::Transparent) {
+		matData.pipeline = &transparentPipeline;
+	}
+	else {
+		matData.pipeline = &opaquePipeline;
+	}
+
+	matData.materialSet = descriptorAllocator.allocate(device, materialLayout);
+
+
+	writer.clear();
+	writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+
+	writer.updateSet(device, matData.materialSet);
+
+	return matData;
+}
+
 void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
     glm::mat4 nodeMatrix = topMatrix * worldTransform;
 
@@ -2123,11 +2164,13 @@ void VulkanEngine::updateScene() {
     sceneData.emitter[1].color = glm::vec4{0.0f, 1.0f, 1.0f, 1.0f};
     sceneData.emitter[2].pos = glm::vec4(-8.0f, 1.5f, 0.0f, 1.0f);
     sceneData.emitter[2].color = glm::vec4{0.043f, 1.0f, 0.0f, 1.0f};
+    sceneData.emitter[3].pos = glm::vec4(0.0f, 8.f, 0.0f, 1.0f);
+    sceneData.emitter[3].color = glm::vec4{1.f, 1.f, .0f, 1.f};
 
     // reinterpret void* back to specific material constant before changing factors
-    auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Yellow Sphere"]->mappedConstants);
-    factors->colorFactors = glm::vec4{1.f, .0f, .0f, 1.f};
-    sceneNodes["Yellow Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(2.0f, 2.f, 0.0f)), mainDrawContext);
+    auto factors = reinterpret_cast<OpenGLMaterial::MaterialConstants*>(sceneNodes["Cube"]->mappedConstants);
+    factors->colorFactors = glm::vec4{1.f, 1.0f, 1.0f, 1.f};
+    sceneNodes["Cube"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(2.0f, 2.f, 0.0f)), mainDrawContext);
 
     auto factors2 = reinterpret_cast<EmitterMaterial::MaterialConstants*>(sceneNodes["Yellow Monkey"]->mappedConstants);
     factors2->colorFactors = glm::vec4{1.f, 1.f, .0f, 1.f};
