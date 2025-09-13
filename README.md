@@ -22,7 +22,7 @@ An onging C++17 Vulkan renderer.
 
 <img width="1189" height="849" alt="image" src="https://github.com/user-attachments/assets/d0f2dea9-1209-4967-aab6-9f3d3dbcdc61" />
 
-
+<img width="2220" height="1345" alt="image" src="https://github.com/user-attachments/assets/544d9d3b-4896-47b3-92af-472305594e1e" />
 
 ## Roadmap
 - [ ] GPU Driven Rendering
