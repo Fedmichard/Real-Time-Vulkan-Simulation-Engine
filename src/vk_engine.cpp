@@ -135,7 +135,7 @@ void VulkanEngine::cleanup() {
             destroyBuffer(mesh->meshBuffers.vertexBuffer);
         }
 
-        loadedEmitterNodes.clear();
+        emitterNodes.clear();
 
         loadedNodes.clear();
 
@@ -507,33 +507,32 @@ void VulkanEngine::initDefaultData() {
     auto monkeyMesh = emitterMeshesNames["Suzanne"];
     auto cubeMesh = emitterMeshesNames["Cube"];
 
-    // load nodes
-    auto redSphere = createEmitterNode(sphereMesh, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
-    auto blueSphere = createEmitterNode(sphereMesh, glm::vec4{0.0f, 1.0f, 1.0f, 1.0f});
-    auto greenSphere = createEmitterNode(sphereMesh, glm::vec4{0.043f, 1.0f, 0.0f, 1.0f});
+    // load emitter nodes
+    auto redSphere = createEmitterNode(sphereMesh, "Red Sphere", glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
+    auto blueSphere = createEmitterNode(sphereMesh, "Blue Sphere", glm::vec4{0.0f, 1.0f, 1.0f, 1.0f});
+    auto greenSphere = createEmitterNode(sphereMesh, "Green Sphere", glm::vec4{0.043f, 1.0f, 0.0f, 1.0f});
+    auto yellowMonkey = createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec4{1.f, 1.f, .0f, 1.f});
 
-    loadedEmitterNodes["Red Sphere"] = redSphere;
-    loadedEmitterNodes["Blue Sphere"] = blueSphere;
-    loadedEmitterNodes["Green Sphere"] = greenSphere;
-
+    /* Mesh Nodes */
     // texture resources for material
     PBRResources resources{};
     resources.colorImage = _whiteImage;
     resources.colorSampler = _defaultSamplerLinear;
     resources.metalRoughImage = _whiteImage;
     resources.metalRoughSampler = _defaultSamplerLinear;
-    auto yellowSphere = createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, metalRoughMaterial, resources, this);
-    sceneNodes["Yellow Sphere"] = yellowSphere;
+    auto yellowSphere = createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Yellow Sphere", metalRoughMaterial, resources, this);
+
+    // new
+    PBRResources resources2{};
+    resources2.colorImage = _whiteImage;
+    resources2.colorSampler = _defaultSamplerLinear;
+    resources2.metalRoughImage = _whiteImage;
+    resources2.metalRoughSampler = _defaultSamplerLinear;
+    auto basicCube = createNode<GLTFMetallic_Roughness::MaterialConstants>(cubeMesh, "Basic Cube", metalRoughMaterial, resources2, this);
 
     // opengl texture test
     OpenGLResources resources3{};
-    auto cube = createNode<OpenGLMaterial::MaterialConstants>(cubeMesh, openglMaterial, resources3, this);
-    sceneNodes["Cube"] = cube;
-
-    // new
-    EmitterResources resources2{};
-    auto yellowMonkey = createNode<EmitterMaterial::MaterialConstants>(monkeyMesh, emitterMaterial, resources2, this);
-    sceneNodes["Yellow Monkey"] = yellowMonkey;
+    auto cube = createNode<OpenGLMaterial::MaterialConstants>(cubeMesh, "Cube", openglMaterial, resources3, this);
 }
 
 void VulkanEngine::initVulkan() {
@@ -821,8 +820,8 @@ void VulkanEngine::initImgui() {
 *        Helper Functions
 **********************************/
 template<typename MaterialConstants, typename MaterialType, typename MaterialResources>
-std::shared_ptr<MeshNode> createNode(std::shared_ptr<MeshAsset> mesh, MaterialType& materialType, MaterialResources& resources, VulkanEngine* engine) {
-    auto node = std::make_shared<MeshNode>();
+std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const char* name, MaterialType& materialType, MaterialResources& resources, VulkanEngine* engine) {
+    auto node = std::make_shared<ObjectNode>();
     node->mesh = mesh;
 
     // 1. Allocate uniform buffer for *this material's constants*
@@ -861,10 +860,12 @@ std::shared_ptr<MeshNode> createNode(std::shared_ptr<MeshAsset> mesh, MaterialTy
         engine->destroyBuffer(node->constants);
     });
 
+    engine->sceneNodes[name] = node;
+
     return node;
 }
 
-std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh, const glm::vec4& initialColor) {
+std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh, const char* name, const glm::vec4& initialColor) {
     auto node = std::make_shared<EmitterNode>();
     node->mesh = mesh;
 
@@ -898,6 +899,10 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
     _mainDeletionQueue.push_function([=]() {
         destroyBuffer(node->emitterConstants);
     });
+    
+    emitterNodes[name] = node;
+
+    sceneLights.push_back(node);
 
     return node;
 }
@@ -1140,10 +1145,6 @@ void VulkanEngine::createResolveImage(uint32_t width, uint32_t height) {
     resolveImgView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 
     VK_CHECK(vkCreateImageView(_device, &resolveImgView, nullptr, &_resolveImage.imageView));
-}
-
-void VulkanEngine::createNormalImage(uint32_t width, uint32_t height) {
-
 }
 
 // init background pipelines
@@ -2085,6 +2086,30 @@ void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
     Node::Draw(topMatrix, ctx);
 }
 
+void ObjectNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
+    glm::mat4 nodeMatrix = topMatrix * worldTransform;
+
+    for (auto& s : mesh->surfaces) {
+        RenderObject def;
+        def.indexCount = s.count;
+        def.firstIndex = s.startIndex;
+        def.indexBuffer = mesh->meshBuffers.indexBuffer.buffer;
+        def.material = &this->materialInstance;
+        def.bounds = s.bounds;
+        def.transform = nodeMatrix;
+        def.vertexBufferAddress = mesh->meshBuffers.vertexBufferAddress;
+
+        if (s.material->data.passType == MaterialPass::Transparent) {
+            ctx.TransparentSurfaces.push_back(def);
+        } else {
+            ctx.OpaqueSurfaces.push_back(def);
+        }
+    }
+
+    // recurse down
+    Node::Draw(topMatrix, ctx);
+}
+
 void EmitterNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
     glm::mat4 nodeMatrix = topMatrix * worldTransform;
 
@@ -2120,10 +2145,6 @@ void VulkanEngine::updateScene() {
     
     // load scenes
     loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
-
-    // load meshes
-    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, 1.5f, 0.0f));
-    loadedNodes["Cube"]->Draw(testSphere, mainDrawContext);
     
     // load emitters
     float speed = 1.0f; // smaller = slower, larger = faster
@@ -2139,9 +2160,9 @@ void VulkanEngine::updateScene() {
     glm::vec4 sphere2pos = glm::vec4(emitterPosX, 1.5f, 0.0f, 1.0f);
     glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, {sphere1pos.x, sphere1pos.y, sphere1pos.z});
     glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, {sphere2pos.x, sphere2pos.y, sphere2pos.z});
-    loadedEmitterNodes["Red Sphere"]->Draw(sphereTransform1, mainDrawContext);
-    loadedEmitterNodes["Blue Sphere"]->Draw(sphereTransform2, mainDrawContext);
-    loadedEmitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-8.0f, 1.5f, 0.0f)), mainDrawContext);
+    emitterNodes["Red Sphere"]->Draw(sphereTransform1, mainDrawContext);
+    emitterNodes["Blue Sphere"]->Draw(sphereTransform2, mainDrawContext);
+    emitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-8.0f, 1.5f, 0.0f)), mainDrawContext);
 
     // defaults
     glm::mat4 view = mainCamera.getViewMatrix();
@@ -2154,7 +2175,7 @@ void VulkanEngine::updateScene() {
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
 	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.51f);
+	sceneData.ambientColor = glm::vec4(.1f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
@@ -2168,11 +2189,21 @@ void VulkanEngine::updateScene() {
     sceneData.emitter[3].color = glm::vec4{1.f, 1.f, .0f, 1.f};
 
     // reinterpret void* back to specific material constant before changing factors
-    auto factors = reinterpret_cast<OpenGLMaterial::MaterialConstants*>(sceneNodes["Cube"]->mappedConstants);
-    factors->colorFactors = glm::vec4{1.f, 1.0f, 1.0f, 1.f};
-    sceneNodes["Cube"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(2.0f, 2.f, 0.0f)), mainDrawContext);
-
-    auto factors2 = reinterpret_cast<EmitterMaterial::MaterialConstants*>(sceneNodes["Yellow Monkey"]->mappedConstants);
-    factors2->colorFactors = glm::vec4{1.f, 1.f, .0f, 1.f};
-    sceneNodes["Yellow Monkey"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(0.0f, 8.f, 0.0f)), mainDrawContext);
+    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, 1.5f, 0.0f));
+    auto factors2 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Basic Cube"]->mappedConstants);
+    factors2->colorFactors = glm::vec4{1,1,1,1};
+    factors2->metal_rough_factors = glm::vec4{1,0.5,0,0};
+    sceneNodes["Basic Cube"]->Draw(testSphere, mainDrawContext);
+    
+    /*
+    auto factors3 = reinterpret_cast<OpenGLMaterial::MaterialConstants*>(sceneNodes["Cube"]->mappedConstants);
+    factors3->colorFactors = glm::vec4{1.f, 1.0f, 1.0f, 1.f};
+    sceneNodes["Cube"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(2.0f, 5.f, 0.0f)), mainDrawContext);
+    */
+   
+    auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Yellow Sphere"]->mappedConstants);
+    factors->colorFactors = glm::vec4{1,1,0,1};;
+    factors->metal_rough_factors = glm::vec4{1,0.5,0,0};
+    sceneNodes["Yellow Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, 1}), mainDrawContext);
+    std::cout << "Lights: " << emitterNodes.size() << std::endl;
 }

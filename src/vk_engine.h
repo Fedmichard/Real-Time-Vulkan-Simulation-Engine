@@ -124,6 +124,17 @@ struct EmitterNode : public Node {
     }
 };
 
+struct ObjectNode : public Node {
+	std::shared_ptr<MeshAsset> mesh;
+
+    AllocatedBuffer constants;
+    void* mappedConstants = nullptr;
+    MaterialInstance materialInstance;
+    VulkanEngine* engine;
+
+	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
+};
+
 struct MeshNode : public Node {
 	std::shared_ptr<MeshAsset> mesh;
 
@@ -161,7 +172,11 @@ struct EngineStats {
 };
 
 template<typename MaterialConstants, typename MaterialType, typename MaterialResources>
-std::shared_ptr<MeshNode> createNode(std::shared_ptr<MeshAsset> mesh, MaterialType& materialType, MaterialResources& resources, VulkanEngine* engine);
+std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh,
+    const char* name,
+    MaterialType& materialType,
+    MaterialResources& resources,
+    VulkanEngine* engine);
 
 class VulkanEngine {
 public:
@@ -268,9 +283,10 @@ public:
     GLTFMetallic_Roughness metalRoughMaterial;
     DrawContext mainDrawContext;
     std::unordered_map<std::string, std::shared_ptr<MeshNode>> loadedNodes;
-    std::unordered_map<std::string, std::shared_ptr<MeshNode>> sceneNodes;
-    std::unordered_map<std::string, std::shared_ptr<EmitterNode>> loadedEmitterNodes;
+    std::unordered_map<std::string, std::shared_ptr<ObjectNode>> sceneNodes;
+    std::unordered_map<std::string, std::shared_ptr<EmitterNode>> emitterNodes;
     std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> loadedScenes;
+    std::vector<std::shared_ptr<EmitterNode>> sceneLights;
     
     // camera
     Camera mainCamera;
@@ -313,7 +329,9 @@ public:
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
-    std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh, const glm::vec4& initialColor);
+    std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh,
+        const char* name,
+        const glm::vec4& initialColor);
     VkSampleCountFlagBits getMaxUsableSampleCount();
 
     // cleanup

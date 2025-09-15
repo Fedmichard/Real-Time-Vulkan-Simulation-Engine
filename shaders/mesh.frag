@@ -46,6 +46,6 @@ void main()  {
 		lighting += diffuse + specular;
 	}
 
-	// outFragColor = vec4(lighting * color, 1.0f);
-	outFragColor = vec4(inNormal, 1.0f);
+	outFragColor = vec4(lighting * color, 1.0f);
+	// outFragColor = vec4(inNormal, 1.0f);
 }
