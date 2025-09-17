@@ -42,6 +42,8 @@ struct EmitterResources : MaterialResourcesBase {
 struct OpenGLResources : MaterialResourcesBase {
     AllocatedImage texture;
     VkSampler sampler;
+    AllocatedImage metalTexture;
+    VkSampler metalSampler;
     VkBuffer dataBuffer;
     uint32_t dataBufferOffset;
 };

@@ -487,11 +487,29 @@ void VulkanEngine::initDefaultData() {
     const std::string containerTexture = "..//assets//textures//container2.png";
     unsigned char* data = stbi_load(containerTexture.c_str(), &w, &h, &ch, STBI_rgb_alpha);
     AllocatedImage resources3Image = createImage(data, VkExtent3D{ (uint32_t)w, (uint32_t)h, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
+    const std::string metalTexture = "..//assets//textures//container2_specular.png";
+    data = stbi_load(metalTexture.c_str(), &w, &h, &ch, STBI_rgb_alpha);
+    AllocatedImage resources3Metal = createImage(data, VkExtent3D{ (uint32_t)w, (uint32_t)h, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
     stbi_image_free(data);
     /* LOAD IMAGE */
     resources3.texture = resources3Image;
     resources3.sampler = _defaultSamplerLinear;
+    resources3.metalTexture = resources3Metal;
+    resources3.sampler = _defaultSamplerLinear;
     createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Cube", openglMaterial, resources3, this);
+
+    OpenGLResources resource31{};
+    /* LOAD IMAGE */
+    const std::string animeTexture = "..//assets//textures//Texturelabs_Soil_124S.jpg";
+    data = stbi_load(animeTexture.c_str(), &w, &h, &ch, STBI_rgb_alpha);
+    AllocatedImage resources31Image = createImage(data, VkExtent3D{ (uint32_t)w, (uint32_t)h, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
+    stbi_image_free(data);
+    /* LOAD IMAGE */
+    resource31.texture = resources31Image;
+    resource31.sampler = _defaultSamplerLinear;
+    resource31.metalTexture = _whiteImage;
+    resource31.sampler = _defaultSamplerLinear;
+    createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Anime Cube", openglMaterial, resource31, this);
 }
 
 void VulkanEngine::initVulkan() {
@@ -1928,6 +1946,7 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
     DescriptorLayoutBuilder layoutBuilder;
     layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
     layoutBuilder.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    layoutBuilder.addBinding(2, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
     materialLayout = layoutBuilder.build(engine->_device);
 
     // set layouts and push constant
@@ -2014,6 +2033,7 @@ MaterialInstance OpenGLMaterial::writeMaterial(VkDevice device, MaterialPass pas
 	writer.clear();
 	writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 	writer.writeImage(1, res.texture.imageView, res.sampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+	writer.writeImage(2, res.metalTexture.imageView, res.metalSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
 	writer.updateSet(device, matData.materialSet);
 
@@ -2144,6 +2164,12 @@ void VulkanEngine::updateScene() {
     factors4->colorFactors = glm::vec4{1.0f, 0.5f, 0.31f, .5f};
     factors4->shininess = 32.0f;
     openglCube->Draw(glm::translate(glm::mat4{1.f}, {-1.0f, 10.25f, -.30f}), mainDrawContext);
+
+    auto animeCube = sceneNodes["Anime Cube"];
+    auto factors5 = reinterpret_cast<OpenGLMaterial::MaterialConstants*>(animeCube->mappedConstants);
+    factors5->colorFactors = glm::vec4{1.0f, 0.5f, 0.31f, .5f};
+    factors5->shininess = 32.0f;
+    animeCube->Draw(glm::translate(glm::mat4{1.f}, {3.0f, 10.25f, -.30f}), mainDrawContext);
 
     // defaults
     glm::mat4 view = mainCamera.getViewMatrix();

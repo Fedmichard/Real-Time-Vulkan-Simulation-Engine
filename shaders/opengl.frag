@@ -16,10 +16,11 @@ void main()  {
 	float lightValue = max(dot(inNormal, sceneData.sunlightDirection.xyz), 0.1f);
 
 	// object color with texture
-	vec3 color = texture(colorTex, inUV).xyz;
+	vec3 diffMap = texture(colorTex, inUV).xyz; // diffuse map
+	vec3 specMap = texture(metalTex, inUV).xyz; // specular map
 
 	// calculate ambient
-	vec3 ambient = sceneData.sunlightColor.xyz * sceneData.ambientColor.xyz * color;
+	vec3 ambient = sceneData.sunlightColor.xyz * sceneData.ambientColor.xyz * diffMap;
 
 	// specular info
 	vec3 viewDir = normalize(sceneData.cameraPos.xyz - inFragPos);
@@ -34,14 +35,18 @@ void main()  {
 		float distance = length(sceneData.emitter[i].pos.xyz - inFragPos);
 		float attenuation = 5.0 / (distance * distance);
 
+		// material specular specStrength
+		float materialSpecStrength = materialData.colorFactors.w; // how reflective it is
+		float lightSpecStrength = sceneData.emitter[i].color.w; // the intensity of the light
+
 		// diffuse
 		float diff = max(dot(norm, lightDir), 0.0);
-		vec3 diffuse = sceneData.emitter[i].color.xyz * (diff) * color * attenuation;
+		vec3 diffuse = (sceneData.emitter[i].color.xyz) * (diff) * (diffMap) * attenuation;
 
 		// specular
 		vec3 reflectDir = reflect(-lightDir, norm);
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), materialData.shininess);
-		vec3 specular = sceneData.emitter[i].color.xyz * (spec * materialData.colorFactors.w * sceneData.emitter[i].color.w) * attenuation;
+		vec3 specular = (materialSpecStrength * lightSpecStrength) * (spec) * (specMap) * attenuation;
 
 		lighting += diffuse + specular;
 	}
