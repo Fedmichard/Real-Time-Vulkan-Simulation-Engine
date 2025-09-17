@@ -16,8 +16,7 @@ layout(set = 0, binding = 0) uniform  SceneData {
 
 layout(set = 1, binding = 0) uniform OpenGLMaterialData {
     vec4 colorFactors;
-    vec4 ambient;
-    vec4 diffuse;
-    vec4 specular;
     float shininess;
 } materialData;
+
+layout(set = 1, binding = 1) uniform sampler2D colorTex;

@@ -5,19 +5,14 @@
 
 #define VMA_IMPLEMENTATION
 #include "vk_mem_alloc.h"
-#define GLM_FORCE_RADIANS
-#define GLM_ENABLE_EXPERIMENTAL
-#define GLM_FORCE_DEPTH_ZERO_TO_ONE
-#define GLM_FORCE_RIGHT_HANDED
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
 
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <cstring>
 
 #include "VkBootstrap.h"
+#include "stb_image.h"
 
 #include "vk_types.h"
 #include "vk_initializers.h"
@@ -38,8 +33,7 @@ void VulkanEngine::init() {
     assert(loadedEngine == nullptr);
     loadedEngine = this;
 
-    // GLFW window initialization
-    // initWindow(&_window, _windowExtent.width, _windowExtent.height);
+    // SDL window initialization
     SDL_Init(SDL_INIT_VIDEO);
     
     SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_VULKAN | SDL_WINDOW_RESIZABLE);
@@ -54,15 +48,17 @@ void VulkanEngine::init() {
     initSyncStructures(); // init all our fences and semaphores
     initDescriptors(); // init all our descriptors
     initPipelines(); // init all our pipelines
-    initDefaultData(); // maybe?
+    initDefaultData(); //
     initImgui(); // init gui
 
+    // initialize camera
     mainCamera.velocity = glm::vec3(0.f);
     mainCamera.position = glm::vec3(5.f, 6.f, 0.f);
     
     // everything was successful
     _isInitialized = true;
 
+    // load scene
     std::string sponzaPath = { "..\\assets\\sponza_palace.glb" };
     auto sponzaFile = loadGltf(this, sponzaPath);
     assert(sponzaFile.has_value());
@@ -125,19 +121,12 @@ void VulkanEngine::cleanup() {
             _frames[i]._deletionQueue.flush();
         }
 
-        for (auto& mesh : emitterMeshes) {
-            destroyBuffer(mesh->meshBuffers.indexBuffer);
-            destroyBuffer(mesh->meshBuffers.vertexBuffer);
-        }
-
         for (auto& mesh : meshes) {
             destroyBuffer(mesh->meshBuffers.indexBuffer);
             destroyBuffer(mesh->meshBuffers.vertexBuffer);
         }
 
         emitterNodes.clear();
-
-        loadedNodes.clear();
 
         loadedScenes[0]->~LoadedGLTF();
 
@@ -177,7 +166,6 @@ void VulkanEngine::draw() {
     VkResult result = vkAcquireNextImageKHR(_device, _swapchain, UINT64_MAX, getCurrentFrame()._imageAvailableSemaphore, VK_NULL_HANDLE, &swapchainImageIndex);
     
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-        // recreateSwapChain();
         resizeReuqested = true;
         return;
     }
@@ -198,10 +186,8 @@ void VulkanEngine::draw() {
     /** need to implement a way to draw to the background later using instructions sent to cairo
      * transition the image into one that can be drawn to
      * vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
+     * drawBackground(cmd);
     */
-
-    // vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_GENERAL);
-    // drawBackground(cmd);
     
     // transition to draw geometry
     vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
@@ -211,9 +197,6 @@ void VulkanEngine::draw() {
     vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
 
     drawGeometry(cmd);
-
-    // draw to depth image thingy
-    // drawDepth(cmd);
 
     // transition the _drawImage.image for transfer src
     vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
@@ -285,7 +268,6 @@ void VulkanEngine::draw() {
     result = vkQueuePresentKHR(_graphicsQueue, &presentInfo);
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-        // recreateSwapChain();
         resizeReuqested = true;
         return;
     }
@@ -359,8 +341,6 @@ void VulkanEngine::run() {
 			ImGui::SliderFloat("Blue Emitter Y: ", &emitterPosY, -360, 360);
 			ImGui::SliderFloat("Blue Emitter Z: ", &emitterPosZ, -360, 360);
 
-            // auto depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
             // image views
             ImGui::Text("Front Image Buffer:");
             ImGui::Image(_normalImageId, {320, 180}); // normal image
@@ -370,11 +350,11 @@ void VulkanEngine::run() {
             // stats
             ImGui::Begin("Stats");
 
-            ImGui::Text("%f fps", 1000 / stats.frametime);
-            ImGui::Text("frametime %f ms", stats.frametime);
-            ImGui::Text("draw time %f ms", stats.mesh_draw_time);
-            ImGui::Text("triangles %i", stats.triangle_count);
-            ImGui::Text("draws %i", stats.drawcall_count);
+                ImGui::Text("%f fps", 1000 / stats.frametime);
+                ImGui::Text("frametime %f ms", stats.frametime);
+                ImGui::Text("draw time %f ms", stats.mesh_draw_time);
+                ImGui::Text("triangles %i", stats.triangle_count);
+                ImGui::Text("draws %i", stats.drawcall_count);
 
             ImGui::End();
 		}
@@ -403,7 +383,7 @@ void VulkanEngine::run() {
 void VulkanEngine::initDefaultData() {
     // init data
     meshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
-    emitterMeshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
+    std::vector<std::shared_ptr<MeshAsset>> meshes2 = loadGltfMeshes(this,"..\\assets\\untitled03.glb").value();
 
     // white image
     uint32_t white = glm::packUnorm4x8(glm::vec4(1, 1, 1, 1));
@@ -455,63 +435,27 @@ void VulkanEngine::initDefaultData() {
 		destroyImage(_errorCheckerboardImage);
 	});
 
-    /* metal rough materials */
-    PBRResources materialResources;
-	// default the material textures
-	materialResources.colorImage = _whiteImage;
-	materialResources.colorSampler = _defaultSamplerLinear;
-	materialResources.metalRoughImage = _whiteImage;
-	materialResources.metalRoughSampler = _defaultSamplerLinear;
-
-	// set the uniform buffer for the material data
-	AllocatedBuffer materialConstants = createBuffer(sizeof(GLTFMetallic_Roughness::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
-
-	// write the buffer
-	GLTFMetallic_Roughness::MaterialConstants* sceneUniformData = (GLTFMetallic_Roughness::MaterialConstants*)materialConstants.allocation->GetMappedData();
-	sceneUniformData->colorFactors = glm::vec4{1,1,1,1};
-	sceneUniformData->metal_rough_factors = glm::vec4{1,0.5,0,0};
-
-	_mainDeletionQueue.push_function([=]() {
-		destroyBuffer(materialConstants);
-	});
-
-	materialResources.dataBuffer = materialConstants.buffer;
-	materialResources.dataBufferOffset = 0;
-
-	defaultData = metalRoughMaterial.writeMaterial(_device, MaterialPass::MainColor, materialResources, _descriptorAllocator);
-
-    // creates a new parent node for every single normal mesh mesh we have available
-    for (auto& m : meshes) {
-		std::shared_ptr<MeshNode> newNode = std::make_shared<MeshNode>();
-		newNode->mesh = m;
-
-		newNode->localTransform = glm::mat4{ 1.f };
-		newNode->worldTransform = glm::mat4{ 1.f };
-
-		for (auto& s : newNode->mesh->surfaces) {
-			s.material = std::make_shared<GLTFMaterial>();
-			s.material->data = defaultData;
-		}
-
-        // this is a root node that represents the beginning of a MeshNode
-		loadedNodes[m->name] = std::move(newNode);
-	}
-
     // loop through emitter meshes and set emitter mesh names so we can reference for creation
-    for (auto& m : emitterMeshes) {
-        emitterMeshesNames[m->name] = m;
+    for (auto& m : meshes) {
+        meshesNames[m->name] = m;
 	}
+
+    for (auto& m : meshes2) {
+        meshesNames[m->name] = m;
+    }
 
     // meshes
-    auto sphereMesh = emitterMeshesNames["Sphere"];
-    auto monkeyMesh = emitterMeshesNames["Suzanne"];
-    auto cubeMesh = emitterMeshesNames["Cube"];
+    auto sphereMesh = meshesNames["Sphere"];
+    auto monkeyMesh = meshesNames["Suzanne"];
+    auto cubeMesh = meshesNames["Cube"];
+    auto cubeMesh2 = meshesNames["Cube.002"];
 
     // load emitter nodes
-    auto redSphere = createEmitterNode(sphereMesh, "Red Sphere", glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
-    auto blueSphere = createEmitterNode(sphereMesh, "Blue Sphere", glm::vec4{0.0f, 1.0f, 1.0f, 1.0f});
-    auto greenSphere = createEmitterNode(sphereMesh, "Green Sphere", glm::vec4{0.043f, 1.0f, 0.0f, 1.0f});
-    auto yellowMonkey = createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec4{1.f, 1.f, .0f, 1.f});
+    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
+    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.0f});
+    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.0f});
+    createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec3{0.f, 8.f, 4.f}, glm::vec4{1.f, 1.f, .0f, 1.f});
+    createEmitterNode(sphereMesh, "White Sphere", glm::vec3{1.f, 1.f, 1.f}, glm::vec4{1.f, 1.f, 1.f, 1.f});
 
     /* Mesh Nodes */
     // texture resources for material
@@ -520,19 +464,34 @@ void VulkanEngine::initDefaultData() {
     resources.colorSampler = _defaultSamplerLinear;
     resources.metalRoughImage = _whiteImage;
     resources.metalRoughSampler = _defaultSamplerLinear;
-    auto yellowSphere = createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Yellow Sphere", metalRoughMaterial, resources, this);
+    createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Yellow Sphere", metalRoughMaterial, resources, this);
+    
+    PBRResources resources4{};
+    resources4.colorImage = _whiteImage;
+    resources4.colorSampler = _defaultSamplerLinear;
+    resources4.metalRoughImage = _whiteImage;
+    resources4.metalRoughSampler = _defaultSamplerLinear;
+    createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Sphere", metalRoughMaterial, resources4, this);
 
-    // new
     PBRResources resources2{};
     resources2.colorImage = _whiteImage;
     resources2.colorSampler = _defaultSamplerLinear;
     resources2.metalRoughImage = _whiteImage;
     resources2.metalRoughSampler = _defaultSamplerLinear;
-    auto basicCube = createNode<GLTFMetallic_Roughness::MaterialConstants>(cubeMesh, "Basic Cube", metalRoughMaterial, resources2, this);
+    createNode<GLTFMetallic_Roughness::MaterialConstants>(cubeMesh, "Basic Cube", metalRoughMaterial, resources2, this);
 
     // opengl texture test
     OpenGLResources resources3{};
-    auto cube = createNode<OpenGLMaterial::MaterialConstants>(cubeMesh, "Cube", openglMaterial, resources3, this);
+    /* LOAD IMAGE */
+    int w, h, ch;
+    const std::string containerTexture = "..//assets//textures//container2.png";
+    unsigned char* data = stbi_load(containerTexture.c_str(), &w, &h, &ch, STBI_rgb_alpha);
+    AllocatedImage resources3Image = createImage(data, VkExtent3D{ (uint32_t)w, (uint32_t)h, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
+    stbi_image_free(data);
+    /* LOAD IMAGE */
+    resources3.texture = resources3Image;
+    resources3.sampler = _defaultSamplerLinear;
+    createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Cube", openglMaterial, resources3, this);
 }
 
 void VulkanEngine::initVulkan() {
@@ -551,7 +510,6 @@ void VulkanEngine::initVulkan() {
     _debugMessenger = instance.debug_messenger;
 
     // create the surface
-    // createSurface(_instance, _window, &_surface);
     SDL_Vulkan_CreateSurface(_window, _instance, &_surface);
 
     // vulkan 1.3 features
@@ -612,7 +570,6 @@ void VulkanEngine::initSwapchain() {
     createSwapchain(_windowExtent.width, _windowExtent.height);
     createResolveImage(_windowExtent.width, _windowExtent.height);
     createDrawImage(_windowExtent.width, _windowExtent.height);
-    // createDrawnDepthImage(_windowExtent.width, _windowExtent.height);
 
     // add to deletion queues
     _mainDeletionQueue.push_function([=]() {
@@ -752,7 +709,7 @@ void VulkanEngine::initPipelines() {
 }
 
 void VulkanEngine::initImgui() {
-    // 1. Create descriptor pool for IMGUI
+    // Create descriptor pool for IMGUI
     // the different descriptor pool types and how many (really big tbh)
     VkDescriptorPoolSize poolSizes[] = { { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
         { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
@@ -780,7 +737,6 @@ void VulkanEngine::initImgui() {
     ImGui::CreateContext();
 
     // intializes for glfw
-    // ImGui_ImplGlfw_InitForVulkan(_window, true);
 	ImGui_ImplSDL2_InitForVulkan(_window);
 
     // initializes for vulkan
@@ -804,7 +760,6 @@ void VulkanEngine::initImgui() {
 
 	ImGui_ImplVulkan_Init(&initInfo);
 
-    // vkutil::transitionImageLayout(cmd);
     // image views
     _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL);
@@ -865,7 +820,10 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const ch
     return node;
 }
 
-std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh, const char* name, const glm::vec4& initialColor) {
+std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh,
+    const char* name,
+    const glm::vec3& position,
+    const glm::vec4& initialColor) {
     auto node = std::make_shared<EmitterNode>();
     node->mesh = mesh;
 
@@ -873,6 +831,9 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
 
     node->mappedConstants = (EmitterMaterial::MaterialConstants*)node->emitterConstants.allocation->GetMappedData();
     node->mappedConstants->colorFactors = initialColor;
+
+    node->position = position;
+    node->positionMatrix = glm::translate(glm::mat4{1.f}, position);
 
     EmitterResources resources{};
     resources.dataBuffer = node->emitterConstants.buffer;
@@ -1720,11 +1681,6 @@ void VulkanEngine::recreateSwapChain() {
     // recreate image
     _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL);
-    
-    /** rewrite the descriptor for background to new image
-     * _descriptorWriter.writeImage(0, _drawImage.imageView, VK_NULL_HANDLE, VK_IMAGE_LAYOUT_GENERAL, VK_DESCRIPTOR_TYPE_STORAGE_IMAGE); 
-     * _descriptorWriter.updateSet(_device, _drawImageDescriptorSet);
-    */
 
 	resizeReuqested = false;
 }
@@ -1971,6 +1927,7 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
 
     DescriptorLayoutBuilder layoutBuilder;
     layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    layoutBuilder.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
     materialLayout = layoutBuilder.build(engine->_device);
 
     // set layouts and push constant
@@ -2056,6 +2013,7 @@ MaterialInstance OpenGLMaterial::writeMaterial(VkDevice device, MaterialPass pas
 
 	writer.clear();
 	writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+	writer.writeImage(1, res.texture.imageView, res.sampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 
 	writer.updateSet(device, matData.materialSet);
 
@@ -2111,7 +2069,7 @@ void ObjectNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
 }
 
 void EmitterNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
-    glm::mat4 nodeMatrix = topMatrix * worldTransform;
+    glm::mat4 nodeMatrix = positionMatrix * worldTransform;
 
     for (auto& s : mesh->surfaces) {
         RenderObject def;
@@ -2138,72 +2096,74 @@ void VulkanEngine::updateScene() {
     // clock
     mainCamera.update();
     
-    // some logic to keep track, in seconds, since rendering has started
-    static auto startTime = std::chrono::high_resolution_clock::now();
-    auto currentTime = std::chrono::high_resolution_clock::now();
-    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
-    
     // load scenes
     loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
-    // load emitters
+    // time values
+    static auto startTime = std::chrono::high_resolution_clock::now();
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
     float speed = 1.0f; // smaller = slower, larger = faster
     float minX = 0.0f;
     float maxX = 10.0f;
     emitterPosX = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
+
     speed = 1.5f;
     minX = 3.0f;
     maxX = 8.0f;
     float emitter2PosY = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
 
-    glm::vec4 sphere1pos = glm::vec4(-2.0f, emitter2PosY, 0.0f, 1.0f);
-    glm::vec4 sphere2pos = glm::vec4(emitterPosX, 1.5f, 0.0f, 1.0f);
-    glm::mat4 sphereTransform1 = glm::translate(glm::mat4{1.f}, {sphere1pos.x, sphere1pos.y, sphere1pos.z});
-    glm::mat4 sphereTransform2 = glm::translate(glm::mat4{1.f}, {sphere2pos.x, sphere2pos.y, sphere2pos.z});
-    emitterNodes["Red Sphere"]->Draw(sphereTransform1, mainDrawContext);
-    emitterNodes["Blue Sphere"]->Draw(sphereTransform2, mainDrawContext);
-    emitterNodes["Green Sphere"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(-8.0f, 1.5f, 0.0f)), mainDrawContext);
+    // change light positions by their name
+    emitterNodes["Red Sphere"]->setColor(glm::vec4{0.0f, 0.0f, 1.f, 1.f});
+    emitterNodes["Red Sphere"]->changePosition(glm::vec3(-2.0f, emitter2PosY, 0.0f));
+    emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
+    emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
+    emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
+
+    // load object nodes
+    // reinterpret void* back to specific material constant before changing factors
+    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, {-2.0f, 1.5f, 0.0f});
+    auto factors2 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Basic Cube"]->mappedConstants);
+    factors2->colorFactors = glm::vec4{1,1,1,1};
+    factors2->metal_rough_factors = glm::vec4{1,0.5,0,0};
+    sceneNodes["Basic Cube"]->Draw(testSphere, mainDrawContext);
+
+    auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Yellow Sphere"]->mappedConstants);
+    factors->colorFactors = glm::vec4{1,1,0,1};;
+    factors->metal_rough_factors = glm::vec4{1,0.5,0,0};
+    sceneNodes["Yellow Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, 1}), mainDrawContext);
+
+    auto factors3 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Sphere"]->mappedConstants);
+    factors3->colorFactors = glm::vec4{1,0,1,1};
+    factors3->metal_rough_factors = glm::vec4{1,1,1,0};
+    sceneNodes["Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, -1}), mainDrawContext);
+
+    auto openglCube = sceneNodes["Cube"];
+    auto factors4 = reinterpret_cast<OpenGLMaterial::MaterialConstants*>(openglCube->mappedConstants);
+    factors4->colorFactors = glm::vec4{1.0f, 0.5f, 0.31f, .5f};
+    factors4->shininess = 32.0f;
+    openglCube->Draw(glm::translate(glm::mat4{1.f}, {-1.0f, 10.25f, -.30f}), mainDrawContext);
 
     // defaults
     glm::mat4 view = mainCamera.getViewMatrix();
     glm::mat4 proj = glm::perspective(glm::radians(70.f), (float)_windowExtent.width / (float)_windowExtent.height, 0.1f, 1000.0f);
     proj[1][1] *= -1;
 
-	// camera projection
+	// set sceneData
 	sceneData.proj = proj;
     sceneData.view = view;
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 
-	//some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.1f);
+	// some default lighting parameters
+	sceneData.ambientColor = glm::vec4(.2f);
 	sceneData.sunlightColor = glm::vec4(1.0f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
-    sceneData.emitter[0].pos = sphere1pos;
-    sceneData.emitter[0].color = glm::vec4{1.0f, 0.0f, 0.0f, 1.0f};
-    sceneData.emitter[1].pos = sphere2pos;
-    sceneData.emitter[1].color = glm::vec4{0.0f, 1.0f, 1.0f, 1.0f};
-    sceneData.emitter[2].pos = glm::vec4(-8.0f, 1.5f, 0.0f, 1.0f);
-    sceneData.emitter[2].color = glm::vec4{0.043f, 1.0f, 0.0f, 1.0f};
-    sceneData.emitter[3].pos = glm::vec4(0.0f, 8.f, 0.0f, 1.0f);
-    sceneData.emitter[3].color = glm::vec4{1.f, 1.f, .0f, 1.f};
-
-    // reinterpret void* back to specific material constant before changing factors
-    glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, glm::vec3(-2.0f, 1.5f, 0.0f));
-    auto factors2 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Basic Cube"]->mappedConstants);
-    factors2->colorFactors = glm::vec4{1,1,1,1};
-    factors2->metal_rough_factors = glm::vec4{1,0.5,0,0};
-    sceneNodes["Basic Cube"]->Draw(testSphere, mainDrawContext);
-    
-    /*
-    auto factors3 = reinterpret_cast<OpenGLMaterial::MaterialConstants*>(sceneNodes["Cube"]->mappedConstants);
-    factors3->colorFactors = glm::vec4{1.f, 1.0f, 1.0f, 1.f};
-    sceneNodes["Cube"]->Draw(glm::translate(glm::mat4{1.f}, glm::vec3(2.0f, 5.f, 0.0f)), mainDrawContext);
-    */
-   
-    auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Yellow Sphere"]->mappedConstants);
-    factors->colorFactors = glm::vec4{1,1,0,1};;
-    factors->metal_rough_factors = glm::vec4{1,0.5,0,0};
-    sceneNodes["Yellow Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, 1}), mainDrawContext);
-    std::cout << "Lights: " << emitterNodes.size() << std::endl;
+    // draw and set light positions/color
+    for (int i = 0; i < sceneLights.size(); i++) {
+        sceneLights[i]->Draw(glm::mat4{1.f}, mainDrawContext);
+        sceneData.emitter[i].pos = glm::vec4{sceneLights[i]->position, 1.f};
+        sceneData.emitter[i].color = sceneLights[i]->mappedConstants->colorFactors;
+    }
 }

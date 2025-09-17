@@ -10,6 +10,14 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_vulkan.h"
 
+#define GLM_FORCE_RADIANS
+#define GLM_ENABLE_EXPERIMENTAL
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#define GLM_FORCE_RIGHT_HANDED
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
+
 constexpr unsigned int MAX_FRAMES = 2;
 
 // object resources
@@ -32,6 +40,8 @@ struct EmitterResources : MaterialResourcesBase {
 };
 
 struct OpenGLResources : MaterialResourcesBase {
+    AllocatedImage texture;
+    VkSampler sampler;
     VkBuffer dataBuffer;
     uint32_t dataBufferOffset;
 };
@@ -92,11 +102,8 @@ struct EmitterMaterial : Material {
 struct OpenGLMaterial : Material {
     struct MaterialConstants {
         glm::vec4 colorFactors;
-        glm::vec4 ambient;
-        glm::vec4 diffuse;
-        glm::vec4 specular;
         float shininess;
-        glm::vec4 extra[11];
+        glm::vec4 extra[13];
     };
 
 	virtual void buildPipelines(VulkanEngine* engine);
@@ -114,6 +121,8 @@ struct EmitterNode : public Node {
 
     AllocatedBuffer emitterConstants;
     EmitterMaterial::MaterialConstants* mappedConstants = nullptr;
+    glm::vec3 position;
+    glm::mat4 positionMatrix;
     MaterialInstance materialInstance;
     VulkanEngine* engine;
 
@@ -121,6 +130,11 @@ struct EmitterNode : public Node {
 
     void setColor(const glm::vec4& color) {
         mappedConstants->colorFactors = color;
+    }
+
+    void changePosition(const glm::vec3& pos) {
+        position = pos;
+        positionMatrix = glm::translate(glm::mat4{1.f}, position);
     }
 };
 
@@ -180,17 +194,13 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh,
 
 class VulkanEngine {
 public:
+    static VulkanEngine& Get();
+
     bool _isInitialized { false };
     VkExtent2D _windowExtent{ 1700, 900 };
-    int _rotation { 0 }; // imGui
     VkSampleCountFlagBits _maxSamples;
-    
-
-    // glfw window
-    // struct GLFWwindow* _window { nullptr };
+    // window
     struct SDL_Window* _window { nullptr };
-
-    static VulkanEngine& Get();
 
     // sync structures
     int _frameNumber { 0 };
@@ -219,38 +229,30 @@ public:
     DeletionQueue _mainDeletionQueue;
 
     // memory allocator for buffers and images
+    VkExtent2D _drawExtent;
     VmaAllocator _allocator;
     AllocatedImage _drawImage;
     AllocatedImage _resolveImage;
     AllocatedImage _depthImage;
-    VkExtent2D _drawExtent;
     float renderScale = 1.0f;
 
     // compute pipeline layout
     VkPipelineLayout _gradientPipelineLayout;
 
     // allocate descriptor sets
-    DescriptorAllocator2 _descriptorAllocator; // NEW
-    DescriptorWriter _descriptorWriter; // NEW
+    DescriptorAllocator2 _descriptorAllocator;
+    DescriptorWriter _descriptorWriter;
     VkDescriptorSet _drawImageDescriptorSet;
     VkDescriptorSetLayout _drawImageDescriptorLayout;
 
     // scene data
     GPUSceneData sceneData;
-
     VkDescriptorSetLayout _gpuSceneDataDescriptorLayout;
 
     // immediate submit structures
     VkFence _immFence;
     VkCommandPool _immPool;
     VkCommandBuffer _immBuffer;
-
-    // member functions
-    AllocatedBuffer createBuffer(size_t allocSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage);
-    // create images
-    AllocatedImage createImage(VkExtent3D extent, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
-    AllocatedImage createImage(void* data, VkExtent3D extent, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
-    void destroyImage(const AllocatedImage& img);
 
     // array of compute pipelines we will be drawing and the push constants (data1, data2,...)
     std::vector<ComputeEffect> backgroundEffects;
@@ -260,33 +262,31 @@ public:
     VkPipeline _meshPipeline;
     VkPipelineLayout _meshPipelineLayout;
 
-    // test meshes
+    // scene meshes
     std::vector<std::shared_ptr<MeshAsset>> meshes;
-    std::vector<std::shared_ptr<MeshAsset>> emitterMeshes;
-    std::unordered_map<std::string, std::shared_ptr<MeshAsset>> emitterMeshesNames;
+    std::unordered_map<std::string, std::shared_ptr<MeshAsset>> meshesNames;
 
-    // texture images
+    // default texture images
     AllocatedImage _whiteImage;
 	AllocatedImage _blackImage;
 	AllocatedImage _greyImage;
 	AllocatedImage _errorCheckerboardImage;
-
+    // default texture samplers
     VkSampler _defaultSamplerLinear;
 	VkSampler _defaultSamplerNearest;
 
     VkDescriptorSetLayout _singleImageDescriptorLayout;
 
-    // gltf
     EmitterMaterial emitterMaterial;
     OpenGLMaterial openglMaterial;
-    MaterialInstance defaultData;
     GLTFMetallic_Roughness metalRoughMaterial;
+
+    // gltf
     DrawContext mainDrawContext;
-    std::unordered_map<std::string, std::shared_ptr<MeshNode>> loadedNodes;
     std::unordered_map<std::string, std::shared_ptr<ObjectNode>> sceneNodes;
     std::unordered_map<std::string, std::shared_ptr<EmitterNode>> emitterNodes;
-    std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> loadedScenes;
     std::vector<std::shared_ptr<EmitterNode>> sceneLights;
+    std::unordered_map<std::string, std::shared_ptr<LoadedGLTF>> loadedScenes;
     
     // camera
     Camera mainCamera;
@@ -322,6 +322,11 @@ public:
     void initMeshPipeline();
 
     // helpers
+    AllocatedBuffer createBuffer(size_t allocSize, VkBufferUsageFlags bufferUsage, VmaMemoryUsage memoryUsage);
+    // create images
+    AllocatedImage createImage(VkExtent3D extent, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+    AllocatedImage createImage(void* data, VkExtent3D extent, VkFormat format, VkImageUsageFlags usage, bool mipmapped = false);
+    void destroyImage(const AllocatedImage& img);
     void drawBackground(VkCommandBuffer commandBuffer);
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
@@ -331,6 +336,7 @@ public:
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
     std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh,
         const char* name,
+        const glm::vec3& position,
         const glm::vec4& initialColor);
     VkSampleCountFlagBits getMaxUsableSampleCount();
 

@@ -26,7 +26,7 @@ void main()  {
 
 	vec3 lighting = ambient;
 
-	for (int i = 0; i < 3 + 1; i++) {
+	for (int i = 0; i < 5; i++) {
 		// calculate light direction
 		vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
 
@@ -47,5 +47,4 @@ void main()  {
 	}
 
 	outFragColor = vec4(lighting * color, 1.0f);
-	// outFragColor = vec4(inNormal, 1.0f);
 }
