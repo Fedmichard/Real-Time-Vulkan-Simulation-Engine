@@ -12,23 +12,28 @@ layout (location = 3) in vec3 inFragPos;
 layout (location = 0) out vec4 outFragColor;
 
 void main()  {
+	// normals
 	vec3 norm = normalize(inNormal);
+
+	// sunlight calculations
 	float lightValue = max(dot(inNormal, sceneData.sunlightDirection.xyz), 0.1f);
+	vec3 sunDir = normalize(-sceneData.sunlightDirection.xyz);
 
-	// object color with texture
+	// diffuse info
 	vec3 diffMap = texture(colorTex, inUV).xyz; // diffuse map
-	vec3 specMap = texture(metalTex, inUV).xyz; // specular map
 
-	// calculate ambient
+	// ambient info
 	vec3 ambient = sceneData.sunlightColor.xyz * sceneData.ambientColor.xyz * diffMap;
 
 	// specular info
+	vec3 specMap = texture(metalTex, inUV).xyz; // specular map
 	vec3 viewDir = normalize(sceneData.cameraPos.xyz - inFragPos);
 	
 	vec3 lighting = ambient;
 
 	for (int i = 0; i < 5; i++) {
 		// calcualte light direction
+		// this is a vector pointing out of the surface towards the light source
 		vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
 
 		// calculate distance 
@@ -40,14 +45,19 @@ void main()  {
 		float lightSpecStrength = sceneData.emitter[i].color.w; // the intensity of the light
 
 		// diffuse
+		// we take the dot product of the light vector and the normal vector (both coming out of the surface)
+		// and get a value between 1 and 0.
+		// if the dot is 0 that means the rays are orthogonal and the object is hit with darkness
+		// if it is 1 you get maximum brightness and the light is facing the exact same direction
 		float diff = max(dot(norm, lightDir), 0.0);
-		vec3 diffuse = (sceneData.emitter[i].color.xyz) * (diff) * (diffMap) * attenuation;
+		vec3 diffuse = sceneData.emitter[i].color.xyz * diff * diffMap * attenuation;
 
 		// specular
 		vec3 reflectDir = reflect(-lightDir, norm);
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), materialData.shininess);
-		vec3 specular = (materialSpecStrength * lightSpecStrength) * (spec) * (specMap) * attenuation;
+		vec3 specular = (sceneData.emitter[i].color.xyz) * spec * specMap * (materialSpecStrength * lightSpecStrength) * attenuation;
 
+		// final calculation
 		lighting += diffuse + specular;
 	}
 
