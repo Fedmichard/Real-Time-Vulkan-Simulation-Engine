@@ -87,8 +87,11 @@ struct GLTFMetallic_Roughness : Material {
 struct EmitterMaterial : Material {
 	struct MaterialConstants {
 		glm::vec4 colorFactors;
+        float constant;
+        float linear;
+        float quadratic;
 		//padding, we need it anyway for uniform buffers
-		glm::vec4 extra[15];
+		glm::vec4 extra[14];
 	};
 
 	virtual void buildPipelines(VulkanEngine* engine);
@@ -105,6 +108,9 @@ struct OpenGLMaterial : Material {
     struct MaterialConstants {
         glm::vec4 colorFactors;
         float shininess;
+        float constant;
+        float linear;
+        float quadratic;
         glm::vec4 extra[13];
     };
 

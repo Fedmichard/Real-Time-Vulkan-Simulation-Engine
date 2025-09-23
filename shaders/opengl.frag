@@ -35,14 +35,14 @@ void main()  {
 	vec3 diffuse = sceneData.sunlightColor.xyz * max(dot(norm, sunDir), 0.0) * diffMap * sceneData.sunlightColor.w;
 	vec3 specular = (sceneData.sunlightColor.xyz) * pow(max(dot(viewDir, reflect(-sunDir, norm)), 0.0), materialData.shininess) * specMap * (materialData.colorFactors.w * sceneData.sunlightColor.w);
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < sceneData.emitterCount; i++) {
 		// calcualte light direction
 		// this is a vector pointing out of the surface towards the light source
 		vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
 
 		// calculate distance 
 		float distance = length(sceneData.emitter[i].pos.xyz - inFragPos);
-		float attenuation = 5.0 / (distance * distance);
+		float attenuation = 1.0 / (sceneData.emitter[i].constant + sceneData.emitter[i].linear * distance + sceneData.emitter[i].quadratic * (distance * distance));
 
 		// material specular specStrength
 		float materialSpecStrength = materialData.colorFactors.w; // how reflective it is
@@ -54,7 +54,7 @@ void main()  {
 		// if the dot is 0 that means the rays are orthogonal and the object is hit with darkness
 		// if it is 1 you get maximum brightness and the light is facing the exact same direction
 		float diff = max(dot(norm, lightDir), 0.0);
-		diffuse += sceneData.emitter[i].color.xyz * diff * diffMap * attenuation;
+		diffuse += sceneData.emitter[i].color.xyz * diff * diffMap * lightSpecStrength * attenuation;
 
 		// specular
 		vec3 reflectDir = reflect(-lightDir, norm);

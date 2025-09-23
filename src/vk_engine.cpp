@@ -803,6 +803,7 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const ch
         VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
         VMA_MEMORY_USAGE_CPU_TO_GPU
     );
+
     node->mappedConstants = reinterpret_cast<MaterialConstants*>(
         node->constants.info.pMappedData
     );
@@ -849,6 +850,9 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
 
     node->mappedConstants = (EmitterMaterial::MaterialConstants*)node->emitterConstants.allocation->GetMappedData();
     node->mappedConstants->colorFactors = initialColor;
+    node->mappedConstants->constant = 1.0f;
+    node->mappedConstants->linear = 0.09f;
+    node->mappedConstants->quadratic = 0.032f;
 
     node->position = position;
     node->positionMatrix = glm::translate(glm::mat4{1.f}, position);
@@ -2139,6 +2143,7 @@ void VulkanEngine::updateScene() {
     emitterNodes["Red Sphere"]->changePosition(glm::vec3(-2.0f, emitter2PosY, 0.0f));
     emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
+    emitterNodes["White Sphere"]->setColor(glm::vec4(1.f, 0.75f, .80f, 2.f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
 
     // load object nodes
@@ -2186,10 +2191,14 @@ void VulkanEngine::updateScene() {
 	sceneData.sunlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
+    sceneData.emitterCount = sceneLights.size();
     // draw and set light positions/color
-    for (int i = 0; i < sceneLights.size(); i++) {
+    for (int i = 0; i < sceneData.emitterCount; i++) {
         sceneLights[i]->Draw(glm::mat4{1.f}, mainDrawContext);
         sceneData.emitter[i].pos = glm::vec4{sceneLights[i]->position, 1.f};
         sceneData.emitter[i].color = sceneLights[i]->mappedConstants->colorFactors;
+        sceneData.emitter[i].constant = sceneLights[i]->mappedConstants->constant;
+        sceneData.emitter[i].linear = sceneLights[i]->mappedConstants->linear;
+        sceneData.emitter[i].quadratic = sceneLights[i]->mappedConstants->quadratic;
     }
 }

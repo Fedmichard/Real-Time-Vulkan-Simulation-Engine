@@ -99,6 +99,10 @@ struct MaterialInstance {
 struct GPULight {
     glm::vec4 pos;
     glm::vec4 color;
+    float constant;
+    float linear;
+    float quadratic;
+    float _padding;
 };
 
 /* object draws */
@@ -112,6 +116,7 @@ struct GPUSceneData {
     glm::vec4 sunlightColor;
 	glm::vec4 cameraPos;
     GPULight emitter[16];
+    float emitterCount;
 };
 
 // holds the resources needed for a mesh
