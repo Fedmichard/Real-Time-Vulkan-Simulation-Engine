@@ -2183,7 +2183,7 @@ void VulkanEngine::updateScene() {
 
 	// some default lighting parameters
 	sceneData.ambientColor = glm::vec4(.2f);
-	sceneData.sunlightColor = glm::vec4(1.0f);
+	sceneData.sunlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
     // draw and set light positions/color

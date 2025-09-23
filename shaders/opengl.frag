@@ -31,6 +31,10 @@ void main()  {
 	
 	vec3 lighting = ambient;
 
+	// sunlight
+	vec3 diffuse = sceneData.sunlightColor.xyz * max(dot(norm, sunDir), 0.0) * diffMap * sceneData.sunlightColor.w;
+	vec3 specular = (sceneData.sunlightColor.xyz) * pow(max(dot(viewDir, reflect(-sunDir, norm)), 0.0), materialData.shininess) * specMap * (materialData.colorFactors.w * sceneData.sunlightColor.w);
+
 	for (int i = 0; i < 5; i++) {
 		// calcualte light direction
 		// this is a vector pointing out of the surface towards the light source
@@ -50,12 +54,12 @@ void main()  {
 		// if the dot is 0 that means the rays are orthogonal and the object is hit with darkness
 		// if it is 1 you get maximum brightness and the light is facing the exact same direction
 		float diff = max(dot(norm, lightDir), 0.0);
-		vec3 diffuse = sceneData.emitter[i].color.xyz * diff * diffMap * attenuation;
+		diffuse += sceneData.emitter[i].color.xyz * diff * diffMap * attenuation;
 
 		// specular
 		vec3 reflectDir = reflect(-lightDir, norm);
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), materialData.shininess);
-		vec3 specular = (sceneData.emitter[i].color.xyz) * spec * specMap * (materialSpecStrength * lightSpecStrength) * attenuation;
+		specular += (sceneData.emitter[i].color.xyz) * spec * specMap * (materialSpecStrength * lightSpecStrength) * attenuation;
 
 		// final calculation
 		lighting += diffuse + specular;
