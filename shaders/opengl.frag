@@ -54,7 +54,7 @@ void main()  {
 		// if the dot is 0 that means the rays are orthogonal and the object is hit with darkness
 		// if it is 1 you get maximum brightness and the light is facing the exact same direction
 		float diff = max(dot(norm, lightDir), 0.0);
-		diffuse += sceneData.emitter[i].color.xyz * diff * diffMap * lightSpecStrength * attenuation;
+		diffuse += sceneData.emitter[i].color.xyz * diff * diffMap * attenuation;
 
 		// specular
 		vec3 reflectDir = reflect(-lightDir, norm);

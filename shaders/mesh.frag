@@ -32,16 +32,18 @@ void main()  {
 
 		// calculate distance 
 		float distance = length(sceneData.emitter[i].pos.xyz - inFragPos);
-		float attenuation = 5.0 / (distance * distance);
+		float attenuation = 1.0 / (sceneData.emitter[i].constant + sceneData.emitter[i].linear
+			* distance + sceneData.emitter[i].quadratic * (distance * distance));
+
 
 		// calculate diffuse
 		float diff = max(dot(norm, lightDir), 0.0);
-		vec3 diffuse = diff * sceneData.emitter[i].color.xyz * attenuation;
+		vec3 diffuse = diff * sceneData.emitter[i].color.xyz * sceneData.emitter[i].color.w * attenuation;
 
 		// calculate specular
 		vec3 reflectDir = reflect(-lightDir, norm);
 		float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-		vec3 specular = spec * sceneData.emitter[i].color.xyz * specStrength * attenuation;
+		vec3 specular = spec * sceneData.emitter[i].color.xyz * sceneData.emitter[i].color.w * attenuation;
 
 		lighting += diffuse + specular;
 	}

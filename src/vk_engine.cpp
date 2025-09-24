@@ -451,9 +451,9 @@ void VulkanEngine::initDefaultData() {
     auto cubeMesh2 = meshesNames["Cube.002"];
 
     // load emitter nodes
-    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.0f}); 
-    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.0f});
-    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.0f});
+    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.f}); 
+    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.f});
+    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.f});
     createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec3{0.f, 8.f, 4.f}, glm::vec4{1.f, 1.f, .0f, 1.f});
     createEmitterNode(sphereMesh, "White Sphere", glm::vec3{1.f, 1.f, 1.f}, glm::vec4{1.f, 1.f, 1.f, 1.f});
 
@@ -851,8 +851,8 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
     node->mappedConstants = (EmitterMaterial::MaterialConstants*)node->emitterConstants.allocation->GetMappedData();
     node->mappedConstants->colorFactors = initialColor;
     node->mappedConstants->constant = 1.0f;
-    node->mappedConstants->linear = 0.09f;
-    node->mappedConstants->quadratic = 0.032f;
+    node->mappedConstants->linear = 0.14f;
+    node->mappedConstants->quadratic = 0.07f;
 
     node->position = position;
     node->positionMatrix = glm::translate(glm::mat4{1.f}, position);
@@ -2143,7 +2143,7 @@ void VulkanEngine::updateScene() {
     emitterNodes["Red Sphere"]->changePosition(glm::vec3(-2.0f, emitter2PosY, 0.0f));
     emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
-    emitterNodes["White Sphere"]->setColor(glm::vec4(1.f, 0.75f, .80f, 2.f));
+    emitterNodes["White Sphere"]->setColor(glm::vec4(1.f, 0.75f, .80f, 1.f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
 
     // load object nodes
