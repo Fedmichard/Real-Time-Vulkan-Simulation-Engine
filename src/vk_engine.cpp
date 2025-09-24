@@ -808,6 +808,8 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const ch
         node->constants.info.pMappedData
     );
 
+    reinterpret_cast<MaterialConstants*>(node->mappedConstants);
+
     // 2. Fill resources struct for this material
     resources.dataBuffer = node->constants.buffer;
     resources.dataBufferOffset = 0;
