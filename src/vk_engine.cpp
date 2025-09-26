@@ -853,8 +853,8 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
     node->mappedConstants = (EmitterMaterial::MaterialConstants*)node->emitterConstants.allocation->GetMappedData();
     node->mappedConstants->colorFactors = initialColor;
     node->mappedConstants->constant = 1.0f;
-    node->mappedConstants->linear = 0.14f;
-    node->mappedConstants->quadratic = 0.07f;
+    node->mappedConstants->linear = 0.09f;
+    node->mappedConstants->quadratic = 0.032f;
 
     node->position = position;
     node->positionMatrix = glm::translate(glm::mat4{1.f}, position);
@@ -2141,11 +2141,11 @@ void VulkanEngine::updateScene() {
     float emitter2PosY = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
 
     // change light positions by their name
-    emitterNodes["Red Sphere"]->setColor(glm::vec4{0.0f, 0.0f, 1.f, 1.f});
+    emitterNodes["Red Sphere"]->setColor(glm::vec4{0.0f, 0.0f, 1.f, 21.5f});
     emitterNodes["Red Sphere"]->changePosition(glm::vec3(-2.0f, emitter2PosY, 0.0f));
     emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
-    emitterNodes["White Sphere"]->setColor(glm::vec4(1.f, 0.75f, .80f, 1.f));
+    emitterNodes["White Sphere"]->setColor(glm::vec4(1.f, 0.f, .0f, 2.5f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
 
     // load object nodes

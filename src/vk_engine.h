@@ -22,7 +22,8 @@ constexpr unsigned int MAX_FRAMES = 2;
 
 // object resources
 struct MaterialResourcesBase {
-    virtual ~MaterialResourcesBase() = default;
+    VkBuffer dataBuffer;
+    uint32_t dataBufferOffset;
 };
 
 struct PBRResources : MaterialResourcesBase {
@@ -30,22 +31,15 @@ struct PBRResources : MaterialResourcesBase {
     VkSampler colorSampler;
     AllocatedImage metalRoughImage;
     VkSampler metalRoughSampler;
-    VkBuffer dataBuffer;
-    uint32_t dataBufferOffset;
 };
 
-struct EmitterResources : MaterialResourcesBase {
-    VkBuffer dataBuffer;
-    uint32_t dataBufferOffset;
-};
+struct EmitterResources : MaterialResourcesBase {};
 
 struct OpenGLResources : MaterialResourcesBase {
     AllocatedImage texture;
     VkSampler sampler;
     AllocatedImage metalTexture;
     VkSampler metalSampler;
-    VkBuffer dataBuffer;
-    uint32_t dataBufferOffset;
 };
 
 struct Material {
