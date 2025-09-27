@@ -451,11 +451,11 @@ void VulkanEngine::initDefaultData() {
     auto cubeMesh2 = meshesNames["Cube.002"];
 
     // load emitter nodes
-    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.f}); 
-    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.f});
-    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.f});
-    createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec3{0.f, 8.f, 4.f}, glm::vec4{1.f, 1.f, .0f, 1.f});
-    createEmitterNode(sphereMesh, "White Sphere", glm::vec3{1.f, 1.f, 1.f}, glm::vec4{1.f, 1.f, 1.f, 1.f});
+    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.25f}); 
+    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.25f});
+    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.25f});
+    createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec3{0.f, 8.f, 4.f}, glm::vec4{1.f, 1.f, .0f, 0.25f});
+    createEmitterNode(sphereMesh, "White Sphere", glm::vec3{1.f, 1.f, 1.f}, glm::vec4{1.f, 1.f, 1.f, 1.25f});
 
     /* Mesh Nodes */
     // texture resources for material
@@ -2141,11 +2141,9 @@ void VulkanEngine::updateScene() {
     float emitter2PosY = minX + (maxX - minX) * (sin(time * speed) * 0.5f + 0.5f);
 
     // change light positions by their name
-    emitterNodes["Red Sphere"]->setColor(glm::vec4{0.0f, 0.0f, 1.f, 21.5f});
     emitterNodes["Red Sphere"]->changePosition(glm::vec3(-2.0f, emitter2PosY, 0.0f));
     emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
-    emitterNodes["White Sphere"]->setColor(glm::vec4(1.f, 0.f, .0f, 2.5f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
 
     // load object nodes
@@ -2157,12 +2155,12 @@ void VulkanEngine::updateScene() {
     sceneNodes["Basic Cube"]->Draw(testSphere, mainDrawContext);
 
     auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Yellow Sphere"]->mappedConstants);
-    factors->colorFactors = glm::vec4{1,1,0,1};;
+    factors->colorFactors = glm::vec4{1,1,1,1};;
     factors->metal_rough_factors = glm::vec4{1,0.5,0,0};
     sceneNodes["Yellow Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, 1}), mainDrawContext);
 
     auto factors3 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Sphere"]->mappedConstants);
-    factors3->colorFactors = glm::vec4{1,0,1,1};
+    factors3->colorFactors = glm::vec4{1,1,1,1};
     factors3->metal_rough_factors = glm::vec4{1,1,1,0};
     sceneNodes["Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, -1}), mainDrawContext);
 
@@ -2190,7 +2188,7 @@ void VulkanEngine::updateScene() {
 
 	// some default lighting parameters
 	sceneData.ambientColor = glm::vec4(.2f);
-	sceneData.sunlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.5f);
+	sceneData.sunlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.25f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
     sceneData.emitterCount = sceneLights.size();
