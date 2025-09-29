@@ -42,8 +42,7 @@ void main()  {
 	lighting += sunDiffuse + sunSpecular;
 
 	for (int i = 0; i < sceneData.emitterCount; i++) {
-		// calcualte light direction
-		// this is a vector pointing out of the surface towards the light source
+		// light direction
 		vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
 
 		// calculate distance 
@@ -52,10 +51,6 @@ void main()  {
 			* distance + sceneData.emitter[i].quadratic * (distance * distance));
 
 		// diffuse
-		// we take the dot product of the light vector and the normal vector (both coming out of the surface)
-		// and get a value between 1 and 0.
-		// if the dot is 0 that means the rays are orthogonal and the object is hit with darkness
-		// if it is 1 you get maximum brightness and the light is facing the exact same direction
 		float pntDiff = max(dot(norm, lightDir), 0.0);
 		vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap * sceneData.emitter[i].color.w * attenuation;
 

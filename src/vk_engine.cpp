@@ -451,11 +451,11 @@ void VulkanEngine::initDefaultData() {
     auto cubeMesh2 = meshesNames["Cube.002"];
 
     // load emitter nodes
-    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.25f}); 
-    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.25f});
-    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.25f});
-    createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec3{0.f, 8.f, 4.f}, glm::vec4{1.f, 1.f, .0f, 0.25f});
-    createEmitterNode(sphereMesh, "White Sphere", glm::vec3{1.f, 1.f, 1.f}, glm::vec4{1.f, 1.f, 1.f, 1.25f});
+    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.f}); 
+    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.f});
+    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.f});
+    createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec3{0.f, 8.f, 4.f}, glm::vec4{1.f, 1.f, .0f, 1.f});
+    createEmitterNode(sphereMesh, "White Sphere", glm::vec3{1.f, 1.f, 1.f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
 
     /* Mesh Nodes */
     // texture resources for material
@@ -478,7 +478,7 @@ void VulkanEngine::initDefaultData() {
     resources2.colorSampler = _defaultSamplerLinear;
     resources2.metalRoughImage = _whiteImage;
     resources2.metalRoughSampler = _defaultSamplerLinear;
-    createNode<GLTFMetallic_Roughness::MaterialConstants>(cubeMesh, "Basic Cube", metalRoughMaterial, resources2, this);
+    createNode<GLTFMetallic_Roughness::MaterialConstants>(cubeMesh2, "Basic Cube", metalRoughMaterial, resources2, this);
 
     // opengl texture test
     OpenGLResources resources3{};
@@ -2149,20 +2149,23 @@ void VulkanEngine::updateScene() {
     // load object nodes
     // reinterpret void* back to specific material constant before changing factors
     glm::mat4 testSphere = glm::translate(glm::mat4{1.f}, {-2.0f, 1.5f, 0.0f});
-    auto factors2 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Basic Cube"]->mappedConstants);
+    auto basicCube = sceneNodes["Basic Cube"];
+    auto factors2 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(basicCube->mappedConstants);
     factors2->colorFactors = glm::vec4{1,1,1,1};
     factors2->metal_rough_factors = glm::vec4{1,0.5,0,0};
-    sceneNodes["Basic Cube"]->Draw(testSphere, mainDrawContext);
+    basicCube->Draw(testSphere, mainDrawContext);
 
-    auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Yellow Sphere"]->mappedConstants);
+    auto yellowSphere = sceneNodes["Yellow Sphere"];
+    auto factors = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(yellowSphere->mappedConstants);
     factors->colorFactors = glm::vec4{1,1,1,1};;
     factors->metal_rough_factors = glm::vec4{1,0.5,0,0};
-    sceneNodes["Yellow Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, 1}), mainDrawContext);
+    yellowSphere->Draw(glm::translate(glm::mat4{1.f}, {0, 1, 1}), mainDrawContext);
 
-    auto factors3 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sceneNodes["Sphere"]->mappedConstants);
+    auto sphere = sceneNodes["Sphere"];
+    auto factors3 = reinterpret_cast<GLTFMetallic_Roughness::MaterialConstants*>(sphere->mappedConstants);
     factors3->colorFactors = glm::vec4{1,1,1,1};
     factors3->metal_rough_factors = glm::vec4{1,1,1,0};
-    sceneNodes["Sphere"]->Draw(glm::translate(glm::mat4{1.f}, {0, 1, -1}), mainDrawContext);
+    sphere->Draw(glm::translate(glm::mat4{1.f}, {0, 1, -1}), mainDrawContext);
 
     auto openglCube = sceneNodes["Cube"];
     auto factors4 = reinterpret_cast<OpenGLMaterial::MaterialConstants*>(openglCube->mappedConstants);
@@ -2185,7 +2188,6 @@ void VulkanEngine::updateScene() {
 	sceneData.proj = proj;
     sceneData.view = view;
 	sceneData.viewproj = sceneData.proj * sceneData.view;
-
 	// some default lighting parameters
 	sceneData.ambientColor = glm::vec4(.2f);
 	sceneData.sunlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.25f);

@@ -102,9 +102,6 @@ struct OpenGLMaterial : Material {
     struct MaterialConstants {
         glm::vec4 colorFactors;
         float shininess;
-        float constant;
-        float linear;
-        float quadratic;
         glm::vec4 extra[13];
     };
 
