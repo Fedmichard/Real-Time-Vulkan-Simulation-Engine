@@ -120,8 +120,10 @@ struct EmitterNode : public Node {
 
     AllocatedBuffer emitterConstants;
     EmitterMaterial::MaterialConstants* mappedConstants = nullptr;
-    glm::vec3 position;
+    glm::vec4 direction;
+    glm::vec4 position;
     glm::mat4 positionMatrix;
+    float cutOff;
     MaterialInstance materialInstance;
     VulkanEngine* engine;
 
@@ -132,8 +134,8 @@ struct EmitterNode : public Node {
     }
 
     void changePosition(const glm::vec3& pos) {
-        position = pos;
-        positionMatrix = glm::translate(glm::mat4{1.f}, position);
+        position = glm::vec4{pos.x, pos.y, pos.z, position.w};
+        positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{position.x, position.y, position.z});
     }
 };
 
@@ -335,7 +337,7 @@ public:
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
     std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh,
         const char* name,
-        const glm::vec3& position,
+        const glm::vec4& position,
         const glm::vec4& initialColor);
     VkSampleCountFlagBits getMaxUsableSampleCount();
 

@@ -451,11 +451,12 @@ void VulkanEngine::initDefaultData() {
     auto cubeMesh2 = meshesNames["Cube.002"];
 
     // load emitter nodes
-    createEmitterNode(sphereMesh, "Red Sphere", glm::vec3{-2.0f, 5.0f, 0.0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.f}); 
-    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec3{0.0f, 1.5f, 0.0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.f});
-    createEmitterNode(sphereMesh, "Green Sphere", glm::vec3{-8.0f, 1.5f, 0.0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.f});
-    createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec3{0.f, 8.f, 4.f}, glm::vec4{1.f, 1.f, .0f, 1.f});
-    createEmitterNode(sphereMesh, "White Sphere", glm::vec3{1.f, 1.f, 1.f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
+    createEmitterNode(sphereMesh, "Red Sphere", glm::vec4{-2.0f, 5.0f, 0.0f, .0f}, glm::vec4{1.0f, 0.0f, 0.0f, 1.f}); 
+    createEmitterNode(sphereMesh, "Blue Sphere", glm::vec4{0.0f, 1.5f, 0.0f, .0f}, glm::vec4{0.0f, 1.0f, 1.0f, 1.f});
+    createEmitterNode(sphereMesh, "Green Sphere", glm::vec4{-8.0f, 1.5f, 0.0f, .0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.f});
+    createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec4{0.f, 8.f, 4.f, .0f}, glm::vec4{1.f, 1.f, .0f, 1.f});
+    createEmitterNode(sphereMesh, "White Sphere", glm::vec4{1.f, 1.f, 1.f, .0f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
+    createEmitterNode(nullptr, "White Sphere22", glm::vec4{0.f, 5.f, 0.f, 1.0f}, glm::vec4{1.f, 0.65f, 0.f, 1.f});
 
     /* Mesh Nodes */
     // texture resources for material
@@ -843,10 +844,14 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const ch
 
 std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh,
     const char* name,
-    const glm::vec3& position,
+    const glm::vec4& position,
     const glm::vec4& initialColor) {
     auto node = std::make_shared<EmitterNode>();
-    node->mesh = mesh;
+    if (mesh) {
+        node->mesh = mesh;
+    } else {
+        node->mesh = nullptr;
+    }
 
     node->emitterConstants = createBuffer(sizeof(EmitterMaterial::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
 
@@ -857,7 +862,7 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
     node->mappedConstants->quadratic = 0.032f;
 
     node->position = position;
-    node->positionMatrix = glm::translate(glm::mat4{1.f}, position);
+    node->positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{position.x, position.y, position.z});
 
     EmitterResources resources{};
     resources.dataBuffer = node->emitterConstants.buffer;
@@ -872,9 +877,11 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
     );
 
     // 5. Assign material to surfaces
-    for (auto& s : node->mesh->surfaces) {
-        s.material = std::make_shared<GLTFMaterial>();
-        s.material->data = node->materialInstance;
+    if (mesh) {
+        for (auto& s : node->mesh->surfaces) {
+            s.material = std::make_shared<GLTFMaterial>();
+            s.material->data = node->materialInstance;
+        }
     }
 
     node->localTransform = glm::mat4{ 1.f };
@@ -2097,20 +2104,22 @@ void ObjectNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
 void EmitterNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
     glm::mat4 nodeMatrix = positionMatrix * worldTransform;
 
-    for (auto& s : mesh->surfaces) {
-        RenderObject def;
-        def.indexCount = s.count;
-        def.firstIndex = s.startIndex;
-        def.indexBuffer = mesh->meshBuffers.indexBuffer.buffer;
-        def.material = &this->materialInstance;
-        def.bounds = s.bounds;
-        def.transform = nodeMatrix;
-        def.vertexBufferAddress = mesh->meshBuffers.vertexBufferAddress;
+    if (mesh) {
+        for (auto& s : mesh->surfaces) {
+            RenderObject def;
+            def.indexCount = s.count;
+            def.firstIndex = s.startIndex;
+            def.indexBuffer = mesh->meshBuffers.indexBuffer.buffer;
+            def.material = &this->materialInstance;
+            def.bounds = s.bounds;
+            def.transform = nodeMatrix;
+            def.vertexBufferAddress = mesh->meshBuffers.vertexBufferAddress;
 
-        if (s.material->data.passType == MaterialPass::Transparent) {
-            ctx.TransparentSurfaces.push_back(def);
-        } else {
-            ctx.OpaqueSurfaces.push_back(def);
+            if (s.material->data.passType == MaterialPass::Transparent) {
+                ctx.TransparentSurfaces.push_back(def);
+            } else {
+                ctx.OpaqueSurfaces.push_back(def);
+            }
         }
     }
 
@@ -2145,6 +2154,7 @@ void VulkanEngine::updateScene() {
     emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
+    emitterNodes["White Sphere22"]->changePosition(glm::vec3(-emitterPosX, emitter2PosY, -.30f));
 
     // load object nodes
     // reinterpret void* back to specific material constant before changing factors
@@ -2197,8 +2207,10 @@ void VulkanEngine::updateScene() {
     // draw and set light positions/color
     for (int i = 0; i < sceneData.emitterCount; i++) {
         sceneLights[i]->Draw(glm::mat4{1.f}, mainDrawContext);
-        sceneData.emitter[i].pos = glm::vec4{sceneLights[i]->position, 1.f};
+        sceneData.emitter[i].pos = sceneLights[i]->position;
         sceneData.emitter[i].color = sceneLights[i]->mappedConstants->colorFactors;
+        sceneData.emitter[i].direction = sceneLights[i]->direction;
+        sceneData.emitter[i].cutOff = sceneLights[i]->cutOff;
         sceneData.emitter[i].constant = sceneLights[i]->mappedConstants->constant;
         sceneData.emitter[i].linear = sceneLights[i]->mappedConstants->linear;
         sceneData.emitter[i].quadratic = sceneLights[i]->mappedConstants->quadratic;

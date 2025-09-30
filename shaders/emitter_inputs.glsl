@@ -1,10 +1,11 @@
 struct GPULight {
     vec4 pos;
     vec4 color;
+    vec4 direction;
+    float cutOff;
     float constant;
     float linear;
     float quadratic;
-    float _padding;
 };
 
 layout(set = 0, binding = 0) uniform  SceneData {   
