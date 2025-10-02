@@ -39,14 +39,34 @@ void main()  {
 	float sunSpec = pow(max(dot(viewDir, sunReflectDir), 0.0), 16.0f);
 	vec3 sunSpecular = sceneData.sunlightColor.xyz * sunSpec * specMap * materialData.colorFactors.w * sceneData.sunlightColor.w;
 
-	lighting += sunDiffuse + sunSpecular;
+	// lighting += sunDiffuse + sunSpecular;
 
 	for (int i = 0; i < sceneData.emitterCount; i++) {
 		// if the light is a spot light
 		if (sceneData.emitter[i].pos.w == 1) {
+			// light direction
+			vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
 
+			// calculate distance 
+			float distance = length(sceneData.emitter[i].pos.xyz - inFragPos);
+			float attenuation = 1.0 / (sceneData.emitter[i].constant + sceneData.emitter[i].linear
+				* distance + sceneData.emitter[i].quadratic * (distance * distance));
+
+			float theta = dot(lightDir, normalize(-sceneData.emitter[i].direction.xyz));
+
+			if (theta > sceneData.emitter[i].cutOff) {
+				// diffuse
+				float pntDiff = max(dot(norm, lightDir), 0.0);
+				vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * sceneData.emitter[i].color.w * attenuation;
+				
+				vec3 pntReflectDir = reflect(-lightDir, norm);
+				float pntSpec = pow(max(dot(viewDir, pntReflectDir), 0.0), 16.0f);
+				vec3 pntSpecular = sceneData.emitter[i].color.xyz * pntSpec * specMap * materialData.colorFactors.w * sceneData.emitter[i].color.w * attenuation;
+
+				lighting += pntDiffuse;
+			}
 		
-		} else
+		} else if (sceneData.emitter[i].pos.w == 2)
 		// if it is a point light
 		{
 			// light direction

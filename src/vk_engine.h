@@ -120,22 +120,30 @@ struct EmitterNode : public Node {
 
     AllocatedBuffer emitterConstants;
     EmitterMaterial::MaterialConstants* mappedConstants = nullptr;
-    glm::vec4 direction;
-    glm::vec4 position;
-    glm::mat4 positionMatrix;
+    glm::vec4 direction; // direction
+    glm::vec4 position; // w light type 0 = point, 1 = spot, 2 = directional
+    glm::mat4 positionMatrix; // local object matrix
     float cutOff;
     MaterialInstance materialInstance;
     VulkanEngine* engine;
 
 	virtual void Draw(const glm::mat4& topMatrix, DrawContext& ctx) override;
 
-    void setColor(const glm::vec4& color) {
-        mappedConstants->colorFactors = color;
-    }
-
     void changePosition(const glm::vec3& pos) {
         position = glm::vec4{pos.x, pos.y, pos.z, position.w};
         positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{position.x, position.y, position.z});
+    }
+
+    void setColor(const glm::vec3& color) {
+        mappedConstants->colorFactors = glm::vec4{color.x, color.y, color.z, mappedConstants->colorFactors.w};
+    }
+
+    void setDirection(const glm::vec3& direction) {
+        this->direction = glm::vec4{direction, this->direction.w};
+    }
+
+    void setCutOff(const float& cutOff) {
+        this->cutOff = glm::cos(glm::radians(cutOff));
     }
 };
 
@@ -339,6 +347,12 @@ public:
         const char* name,
         const glm::vec4& position,
         const glm::vec4& initialColor);
+    std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh,
+        const char* name,
+        const glm::vec4& position,
+        const glm::vec4& initialColor,
+        const glm::vec4& direction,
+        const float cutOff);
     VkSampleCountFlagBits getMaxUsableSampleCount();
 
     // cleanup

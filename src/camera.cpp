@@ -26,6 +26,16 @@ glm::mat4 Camera::getRotationMatrix() const
     return glm::toMat4(yawRotation) * glm::toMat4(pitchRotation);
 }
 
+glm::vec3 Camera::getForwardDirection() const
+{
+    // Get the rotation matrix you already have
+    glm::mat4 cameraRotation = getRotationMatrix();
+
+    // The forward vector is the negative of the Z-axis vector, which is the third column of the matrix
+    // In GLM, columns are accessed with [2]
+    return -glm::vec3(cameraRotation[2]);
+}
+
 void Camera::processSDLEvent(SDL_Event& e)
 {
     const float camSpeed = 0.0125f;

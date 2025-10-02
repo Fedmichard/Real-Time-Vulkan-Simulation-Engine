@@ -456,7 +456,7 @@ void VulkanEngine::initDefaultData() {
     createEmitterNode(sphereMesh, "Green Sphere", glm::vec4{-8.0f, 1.5f, 0.0f, .0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.f});
     createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec4{0.f, 8.f, 4.f, .0f}, glm::vec4{1.f, 1.f, .0f, 1.f});
     createEmitterNode(sphereMesh, "White Sphere", glm::vec4{1.f, 1.f, 1.f, .0f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
-    createEmitterNode(nullptr, "White Sphere22", glm::vec4{0.f, 5.f, 0.f, 1.0f}, glm::vec4{1.f, 0.65f, 0.f, 1.f});
+    createEmitterNode(nullptr, "White Sphere22", glm::vec4{1.0f}, glm::vec4{1.f, 0.f, 0.f, 1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 12.5f);
 
     /* Mesh Nodes */
     // texture resources for material
@@ -863,6 +863,68 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
 
     node->position = position;
     node->positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{position.x, position.y, position.z});
+
+    EmitterResources resources{};
+    resources.dataBuffer = node->emitterConstants.buffer;
+    resources.dataBufferOffset = 0;
+
+    // 4. Create material instance for this emitter
+    node->materialInstance = emitterMaterial.writeMaterial(
+        _device,
+        MaterialPass::MainColor,
+        resources,
+        _descriptorAllocator
+    );
+
+    // 5. Assign material to surfaces
+    if (mesh) {
+        for (auto& s : node->mesh->surfaces) {
+            s.material = std::make_shared<GLTFMaterial>();
+            s.material->data = node->materialInstance;
+        }
+    }
+
+    node->localTransform = glm::mat4{ 1.f };
+    node->worldTransform = glm::mat4{ 1.f };
+
+    // 6. Handle cleanup
+    _mainDeletionQueue.push_function([=]() {
+        destroyBuffer(node->emitterConstants);
+    });
+    
+    emitterNodes[name] = node;
+
+    sceneLights.push_back(node);
+
+    return node;
+}
+
+std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh,
+    const char* name,
+    const glm::vec4& position,
+    const glm::vec4& initialColor,
+    const glm::vec4& direction,
+    const float cutOff) {
+    auto node = std::make_shared<EmitterNode>();
+    if (mesh) {
+        node->mesh = mesh;
+    } else {
+        node->mesh = nullptr;
+    }
+
+    node->emitterConstants = createBuffer(sizeof(EmitterMaterial::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+    node->mappedConstants = (EmitterMaterial::MaterialConstants*)node->emitterConstants.allocation->GetMappedData();
+    node->mappedConstants->colorFactors = initialColor;
+    node->mappedConstants->constant = 1.0f;
+    node->mappedConstants->linear = 0.09f;
+    node->mappedConstants->quadratic = 0.032f;
+
+    node->position = position;
+    node->positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{position.x, position.y, position.z});
+
+    node->direction = direction;
+    node->cutOff = glm::cos(glm::radians(cutOff));
 
     EmitterResources resources{};
     resources.dataBuffer = node->emitterConstants.buffer;
@@ -2154,7 +2216,9 @@ void VulkanEngine::updateScene() {
     emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
-    emitterNodes["White Sphere22"]->changePosition(glm::vec3(-emitterPosX, emitter2PosY, -.30f));
+    emitterNodes["White Sphere22"]->changePosition(mainCamera.position);
+    emitterNodes["White Sphere22"]->setColor(glm::vec3{1.f});
+    emitterNodes["White Sphere22"]->setDirection(glm::vec4{mainCamera.getForwardDirection(), 1.f});
 
     // load object nodes
     // reinterpret void* back to specific material constant before changing factors
@@ -2199,7 +2263,7 @@ void VulkanEngine::updateScene() {
     sceneData.view = view;
 	sceneData.viewproj = sceneData.proj * sceneData.view;
 	// some default lighting parameters
-	sceneData.ambientColor = glm::vec4(.2f);
+	sceneData.ambientColor = glm::vec4(.05f);
 	sceneData.sunlightColor = glm::vec4(1.0f, 1.0f, 1.0f, 0.25f);
 	sceneData.sunlightDirection = glm::vec4(sunlightDirectionX, sunlightDirectionY, sunlightDirectionZ, 1.0f);
     sceneData.cameraPos = glm::vec4(mainCamera.position, 1.0f);
