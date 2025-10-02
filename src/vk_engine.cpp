@@ -457,6 +457,7 @@ void VulkanEngine::initDefaultData() {
     createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec4{0.f, 8.f, 4.f, .0f}, glm::vec4{1.f, 1.f, .0f, 1.f});
     createEmitterNode(sphereMesh, "White Sphere", glm::vec4{1.f, 1.f, 1.f, .0f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
     createEmitterNode(nullptr, "White Sphere22", glm::vec4{1.0f}, glm::vec4{1.f, 0.f, 0.f, 1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 12.5f);
+    createEmitterNode(sphereMesh, "Red Spot", glm::vec4{1.0f}, glm::vec4{1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 25.5f);
 
     /* Mesh Nodes */
     // texture resources for material
@@ -2219,6 +2220,8 @@ void VulkanEngine::updateScene() {
     emitterNodes["White Sphere22"]->changePosition(mainCamera.position);
     emitterNodes["White Sphere22"]->setColor(glm::vec3{1.f});
     emitterNodes["White Sphere22"]->setDirection(glm::vec4{mainCamera.getForwardDirection(), 1.f});
+    emitterNodes["Red Spot"]->changePosition(glm::vec3{0, 8, 1});
+    emitterNodes["Red Spot"]->setDirection(glm::vec3{0, -1, 0});
 
     // load object nodes
     // reinterpret void* back to specific material constant before changing factors

@@ -39,7 +39,7 @@ void main()  {
 	float sunSpec = pow(max(dot(viewDir, sunReflectDir), 0.0), 16.0f);
 	vec3 sunSpecular = sceneData.sunlightColor.xyz * sunSpec * specMap * materialData.colorFactors.w * sceneData.sunlightColor.w;
 
-	// lighting += sunDiffuse + sunSpecular;
+	lighting += sunDiffuse + sunSpecular;
 
 	for (int i = 0; i < sceneData.emitterCount; i++) {
 		// if the light is a spot light
@@ -66,7 +66,8 @@ void main()  {
 				lighting += pntDiffuse;
 			}
 		
-		} else if (sceneData.emitter[i].pos.w == 2)
+		} else if (sceneData.emitter[i].pos.w == 0)
+
 		// if it is a point light
 		{
 			// light direction
