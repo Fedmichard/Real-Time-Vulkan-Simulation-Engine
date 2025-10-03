@@ -100,8 +100,9 @@ struct GPULight {
     glm::vec4 pos; // w light type 0 = point, 1 = spot, 2 = directional
     glm::vec4 color; // w light intensity
     glm::vec4 direction;
-
+	glm::vec3 padding_;
     float cutOff;
+    float outerCutOff;
     float constant;
     float linear;
     float quadratic;

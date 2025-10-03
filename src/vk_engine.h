@@ -124,6 +124,8 @@ struct EmitterNode : public Node {
     glm::vec4 position; // w light type 0 = point, 1 = spot, 2 = directional
     glm::mat4 positionMatrix; // local object matrix
     float cutOff;
+    float innerCutOff;
+    float outerCutOff;
     MaterialInstance materialInstance;
     VulkanEngine* engine;
 
@@ -136,6 +138,10 @@ struct EmitterNode : public Node {
 
     void setColor(const glm::vec3& color) {
         mappedConstants->colorFactors = glm::vec4{color.x, color.y, color.z, mappedConstants->colorFactors.w};
+    }
+
+    void setIntensity(const float& intensity) {
+        mappedConstants->colorFactors.w = intensity;
     }
 
     void setDirection(const glm::vec3& direction) {
@@ -312,7 +318,7 @@ public:
 
     float emitterPosX{ 0.0f };
     float emitterPosY{ -5.0f };
-    float emitterPosZ{ 86.0f };
+    float emitterPosZ{ 12.5f };
 
     void updateScene();
 
@@ -343,6 +349,7 @@ public:
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
+    std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh, const char* name);
     std::shared_ptr<EmitterNode> createEmitterNode(std::shared_ptr<MeshAsset> mesh,
         const char* name,
         const glm::vec4& position,

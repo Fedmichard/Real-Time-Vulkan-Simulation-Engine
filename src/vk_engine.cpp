@@ -456,8 +456,9 @@ void VulkanEngine::initDefaultData() {
     createEmitterNode(sphereMesh, "Green Sphere", glm::vec4{-8.0f, 1.5f, 0.0f, .0f}, glm::vec4{0.043f, 1.0f, 0.0f, 1.f});
     createEmitterNode(monkeyMesh, "Yellow Monkey", glm::vec4{0.f, 8.f, 4.f, .0f}, glm::vec4{1.f, 1.f, .0f, 1.f});
     createEmitterNode(sphereMesh, "White Sphere", glm::vec4{1.f, 1.f, 1.f, .0f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
-    createEmitterNode(nullptr, "White Sphere22", glm::vec4{1.0f}, glm::vec4{1.f, 0.f, 0.f, 1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 12.5f);
+    createEmitterNode(nullptr, "Flashlight", glm::vec4{1.0f}, glm::vec4{1.f, 0.f, 0.f, 1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 12.5f);
     createEmitterNode(sphereMesh, "Red Spot", glm::vec4{1.0f}, glm::vec4{1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 25.5f);
+    // createEmitterNode(monkeyMesh, "Red");
 
     /* Mesh Nodes */
     // texture resources for material
@@ -497,7 +498,7 @@ void VulkanEngine::initDefaultData() {
     resources3.texture = resources3Image;
     resources3.sampler = _defaultSamplerLinear;
     resources3.metalTexture = resources3Metal;
-    resources3.sampler = _defaultSamplerLinear;
+    resources3.metalSampler = _defaultSamplerLinear;
     createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Cube", openglMaterial, resources3, this);
 
     OpenGLResources resource31{};
@@ -510,7 +511,7 @@ void VulkanEngine::initDefaultData() {
     resource31.texture = resources31Image;
     resource31.sampler = _defaultSamplerLinear;
     resource31.metalTexture = _whiteImage;
-    resource31.sampler = _defaultSamplerLinear;
+    resource31.metalSampler = _defaultSamplerLinear;
     createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Anime Cube", openglMaterial, resource31, this);
 }
 
@@ -926,6 +927,65 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
 
     node->direction = direction;
     node->cutOff = glm::cos(glm::radians(cutOff));
+    node->outerCutOff = glm::cos(glm::radians(17.5f));
+
+    EmitterResources resources{};
+    resources.dataBuffer = node->emitterConstants.buffer;
+    resources.dataBufferOffset = 0;
+
+    // 4. Create material instance for this emitter
+    node->materialInstance = emitterMaterial.writeMaterial(
+        _device,
+        MaterialPass::MainColor,
+        resources,
+        _descriptorAllocator
+    );
+
+    // 5. Assign material to surfaces
+    if (mesh) {
+        for (auto& s : node->mesh->surfaces) {
+            s.material = std::make_shared<GLTFMaterial>();
+            s.material->data = node->materialInstance;
+        }
+    }
+
+    node->localTransform = glm::mat4{ 1.f };
+    node->worldTransform = glm::mat4{ 1.f };
+
+    // 6. Handle cleanup
+    _mainDeletionQueue.push_function([=]() {
+        destroyBuffer(node->emitterConstants);
+    });
+    
+    emitterNodes[name] = node;
+
+    sceneLights.push_back(node);
+
+    return node;
+}
+
+std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<MeshAsset> mesh, const char* name) {
+    auto node = std::make_shared<EmitterNode>();
+    if (mesh) {
+        node->mesh = mesh;
+    } else {
+        node->mesh = nullptr;
+    }
+
+    node->emitterConstants = createBuffer(sizeof(EmitterMaterial::MaterialConstants), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+    node->mappedConstants = (EmitterMaterial::MaterialConstants*)node->emitterConstants.allocation->GetMappedData();
+    node->mappedConstants->colorFactors = glm::vec4{1.f};
+    node->mappedConstants->constant = 1.0f;
+    node->mappedConstants->linear = 0.09f;
+    node->mappedConstants->quadratic = 0.032f;
+
+    node->position = glm::vec4{0.f};
+    node->positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{0.f});
+
+    node->direction =  glm::vec4{0.f};
+    node->cutOff = glm::cos(glm::radians(25.f));
+    node->outerCutOff = glm::cos(glm::radians(17.5f));
 
     EmitterResources resources{};
     resources.dataBuffer = node->emitterConstants.buffer;
@@ -2217,10 +2277,13 @@ void VulkanEngine::updateScene() {
     emitterNodes["Blue Sphere"]->changePosition(glm::vec3(emitterPosX, 1.5f, 0.0f));
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
-    emitterNodes["White Sphere22"]->changePosition(mainCamera.position);
-    emitterNodes["White Sphere22"]->setColor(glm::vec3{1.f});
-    emitterNodes["White Sphere22"]->setDirection(glm::vec4{mainCamera.getForwardDirection(), 1.f});
+    emitterNodes["Flashlight"]->changePosition(mainCamera.position);
+    emitterNodes["Flashlight"]->setColor(glm::vec3{1.f});
+    emitterNodes["Flashlight"]->setCutOff(emitterPosZ);
+    emitterNodes["Flashlight"]->setIntensity(emitterPosZ);
+    emitterNodes["Flashlight"]->setDirection(glm::vec4{mainCamera.getForwardDirection(), 1.f});
     emitterNodes["Red Spot"]->changePosition(glm::vec3{0, 8, 1});
+    emitterNodes["Red Spot"]->setCutOff(emitterPosZ);
     emitterNodes["Red Spot"]->setDirection(glm::vec3{0, -1, 0});
 
     // load object nodes
@@ -2278,6 +2341,7 @@ void VulkanEngine::updateScene() {
         sceneData.emitter[i].color = sceneLights[i]->mappedConstants->colorFactors;
         sceneData.emitter[i].direction = sceneLights[i]->direction;
         sceneData.emitter[i].cutOff = sceneLights[i]->cutOff;
+        sceneData.emitter[i].outerCutOff = sceneLights[i]->outerCutOff;
         sceneData.emitter[i].constant = sceneLights[i]->mappedConstants->constant;
         sceneData.emitter[i].linear = sceneLights[i]->mappedConstants->linear;
         sceneData.emitter[i].quadratic = sceneLights[i]->mappedConstants->quadratic;

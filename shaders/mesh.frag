@@ -53,15 +53,20 @@ void main()  {
 				* distance + sceneData.emitter[i].quadratic * (distance * distance));
 
 			float theta = dot(lightDir, normalize(-sceneData.emitter[i].direction.xyz));
+			float epsilon = sceneData.emitter[i].cutOff - sceneData.emitter[i].outerCutOff;
+			float intensity = clamp((theta - sceneData.emitter[i].outerCutOff) / epsilon, 0.0, 1.0);
 
-			if (theta > sceneData.emitter[i].cutOff) {
+			if (theta > sceneData.emitter[i].outerCutOff) {
 				// diffuse
 				float pntDiff = max(dot(norm, lightDir), 0.0);
-				vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * sceneData.emitter[i].color.w * attenuation;
+				vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap * sceneData.emitter[i].color.w * attenuation;
 				
 				vec3 pntReflectDir = reflect(-lightDir, norm);
 				float pntSpec = pow(max(dot(viewDir, pntReflectDir), 0.0), 16.0f);
 				vec3 pntSpecular = sceneData.emitter[i].color.xyz * pntSpec * specMap * materialData.colorFactors.w * sceneData.emitter[i].color.w * attenuation;
+
+				pntDiffuse *=  intensity;
+				pntSpecular *=  intensity;
 
 				lighting += pntDiffuse;
 			}

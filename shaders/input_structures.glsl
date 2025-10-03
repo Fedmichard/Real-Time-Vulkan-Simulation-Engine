@@ -2,7 +2,9 @@ struct GPULight {
     vec4 pos;
     vec4 color;
     vec4 direction;
+	vec3 padding_;
     float cutOff;
+    float outerCutOff;
     float constant;
     float linear;
     float quadratic;

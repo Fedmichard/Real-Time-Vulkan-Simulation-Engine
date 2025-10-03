@@ -42,25 +42,58 @@ void main()  {
 	lighting += sunDiffuse + sunSpecular;
 
 	for (int i = 0; i < sceneData.emitterCount; i++) {
-		// light direction
-		vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
+		// if spotlight
+		if (sceneData.emitter[i].pos.w == 1) {
+			// light direction
+			vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
 
-		// calculate distance 
-		float distance = length(sceneData.emitter[i].pos.xyz - inFragPos);
-		float attenuation = 1.0 / (sceneData.emitter[i].constant + sceneData.emitter[i].linear
-			* distance + sceneData.emitter[i].quadratic * (distance * distance));
+			// calculate distance 
+			float distance = length(sceneData.emitter[i].pos.xyz - inFragPos);
+			float attenuation = 1.0 / (sceneData.emitter[i].constant + sceneData.emitter[i].linear
+				* distance + sceneData.emitter[i].quadratic * (distance * distance));
 
-		// diffuse
-		float pntDiff = max(dot(norm, lightDir), 0.0);
-		vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap * sceneData.emitter[i].color.w * attenuation;
+			float theta = dot(lightDir, normalize(-sceneData.emitter[i].direction.xyz));
+			float epsilon = sceneData.emitter[i].cutOff - sceneData.emitter[i].outerCutOff;
+			float intensity = clamp((theta - sceneData.emitter[i].outerCutOff) / epsilon, 0.0, 1.0);
 
-		// specular
-		vec3 pntReflectDir = reflect(-lightDir, norm);
-		float pntSpec = pow(max(dot(viewDir, pntReflectDir), 0.0), materialData.shininess);
-		vec3 pntSpecular = sceneData.emitter[i].color.xyz * pntSpec * specMap * materialData.colorFactors.w * sceneData.emitter[i].color.w * attenuation;
+			if (theta > sceneData.emitter[i].outerCutOff) {
+				// diffuse
+				float pntDiff = max(dot(norm, lightDir), 0.0);
+				vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap * sceneData.emitter[i].color.w * attenuation;
+				
+				vec3 pntReflectDir = reflect(-lightDir, norm);
+				float pntSpec = pow(max(dot(viewDir, pntReflectDir), 0.0), 16.0f);
+				vec3 pntSpecular = sceneData.emitter[i].color.xyz * pntSpec * specMap * materialData.colorFactors.w * sceneData.emitter[i].color.w * attenuation;
 
-		// final calculation
-		lighting += pntDiffuse + pntSpecular;
+				pntDiffuse *=  intensity;
+				pntSpecular *=  intensity;
+
+				lighting += pntDiffuse + pntSpecular;
+			}
+			
+		// if point light
+		} else if (sceneData.emitter[i].pos.w == 0) {
+			// light direction
+			vec3 lightDir = normalize(sceneData.emitter[i].pos.xyz - inFragPos);
+
+			// calculate distance 
+			float distance = length(sceneData.emitter[i].pos.xyz - inFragPos);
+			float attenuation = 1.0 / (sceneData.emitter[i].constant + sceneData.emitter[i].linear
+				* distance + sceneData.emitter[i].quadratic * (distance * distance));
+
+			// diffuse
+			float pntDiff = max(dot(norm, lightDir), 0.0);
+			vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap * sceneData.emitter[i].color.w * attenuation;
+
+			// specular
+			vec3 pntReflectDir = reflect(-lightDir, norm);
+			float pntSpec = pow(max(dot(viewDir, pntReflectDir), 0.0), materialData.shininess);
+			vec3 pntSpecular = sceneData.emitter[i].color.xyz * pntSpec * specMap * materialData.colorFactors.w * sceneData.emitter[i].color.w * attenuation;
+
+			// final calculation
+			lighting += pntDiffuse + pntSpecular;
+
+		}
 	}
 
 	outFragColor = vec4(lighting, 1.0f);
