@@ -2278,12 +2278,13 @@ void VulkanEngine::updateScene() {
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
     emitterNodes["Flashlight"]->changePosition(mainCamera.position);
-    emitterNodes["Flashlight"]->setColor(glm::vec3{1.f});
+    emitterNodes["Flashlight"]->setColor(glm::vec3{1.0f, 0.5f, 0.31f});
     emitterNodes["Flashlight"]->setCutOff(emitterPosZ);
-    emitterNodes["Flashlight"]->setIntensity(emitterPosZ);
+    emitterNodes["Flashlight"]->setIntensity(1.f);
     emitterNodes["Flashlight"]->setDirection(glm::vec4{mainCamera.getForwardDirection(), 1.f});
     emitterNodes["Red Spot"]->changePosition(glm::vec3{0, 8, 1});
     emitterNodes["Red Spot"]->setCutOff(emitterPosZ);
+    emitterNodes["Red Spot"]->setColor(glm::vec3{0.f, 1.f, 0.f});
     emitterNodes["Red Spot"]->setDirection(glm::vec3{0, -1, 0});
 
     // load object nodes
