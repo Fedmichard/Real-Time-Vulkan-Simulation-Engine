@@ -2278,7 +2278,7 @@ void VulkanEngine::updateScene() {
     emitterNodes["Yellow Monkey"]->changePosition(glm::vec3(0.f, 8.f, .5f));
     emitterNodes["White Sphere"]->changePosition(glm::vec3(-4.f, 10.25f, -.30f));
     emitterNodes["Flashlight"]->changePosition(mainCamera.position);
-    emitterNodes["Flashlight"]->setColor(glm::vec3{1.0f, 0.5f, 0.31f});
+    emitterNodes["Flashlight"]->setColor(glm::vec3{1.0f});
     emitterNodes["Flashlight"]->setCutOff(emitterPosZ);
     emitterNodes["Flashlight"]->setIntensity(1.f);
     emitterNodes["Flashlight"]->setDirection(glm::vec4{mainCamera.getForwardDirection(), 1.f});

@@ -68,7 +68,7 @@ void main()  {
 				pntDiffuse *=  intensity;
 				pntSpecular *=  intensity;
 
-				lighting += pntDiffuse;
+				lighting += pntDiffuse + pntSpecular;
 			}
 		
 		} else if (sceneData.emitter[i].pos.w == 0)
