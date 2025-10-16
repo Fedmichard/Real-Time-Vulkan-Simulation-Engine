@@ -193,10 +193,14 @@ void VulkanEngine::draw() {
     vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition to draw geometry for resolve image too
     vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+    // transition image for presenting depth values
+    vkutil::transitionImageLayout(cmd, _depthViewImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition depth attachment image
     vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
 
     drawGeometry(cmd);
+
+    drawDepthImage(cmd);
 
     // transition the _drawImage.image for transfer src
     vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
@@ -209,6 +213,7 @@ void VulkanEngine::draw() {
 
     // for presenting images to imgui
     vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL); 
+    vkutil::transitionImageLayout(cmd, _depthViewImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL); 
 
     drawImgui(cmd, _swapchainImageViews[swapchainImageIndex]);
 
@@ -362,7 +367,7 @@ void VulkanEngine::run() {
 		ImGui::End();
 
         //make imgui calculate internal draw structures
-        ImGui::Render();
+        ImGui::Render(); 
 
         updateScene();
 
@@ -591,9 +596,16 @@ void VulkanEngine::initSwapchain() {
     createSwapchain(_windowExtent.width, _windowExtent.height);
     createResolveImage(_windowExtent.width, _windowExtent.height);
     createDrawImage(_windowExtent.width, _windowExtent.height);
+    createDepthViewImage(_windowExtent.width, _windowExtent.height);
 
     // add to deletion queues
     _mainDeletionQueue.push_function([=]() {
+        vkDestroyImageView(_device, _depthViewDepthImage.imageView, nullptr);
+        vmaDestroyImage(_allocator, _depthViewDepthImage.image, _depthViewDepthImage.allocation);
+
+        vkDestroyImageView(_device, _depthViewImage.imageView, nullptr);
+        vmaDestroyImage(_allocator, _depthViewImage.image, _depthViewImage.allocation);
+        
         vkDestroyImageView(_device, _resolveImage.imageView, nullptr);
         vmaDestroyImage(_allocator, _resolveImage.image, _resolveImage.allocation);
 
@@ -783,7 +795,7 @@ void VulkanEngine::initImgui() {
 
     // image views
     _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL);
+    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthViewImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	// add the destroy the imgui created structures
 	_mainDeletionQueue.push_function([=]() {
@@ -1262,6 +1274,87 @@ void VulkanEngine::createResolveImage(uint32_t width, uint32_t height) {
     VK_CHECK(vkCreateImageView(_device, &resolveImgView, nullptr, &_resolveImage.imageView));
 }
 
+void VulkanEngine::createDepthViewImage(uint32_t width, uint16_t height) {
+    VkExtent3D depthViewExtent;
+    depthViewExtent.width = _windowExtent.width;
+    depthViewExtent.height = _windowExtent.height;
+    depthViewExtent.depth = 1;
+    
+    _depthViewImage.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
+    _depthViewImage.imageExtent = depthViewExtent;
+
+    VkImageUsageFlags depthImageUsages{};
+	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+	depthImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
+	depthImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
+    depthImageUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
+
+    VkImageCreateInfo depthInfo{};
+    depthInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    depthInfo.imageType = VK_IMAGE_TYPE_2D;
+    depthInfo.format = _depthViewImage.imageFormat;
+    depthInfo.extent = _depthViewImage.imageExtent;
+    depthInfo.mipLevels = 1;
+    depthInfo.arrayLayers = 1;
+    depthInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    depthInfo.usage = depthImageUsages;
+
+    VmaAllocationCreateInfo depthAlloc{};
+    depthAlloc.usage = VMA_MEMORY_USAGE_GPU_ONLY;
+    depthAlloc.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+    vmaCreateImage(_allocator, &depthInfo, &depthAlloc, &_depthViewImage.image, &_depthViewImage.allocation, nullptr);
+
+    VkImageViewCreateInfo depthView{};
+    depthView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    depthView.image = _depthViewImage.image;
+    depthView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    depthView.format = _depthViewImage.imageFormat;
+    depthView.subresourceRange.baseMipLevel = 0;
+    depthView.subresourceRange.levelCount = 1;
+    depthView.subresourceRange.baseArrayLayer = 0;
+    depthView.subresourceRange.layerCount = 1;
+    depthView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+
+    vkCreateImageView(_device, &depthView, nullptr, &_depthViewImage.imageView);
+
+    // will use the same draw extent as draw image of course for our depth attachment
+    _depthViewDepthImage.imageExtent = depthViewExtent;
+    _depthViewDepthImage.imageFormat = VK_FORMAT_D32_SFLOAT;
+
+    VkImageUsageFlags depthImageDepthUsages{};
+    depthImageDepthUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
+    depthImageDepthUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
+
+    VkImageCreateInfo depthImageInfo{};
+    depthImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+    depthImageInfo.imageType = VK_IMAGE_TYPE_2D;
+    depthImageInfo.format = _depthViewDepthImage.imageFormat;
+    depthImageInfo.extent = depthViewExtent;
+    depthImageInfo.mipLevels = 1;
+    depthImageInfo.arrayLayers = 1;
+    depthImageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+    depthImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+    depthImageInfo.usage = depthImageDepthUsages;
+
+    vmaCreateImage(_allocator, &depthImageInfo, &depthAlloc, &_depthViewDepthImage.image, &_depthViewDepthImage.allocation, nullptr);
+
+    VkImageViewCreateInfo depthImageView{};
+    depthImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    depthImageView.image = _depthViewDepthImage.image;
+    depthImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    depthImageView.format = _depthViewDepthImage.imageFormat;
+    depthImageView.subresourceRange.baseMipLevel = 0;
+    depthImageView.subresourceRange.levelCount = 1;
+    depthImageView.subresourceRange.baseArrayLayer = 0;
+    depthImageView.subresourceRange.layerCount = 1;
+    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+    VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthViewDepthImage.imageView));
+}
+
 // init background pipelines
 void VulkanEngine::initBackgroundPipelines() {
     // global for all pipelines
@@ -1572,8 +1665,215 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             stats.triangle_count += draw.indexCount / 3;   
         }
 
-        mainDrawContext.OpaqueSurfaces.clear();
-        mainDrawContext.TransparentSurfaces.clear();
+	vkCmdEndRendering(cmd);
+
+    // clock
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    stats.mesh_draw_time = elapsed.count() / 1000.f;
+}
+
+void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
+    // clock
+    stats.drawcall_count = 0;
+    stats.triangle_count = 0;
+
+    auto start = std::chrono::system_clock::now();
+
+    // opaque render object sorting
+    std::vector<uint32_t> opaqueDraws;
+    opaqueDraws.reserve(mainDrawContext.OpaqueSurfaces.size());
+
+    // frustum culling
+    for (uint32_t i = 0; i < mainDrawContext.OpaqueSurfaces.size(); i++) {
+        if (is_visible(mainDrawContext.OpaqueSurfaces[i], sceneData.viewproj)) {
+            opaqueDraws.push_back(i);
+        }
+    }
+
+    std::sort(opaqueDraws.begin(), opaqueDraws.end(), [&](const auto& iA, const auto& iB) {
+        const RenderObject& A = mainDrawContext.OpaqueSurfaces[iA];
+        const RenderObject& B = mainDrawContext.OpaqueSurfaces[iB];
+
+        if (A.material == B.material) {
+            return A.indexBuffer < B.indexBuffer;
+        } else {
+            return A.material < B.material;
+        }
+    });
+
+    // transparent render object culling
+    std::vector<uint32_t> transparentDraws;
+    transparentDraws.reserve(mainDrawContext.TransparentSurfaces.size());
+
+    for (uint32_t i = 0; i < mainDrawContext.TransparentSurfaces.size(); i++) {
+        if (is_visible(mainDrawContext.TransparentSurfaces[i], sceneData.viewproj)) {
+            transparentDraws.push_back(i);
+        }
+    }
+
+    VkRenderingAttachmentInfo colorAttachment{};
+    colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    colorAttachment.imageView = _depthViewImage.imageView;
+    colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    // colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
+    VkRenderingAttachmentInfo depthAttachment{};
+    depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    depthAttachment.imageView = _depthViewDepthImage.imageView;
+    depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
+    depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    depthAttachment.clearValue.depthStencil.depth = 1.0f;
+
+	VkRenderingInfo renderInfo{};
+    renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+    renderInfo.renderArea = VkRect2D { VkOffset2D { 0, 0 }, _drawExtent };
+    renderInfo.layerCount = 1;
+    renderInfo.colorAttachmentCount = 1;
+    renderInfo.pColorAttachments = &colorAttachment;
+    renderInfo.pDepthAttachment = &depthAttachment;
+
+    // allocate a new uniform buffer for the scene data
+	AllocatedBuffer gpuSceneDataBuffer = createBuffer(sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+	// add it to the deletion queue of this frame so it gets deleted once its been used
+	getCurrentFrame()._deletionQueue.push_function([=]() {
+		destroyBuffer(gpuSceneDataBuffer);
+    });
+
+	// write the buffer
+	GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.allocation->GetMappedData();
+	*sceneUniformData = sceneData;
+
+    // bind a texture
+    VkDescriptorSet globalDescriptor = getCurrentFrame()._frameDescriptors.allocate(_device, _gpuSceneDataDescriptorLayout);
+    DescriptorWriter writer;
+    writer.writeBuffer(0, gpuSceneDataBuffer.buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+    writer.updateSet(_device, globalDescriptor);
+
+    // draw sorting
+    MaterialPipeline* lastPipeline = nullptr;
+    MaterialInstance* lastMaterial = nullptr;
+    VkBuffer lastIndexBuffer = VK_NULL_HANDLE;
+
+    // begin dynamic rendering
+	vkCmdBeginRendering(cmd, &renderInfo);
+        // draw opaque objects
+        for (auto& r : opaqueDraws) {
+            const auto& draw = mainDrawContext.OpaqueSurfaces[r];
+            // rebind pipeline and descriptors if the material changed
+            if (draw.material != lastMaterial) { 
+                lastMaterial = draw.material;
+
+                if (draw.material->pipeline != lastPipeline) {
+                    lastPipeline = draw.material->pipeline;
+
+                    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,  draw.material->pipeline->pipeline);
+                    vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 0, 1, &globalDescriptor, 0, nullptr);
+                    
+                    //set dynamic viewport and scissor
+                    VkViewport viewport = {};
+                    viewport.x = 0;
+                    viewport.y = 0;
+                    viewport.width = _drawExtent.width;
+                    viewport.height = _drawExtent.height;
+                    viewport.minDepth = 0.f;
+                    viewport.maxDepth = 1.f;
+
+                    vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+                    VkRect2D scissor = {};
+                    scissor.offset.x = 0;
+                    scissor.offset.y = 0;
+                    scissor.extent.width = _drawExtent.width;
+                    scissor.extent.height = _drawExtent.height;
+
+                    vkCmdSetScissor(cmd, 0, 1, &scissor);
+                    // pipeline for vertex buffer draws
+                }
+
+                vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 1, 1, &draw.material->materialSet, 0, nullptr);
+            }
+
+            if (draw.indexBuffer != lastIndexBuffer) {
+                lastIndexBuffer = draw.indexBuffer;
+                vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            }
+            
+            // vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32); // -- don't know if I need
+
+            GPUDrawPushConstants pushConstants;
+            pushConstants.vertexBuffer = draw.vertexBufferAddress;
+            pushConstants.worldMatrix = draw.transform;
+            vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+            
+            // stats
+            stats.drawcall_count++;
+            stats.triangle_count += draw.indexCount / 3;   
+            
+            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+        }
+ 
+        // transparent objects
+        for (auto& r : transparentDraws) {
+            const auto& draw = mainDrawContext.TransparentSurfaces[r];
+            // rebind pipeline and descriptors if the material changed
+            if (draw.material != lastMaterial) {
+                lastMaterial = draw.material;
+                
+                if (draw.material->pipeline != lastPipeline) {
+                    lastPipeline = draw.material->pipeline;
+
+                    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,  draw.material->pipeline->pipeline);
+                    vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 0, 1, &globalDescriptor, 0, nullptr);
+                    
+                    //set dynamic viewport and scissor
+                    VkViewport viewport = {};
+                    viewport.x = 0;
+                    viewport.y = 0;
+                    viewport.width = _drawExtent.width;
+                    viewport.height = _drawExtent.height;
+                    viewport.minDepth = 0.f;
+                    viewport.maxDepth = 1.f;
+
+                    vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+                    VkRect2D scissor = {};
+                    scissor.offset.x = 0;
+                    scissor.offset.y = 0;
+                    scissor.extent.width = _drawExtent.width;
+                    scissor.extent.height = _drawExtent.height;
+
+                    vkCmdSetScissor(cmd, 0, 1, &scissor);
+                    // pipeline for vertex buffer draws
+                }
+
+                vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 1, 1, &draw.material->materialSet, 0, nullptr);
+            }
+
+            if (draw.indexBuffer != lastIndexBuffer) {
+                lastIndexBuffer = draw.indexBuffer;
+                vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            }
+            
+            vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+            GPUDrawPushConstants pushConstants;
+            pushConstants.vertexBuffer = draw.vertexBufferAddress;
+            pushConstants.worldMatrix = draw.transform;
+            vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+
+            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+            
+            // stats
+            stats.drawcall_count++;
+            stats.triangle_count += draw.indexCount / 3;   
+        }
 
 	vkCmdEndRendering(cmd);
 
@@ -1816,6 +2116,8 @@ void VulkanEngine::recreateSwapChain() {
     destroyImage(_drawImage);
     destroyImage(_resolveImage);
     destroyImage(_depthImage);
+    destroyImage(_depthViewImage);
+    destroyImage(_depthViewDepthImage);
 
     // get the new window size and set new resolution
     int w, h;
@@ -1831,10 +2133,11 @@ void VulkanEngine::recreateSwapChain() {
 	createSwapchain(_windowExtent.width, _windowExtent.height);
     createDrawImage(_drawExtent.width, _drawExtent.height);
     createResolveImage(_drawExtent.width, _drawExtent.height);
+    createDepthViewImage(_windowExtent.width, _windowExtent.height);
 
     // recreate image
     _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthImage.imageView, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL);
+    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthViewImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	resizeReuqested = false;
 }
@@ -2251,6 +2554,9 @@ void EmitterNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
 }
 
 void VulkanEngine::updateScene() {
+    mainDrawContext.OpaqueSurfaces.clear();
+    mainDrawContext.TransparentSurfaces.clear();
+
     // clock
     mainCamera.update();
     

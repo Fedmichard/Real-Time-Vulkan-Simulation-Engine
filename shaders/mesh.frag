@@ -98,5 +98,6 @@ void main()  {
 
 	}
 
-	outFragColor = vec4(lighting * diffMap, 1.0f);
+	outFragColor = vec4(vec3(gl_FragCoord.z), 1.0f);
+	// outFragColor = vec4(lighting * diffMap, 1.0f);
 }

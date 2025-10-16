@@ -249,6 +249,8 @@ public:
     AllocatedImage _drawImage;
     AllocatedImage _resolveImage;
     AllocatedImage _depthImage;
+    AllocatedImage _depthViewImage;
+    AllocatedImage _depthViewDepthImage;
     float renderScale = 1.0f;
 
     // compute pipeline layout
@@ -328,6 +330,7 @@ public:
     void createSwapchain(uint32_t width, uint32_t height);
     void createDrawImage(uint32_t width, uint32_t height);
     void createResolveImage(uint32_t width, uint32_t height);
+    void createDepthViewImage(uint32_t width, uint16_t height);
     void initCommands();
     void initSyncStructures();
     void initDescriptors();
@@ -346,6 +349,7 @@ public:
     void immediateSubmit(std::function<void(VkCommandBuffer cmd)>&& function);
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
+    void drawDepthImage(VkCommandBuffer cmd);
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
