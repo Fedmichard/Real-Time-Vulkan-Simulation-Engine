@@ -130,6 +130,10 @@ void VulkanEngine::cleanup() {
 
         loadedScenes[0]->~LoadedGLTF();
 
+        openglMaterial.clearResources(_device);
+        
+        depthMaterial.clearResources(_device);
+
         emitterMaterial.clearResources(_device);
 
         metalRoughMaterial.clearResources(_device);
@@ -739,6 +743,7 @@ void VulkanEngine::initPipelines() {
     metalRoughMaterial.buildPipelines(this);
     emitterMaterial.buildPipelines(this);
     openglMaterial.buildPipelines(this);
+    depthMaterial.buildPipelines(this);
 }
 
 void VulkanEngine::initImgui() {
@@ -1763,119 +1768,27 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
 
     // begin dynamic rendering
 	vkCmdBeginRendering(cmd, &renderInfo);
-        // draw opaque objects
+            // Bind your NEW depth visualization pipeline ONCE
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, depthMaterial.opaquePipeline.pipeline);
+        
+        // Bind the global descriptor set
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, depthMaterial.opaquePipeline.layout, 0, 1, &globalDescriptor, 0, nullptr);
+
+        // Loop through all opaque objects and draw them
         for (auto& r : opaqueDraws) {
             const auto& draw = mainDrawContext.OpaqueSurfaces[r];
-            // rebind pipeline and descriptors if the material changed
-            if (draw.material != lastMaterial) { 
-                lastMaterial = draw.material;
 
-                if (draw.material->pipeline != lastPipeline) {
-                    lastPipeline = draw.material->pipeline;
-
-                    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,  draw.material->pipeline->pipeline);
-                    vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 0, 1, &globalDescriptor, 0, nullptr);
-                    
-                    //set dynamic viewport and scissor
-                    VkViewport viewport = {};
-                    viewport.x = 0;
-                    viewport.y = 0;
-                    viewport.width = _drawExtent.width;
-                    viewport.height = _drawExtent.height;
-                    viewport.minDepth = 0.f;
-                    viewport.maxDepth = 1.f;
-
-                    vkCmdSetViewport(cmd, 0, 1, &viewport);
-
-                    VkRect2D scissor = {};
-                    scissor.offset.x = 0;
-                    scissor.offset.y = 0;
-                    scissor.extent.width = _drawExtent.width;
-                    scissor.extent.height = _drawExtent.height;
-
-                    vkCmdSetScissor(cmd, 0, 1, &scissor);
-                    // pipeline for vertex buffer draws
-                }
-
-                vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 1, 1, &draw.material->materialSet, 0, nullptr);
-            }
-
-            if (draw.indexBuffer != lastIndexBuffer) {
-                lastIndexBuffer = draw.indexBuffer;
-                vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-            }
-            
-            // vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32); // -- don't know if I need
-
-            GPUDrawPushConstants pushConstants;
-            pushConstants.vertexBuffer = draw.vertexBufferAddress;
-            pushConstants.worldMatrix = draw.transform;
-            vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
-            
-            // stats
-            stats.drawcall_count++;
-            stats.triangle_count += draw.indexCount / 3;   
-            
-            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
-        }
- 
-        // transparent objects
-        for (auto& r : transparentDraws) {
-            const auto& draw = mainDrawContext.TransparentSurfaces[r];
-            // rebind pipeline and descriptors if the material changed
-            if (draw.material != lastMaterial) {
-                lastMaterial = draw.material;
-                
-                if (draw.material->pipeline != lastPipeline) {
-                    lastPipeline = draw.material->pipeline;
-
-                    vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,  draw.material->pipeline->pipeline);
-                    vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 0, 1, &globalDescriptor, 0, nullptr);
-                    
-                    //set dynamic viewport and scissor
-                    VkViewport viewport = {};
-                    viewport.x = 0;
-                    viewport.y = 0;
-                    viewport.width = _drawExtent.width;
-                    viewport.height = _drawExtent.height;
-                    viewport.minDepth = 0.f;
-                    viewport.maxDepth = 1.f;
-
-                    vkCmdSetViewport(cmd, 0, 1, &viewport);
-
-                    VkRect2D scissor = {};
-                    scissor.offset.x = 0;
-                    scissor.offset.y = 0;
-                    scissor.extent.width = _drawExtent.width;
-                    scissor.extent.height = _drawExtent.height;
-
-                    vkCmdSetScissor(cmd, 0, 1, &scissor);
-                    // pipeline for vertex buffer draws
-                }
-
-                vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 1, 1, &draw.material->materialSet, 0, nullptr);
-            }
-
-            if (draw.indexBuffer != lastIndexBuffer) {
-                lastIndexBuffer = draw.indexBuffer;
-                vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
-            }
-            
+            // No need to check materials, just bind index buffer and push constants
             vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
             GPUDrawPushConstants pushConstants;
             pushConstants.vertexBuffer = draw.vertexBufferAddress;
             pushConstants.worldMatrix = draw.transform;
-            vkCmdPushConstants(cmd, draw.material->pipeline->layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
-
-            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+            vkCmdPushConstants(cmd, depthMaterial.opaquePipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
             
-            // stats
-            stats.drawcall_count++;
-            stats.triangle_count += draw.indexCount / 3;   
+            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
         }
-
-	vkCmdEndRendering(cmd);
+    vkCmdEndRendering(cmd);
 
     // clock
     auto end = std::chrono::system_clock::now();
@@ -2473,6 +2386,109 @@ MaterialInstance OpenGLMaterial::writeMaterial(VkDevice device, MaterialPass pas
 	writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 	writer.writeImage(1, res.texture.imageView, res.sampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
 	writer.writeImage(2, res.metalTexture.imageView, res.metalSampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+
+	writer.updateSet(device, matData.materialSet);
+
+	return matData;
+}
+
+void DepthMaterial::buildPipelines(VulkanEngine* engine) {
+    VkPipelineLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+
+    // create new descriptor layout and push constant range
+    VkPushConstantRange matrixRange{};
+	matrixRange.offset = 0;
+	matrixRange.size = sizeof(GPUDrawPushConstants);
+	matrixRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    DescriptorLayoutBuilder layoutBuilder;
+    layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    materialLayout = layoutBuilder.build(engine->_device);
+
+    // set layouts and push constant
+    VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout, materialLayout };
+
+    layoutInfo.pushConstantRangeCount = 1;
+    layoutInfo.pPushConstantRanges = &matrixRange;
+    layoutInfo.setLayoutCount = 2;
+    layoutInfo.pSetLayouts = layouts;
+
+    // create and set pipeline layout
+    VkPipelineLayout newLayout;
+    vkCreatePipelineLayout(engine->_device, &layoutInfo, nullptr, &newLayout);
+
+    transparentPipeline.layout = newLayout;
+    opaquePipeline.layout = newLayout;
+
+    // shaders
+	VkShaderModule meshVertexShader;
+	if (!vkutil::loadShaderModule("../shaders/depth.vert.spv", engine->_device, &meshVertexShader)) {
+		fmt::println("Error when building the triangle vertex shader module");
+	}
+
+    VkShaderModule meshFragShader;
+	if (!vkutil::loadShaderModule("../shaders/depth.frag.spv", engine->_device, &meshFragShader)) {
+		fmt::println("Error when building the triangle fragment shader module");
+	}
+
+    // the pipeline know the shader modules per stage
+	PipelineBuilder pipelineBuilder;
+	pipelineBuilder._pipelineLayout = newLayout;
+	pipelineBuilder.setShaders(meshVertexShader, meshFragShader);
+	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
+	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+	// pipelineBuilder.setMultisamplingNone();
+    pipelineBuilder.enableMultisampling(VK_SAMPLE_COUNT_1_BIT);
+	pipelineBuilder.disableBlending();
+	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
+
+	//render format
+	pipelineBuilder.setColorAttachmentFormat(engine->_depthViewImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthViewDepthImage.imageFormat);
+
+	// finally build the pipeline
+    opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+
+	// create the transparent variant
+	pipelineBuilder.enableBlendingAdditive();
+    // disable depth testing
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+
+    // finally build the pipeline
+	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+	
+	vkDestroyShaderModule(engine->_device, meshFragShader, nullptr);
+	vkDestroyShaderModule(engine->_device, meshVertexShader, nullptr);
+}
+
+void DepthMaterial::clearResources(VkDevice device) {
+	vkDestroyDescriptorSetLayout(device, materialLayout, nullptr);
+	vkDestroyPipelineLayout(device, transparentPipeline.layout, nullptr);
+
+	vkDestroyPipeline(device, transparentPipeline.pipeline, nullptr);
+	vkDestroyPipeline(device, opaquePipeline.pipeline, nullptr);
+}
+
+MaterialInstance DepthMaterial::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
+    // Downcast to the actual resource type
+    const DepthResources& res = static_cast<const DepthResources&>(resources);
+
+    MaterialInstance matData;
+	matData.passType = pass;
+	if (pass == MaterialPass::Transparent) {
+		matData.pipeline = &transparentPipeline;
+	}
+	else {
+		matData.pipeline = &opaquePipeline;
+	}
+
+	matData.materialSet = descriptorAllocator.allocate(device, materialLayout);
+
+
+	writer.clear();
+	writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
 
 	writer.updateSet(device, matData.materialSet);
 

@@ -42,6 +42,8 @@ struct OpenGLResources : MaterialResourcesBase {
     VkSampler metalSampler;
 };
 
+struct DepthResources : MaterialResourcesBase {};
+
 struct Material {
     MaterialPipeline opaquePipeline;
 	MaterialPipeline transparentPipeline;
@@ -104,6 +106,19 @@ struct OpenGLMaterial : Material {
         float shininess;
         glm::vec4 extra[13];
     };
+
+	virtual void buildPipelines(VulkanEngine* engine);
+	virtual void clearResources(VkDevice device);
+
+	virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
+};
+
+struct DepthMaterial : Material {
+    struct MaterialConstants {};
 
 	virtual void buildPipelines(VulkanEngine* engine);
 	virtual void clearResources(VkDevice device);
@@ -297,6 +312,7 @@ public:
     EmitterMaterial emitterMaterial;
     OpenGLMaterial openglMaterial;
     GLTFMetallic_Roughness metalRoughMaterial;
+    DepthMaterial depthMaterial;
 
     // gltf
     DrawContext mainDrawContext;
