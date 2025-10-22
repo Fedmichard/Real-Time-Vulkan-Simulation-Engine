@@ -41,7 +41,7 @@ An onging C++17 Vulkan renderer.
     - [ ] Scene Graph View
     - [ ] Dynamically Import Textures and Objects Into a Scene
     - [ ] Debug Visualization
-    - [ ] Depth Buffer View
+    - [x] Depth Buffer View
     - [ ] Normal Map View
     - [ ] UV Coordinate View
     - [x] Scene Statistics
