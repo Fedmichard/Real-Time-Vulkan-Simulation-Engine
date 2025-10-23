@@ -36,6 +36,7 @@ public:
     // enable features
     void enableMultisampling(VkSampleCountFlagBits sampleCount);
     void enableDepthTest(bool depthWriteEnable, VkCompareOp op);
+    void enableStencilTest(VkStencilOpState front, VkStencilOpState back);
     void enableBlendingAdditive();
     void enableBlendingAlpha();
      

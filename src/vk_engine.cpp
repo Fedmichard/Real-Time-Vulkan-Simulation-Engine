@@ -1194,7 +1194,8 @@ void VulkanEngine::createDrawImage(uint32_t width, uint32_t height) {
 
     // will use the same draw extent as draw image of course for our depth attachment
     _depthImage.imageExtent = drawImageExtent;
-    _depthImage.imageFormat = VK_FORMAT_D32_SFLOAT;
+    // giving our depth image
+    _depthImage.imageFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
 
     VkImageUsageFlags depthImageUsages{};
     depthImageUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
@@ -1222,7 +1223,7 @@ void VulkanEngine::createDrawImage(uint32_t width, uint32_t height) {
     depthImageView.subresourceRange.levelCount = 1;
     depthImageView.subresourceRange.baseArrayLayer = 0;
     depthImageView.subresourceRange.layerCount = 1;
-    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
 
     VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthImage.imageView));
 }
@@ -1520,11 +1521,11 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     VkRenderingAttachmentInfo depthAttachment{};
     depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
     depthAttachment.imageView = _depthImage.imageView;
-    depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
+    depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     depthAttachment.clearValue.depthStencil.depth = 1.0f;
-
+    
 	VkRenderingInfo renderInfo{};
     renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
     renderInfo.renderArea = VkRect2D { VkOffset2D { 0, 0 }, _drawExtent };
@@ -1680,10 +1681,6 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
 }
 
 void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
-    // clock
-    stats.drawcall_count = 0;
-    stats.triangle_count = 0;
-
     auto start = std::chrono::system_clock::now();
 
     // opaque render object sorting
@@ -1903,7 +1900,10 @@ AllocatedImage VulkanEngine::createImage(VkExtent3D extent, VkFormat format, VkI
 	VkImageAspectFlags aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
 	if (format == VK_FORMAT_D32_SFLOAT) {
 		aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-	}
+	} 
+    if (format == VK_FORMAT_D32_SFLOAT_S8_UINT) {
+        aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT;
+    }
 
     VkImageViewCreateInfo viewInfo{};
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
@@ -2338,6 +2338,30 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
     pipelineBuilder.enableMultisampling(engine->_maxSamples);
 	pipelineBuilder.disableBlending();
 	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
+    // stencil testing
+    VkStencilOpState front{};
+    // operation to decide what passes or fails
+    // if value within stencil buffer is equal stencil value being tested it'll pass
+    front.compareOp = VK_COMPARE_OP_ALWAYS;
+    // mask is ANDed with stored stencil value and reference value before testing
+    front.writeMask = 0xFF;
+    front.reference = 1;
+    // if it passes we write nothing and keep value
+    front.passOp = VK_STENCIL_OP_KEEP;
+    // if it fails we write 0
+    front.failOp = VK_STENCIL_OP_ZERO;
+    front.depthFailOp = VK_STENCIL_OP_ZERO;
+    front.compareMask = 0x00;
+    VkStencilOpState back{};
+    back.compareOp = VK_COMPARE_OP_EQUAL;
+    back.failOp = VK_STENCIL_OP_ZERO;
+    back.passOp = VK_STENCIL_OP_KEEP;
+    back.depthFailOp = VK_STENCIL_OP_ZERO;
+    
+    back.compareMask = 0x00;
+    back.writeMask = 0x00;
+    back.reference = 1;
+    pipelineBuilder.enableStencilTest(front, back);
 
 	//render format
 	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
@@ -2348,9 +2372,8 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
 
 	// create the transparent variant
 	pipelineBuilder.enableBlendingAdditive();
-    // disable depth testing
+    // depth testing
 	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
-
     // finally build the pipeline
 	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
 	

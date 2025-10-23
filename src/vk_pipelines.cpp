@@ -197,6 +197,13 @@ void PipelineBuilder::enableDepthTest(bool depthWriteEnable, VkCompareOp op) {
     _depthStencil.maxDepthBounds = 1.0f;
 }
 
+/* stencil test enable */
+void PipelineBuilder::enableStencilTest(VkStencilOpState front, VkStencilOpState back) {
+    _depthStencil.stencilTestEnable = VK_TRUE;
+    _depthStencil.front = front;
+    _depthStencil.back = back;
+}
+
 // disable color blending attachment
 void PipelineBuilder::disableBlending() {
     // default write mask
