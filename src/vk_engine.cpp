@@ -130,6 +130,8 @@ void VulkanEngine::cleanup() {
 
         loadedScenes[0]->~LoadedGLTF();
 
+        outlineMaterial.clearResources(_device);
+
         openglMaterial.clearResources(_device);
         
         depthMaterial.clearResources(_device);
@@ -200,9 +202,11 @@ void VulkanEngine::draw() {
     // transition image for presenting depth values
     vkutil::transitionImageLayout(cmd, _depthViewImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition depth attachment image
-    vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL);
+    vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
     drawGeometry(cmd);
+
+    drawOutlineImage(cmd);
 
     drawDepthImage(cmd);
 
@@ -598,8 +602,8 @@ void VulkanEngine::initVulkan() {
 void VulkanEngine::initSwapchain() {
     _maxSamples = getMaxUsableSampleCount();
     createSwapchain(_windowExtent.width, _windowExtent.height);
-    createResolveImage(_windowExtent.width, _windowExtent.height);
     createDrawImage(_windowExtent.width, _windowExtent.height);
+    createResolveImage(_windowExtent.width, _windowExtent.height);
     createDepthViewImage(_windowExtent.width, _windowExtent.height);
 
     // add to deletion queues
@@ -739,11 +743,12 @@ void VulkanEngine::initDescriptors() {
 }
 
 void VulkanEngine::initPipelines() {
-    initBackgroundPipelines();
+    // initBackgroundPipelines();
     metalRoughMaterial.buildPipelines(this);
     emitterMaterial.buildPipelines(this);
     openglMaterial.buildPipelines(this);
     depthMaterial.buildPipelines(this);
+    outlineMaterial.buildPipelines(this);
 }
 
 void VulkanEngine::initImgui() {
@@ -1513,10 +1518,9 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     colorAttachment.resolveMode = VK_RESOLVE_MODE_AVERAGE_BIT;
     colorAttachment.resolveImageView = _resolveImage.imageView;
     colorAttachment.resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    // colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; // clear whatever was in it before
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE; 
+    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
 
     VkRenderingAttachmentInfo depthAttachment{};
     depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
@@ -1525,6 +1529,14 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     depthAttachment.clearValue.depthStencil.depth = 1.0f;
+
+    VkRenderingAttachmentInfo stencilAttachment{};
+    stencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    stencilAttachment.imageView = _depthImage.imageView;
+    stencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    stencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+    stencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    stencilAttachment.clearValue.depthStencil.stencil = 0;
     
 	VkRenderingInfo renderInfo{};
     renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
@@ -1533,6 +1545,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     renderInfo.colorAttachmentCount = 1;
     renderInfo.pColorAttachments = &colorAttachment;
     renderInfo.pDepthAttachment = &depthAttachment;
+    renderInfo.pStencilAttachment = &stencilAttachment;
 
     // allocate a new uniform buffer for the scene data
 	AllocatedBuffer gpuSceneDataBuffer = createBuffer(sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
@@ -1687,13 +1700,6 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
     std::vector<uint32_t> opaqueDraws;
     opaqueDraws.reserve(mainDrawContext.OpaqueSurfaces.size());
 
-    // frustum culling
-    for (uint32_t i = 0; i < mainDrawContext.OpaqueSurfaces.size(); i++) {
-        if (is_visible(mainDrawContext.OpaqueSurfaces[i], sceneData.viewproj)) {
-            opaqueDraws.push_back(i);
-        }
-    }
-
     std::sort(opaqueDraws.begin(), opaqueDraws.end(), [&](const auto& iA, const auto& iB) {
         const RenderObject& A = mainDrawContext.OpaqueSurfaces[iA];
         const RenderObject& B = mainDrawContext.OpaqueSurfaces[iB];
@@ -1705,13 +1711,10 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
         }
     });
 
-    // transparent render object culling
-    std::vector<uint32_t> transparentDraws;
-    transparentDraws.reserve(mainDrawContext.TransparentSurfaces.size());
-
-    for (uint32_t i = 0; i < mainDrawContext.TransparentSurfaces.size(); i++) {
-        if (is_visible(mainDrawContext.TransparentSurfaces[i], sceneData.viewproj)) {
-            transparentDraws.push_back(i);
+    // frustum culling
+    for (uint32_t i = 0; i < mainDrawContext.OpaqueSurfaces.size(); i++) {
+        if (is_visible(mainDrawContext.OpaqueSurfaces[i], sceneData.viewproj)) {
+            opaqueDraws.push_back(i);
         }
     }
 
@@ -1758,14 +1761,8 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
     writer.writeBuffer(0, gpuSceneDataBuffer.buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
     writer.updateSet(_device, globalDescriptor);
 
-    // draw sorting
-    MaterialPipeline* lastPipeline = nullptr;
-    MaterialInstance* lastMaterial = nullptr;
-    VkBuffer lastIndexBuffer = VK_NULL_HANDLE;
-
     // begin dynamic rendering
 	vkCmdBeginRendering(cmd, &renderInfo);
-            // Bind your NEW depth visualization pipeline ONCE
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, depthMaterial.opaquePipeline.pipeline);
         
         // Bind the global descriptor set
@@ -1784,6 +1781,112 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
             vkCmdPushConstants(cmd, depthMaterial.opaquePipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
             
             vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+        }
+    vkCmdEndRendering(cmd);
+
+    // clock
+    auto end = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+    stats.mesh_draw_time = elapsed.count() / 1000.f;
+}
+
+void VulkanEngine::drawOutlineImage(VkCommandBuffer cmd) {
+    auto start = std::chrono::system_clock::now();
+
+    // opaque render object sorting
+    std::vector<uint32_t> opaqueDraws;
+    opaqueDraws.reserve(mainDrawContext.OpaqueSurfaces.size());
+
+    std::sort(opaqueDraws.begin(), opaqueDraws.end(), [&](const auto& iA, const auto& iB) {
+        const RenderObject& A = mainDrawContext.OpaqueSurfaces[iA];
+        const RenderObject& B = mainDrawContext.OpaqueSurfaces[iB];
+
+        if (A.material == B.material) {
+            return A.indexBuffer < B.indexBuffer;
+        } else {
+            return A.material < B.material;
+        }
+    });
+
+    // frustum culling
+    for (uint32_t i = 0; i < mainDrawContext.OpaqueSurfaces.size(); i++) {
+        if (is_visible(mainDrawContext.OpaqueSurfaces[i], sceneData.viewproj)) {
+            opaqueDraws.push_back(i);
+        }
+    }
+
+    // transparent render object culling
+    std::vector<uint32_t> transparentDraws;
+    transparentDraws.reserve(mainDrawContext.TransparentSurfaces.size());
+
+    for (uint32_t i = 0; i < mainDrawContext.TransparentSurfaces.size(); i++) {
+        if (is_visible(mainDrawContext.TransparentSurfaces[i], sceneData.viewproj)) {
+            transparentDraws.push_back(i);
+        }
+    }
+
+    VkRenderingAttachmentInfo colorAttachment{};
+    colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    colorAttachment.imageView = _drawImage.imageView;
+    colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.resolveMode = VK_RESOLVE_MODE_AVERAGE_BIT;
+    colorAttachment.resolveImageView = _resolveImage.imageView;
+    colorAttachment.resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; // load information in from previous pass
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+
+    VkRenderingAttachmentInfo stencilAttachment{};
+    stencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    stencilAttachment.imageView = _depthImage.imageView;
+    stencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    stencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; // load stencil info from previous pass
+    stencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE; // gpu is free to discard after this pass
+    stencilAttachment.clearValue.depthStencil.stencil = 0;
+    
+	VkRenderingInfo renderInfo{};
+    renderInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
+    renderInfo.renderArea = VkRect2D { VkOffset2D { 0, 0 }, _drawExtent };
+    renderInfo.layerCount = 1;
+    renderInfo.colorAttachmentCount = 1;
+    renderInfo.pColorAttachments = &colorAttachment;
+    renderInfo.pStencilAttachment = &stencilAttachment;
+
+    // allocate a new uniform buffer for the scene data
+	AllocatedBuffer gpuSceneDataBuffer = createBuffer(sizeof(GPUSceneData), VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VMA_MEMORY_USAGE_CPU_TO_GPU);
+
+	// add it to the deletion queue of this frame so it gets deleted once its been used
+	getCurrentFrame()._deletionQueue.push_function([=]() {
+		destroyBuffer(gpuSceneDataBuffer);
+    });
+
+	// write the buffer
+	GPUSceneData* sceneUniformData = (GPUSceneData*)gpuSceneDataBuffer.allocation->GetMappedData();
+	*sceneUniformData = sceneData;
+
+    // bind a texture
+    VkDescriptorSet globalDescriptor = getCurrentFrame()._frameDescriptors.allocate(_device, _gpuSceneDataDescriptorLayout);
+    DescriptorWriter writer;
+    writer.writeBuffer(0, gpuSceneDataBuffer.buffer, sizeof(GPUSceneData), 0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+    writer.updateSet(_device, globalDescriptor);
+
+    vkCmdBeginRendering(cmd, &renderInfo);
+        vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, outlineMaterial.opaquePipeline.pipeline);
+        vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, outlineMaterial.opaquePipeline.layout, 0, 1, &globalDescriptor, 0, nullptr);
+
+        for (const auto& r : opaqueDraws) {
+            auto draw = mainDrawContext.OpaqueSurfaces[r];
+
+            if (draw.material->pipeline->pipeline == openglMaterial.opaquePipeline.pipeline) {
+                vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+                GPUDrawPushConstants pushConstants;
+                pushConstants.vertexBuffer = draw.vertexBufferAddress;
+                pushConstants.worldMatrix = glm::scale(draw.transform, glm::vec3(1.05f));
+                vkCmdPushConstants(cmd, outlineMaterial.opaquePipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+                
+                vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+            }
         }
     vkCmdEndRendering(cmd);
 
@@ -2338,29 +2441,36 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
     pipelineBuilder.enableMultisampling(engine->_maxSamples);
 	pipelineBuilder.disableBlending();
 	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
-    // stencil testing
+    // stencil testing configuration for enabling writes
     VkStencilOpState front{};
     // operation to decide what passes or fails
     // if value within stencil buffer is equal stencil value being tested it'll pass
-    front.compareOp = VK_COMPARE_OP_ALWAYS;
+    front.compareOp = VK_COMPARE_OP_ALWAYS; // always pass stencil test
     // mask is ANDed with stored stencil value and reference value before testing
-    front.writeMask = 0xFF;
-    front.reference = 1;
-    // if it passes we write nothing and keep value
-    front.passOp = VK_STENCIL_OP_KEEP;
-    // if it fails we write 0
-    front.failOp = VK_STENCIL_OP_ZERO;
-    front.depthFailOp = VK_STENCIL_OP_ZERO;
+    front.writeMask = 0xFF; // so we can write our reference value; 11111111
+    front.reference = 1; // the value we want to write
+
+    // we want to enable writing
+    front.passOp = VK_STENCIL_OP_REPLACE; // if stencil and depth both pass, replace value in buffer with reference value
+    front.failOp = VK_STENCIL_OP_KEEP; // keep value if stencil fails, aka do nothing
+    front.depthFailOp = VK_STENCIL_OP_KEEP; // if the depth value fails do nothing
+    front.compareMask = 0xFF;
+    /*
+    front.passOp = VK_STENCIL_OP_KEEP;  // if it passes we write nothing and keep value
+    front.failOp = VK_STENCIL_OP_ZERO; // if stencil fails we write 0
+    front.depthFailOp = VK_STENCIL_OP_ZERO; // if depth fails we write 0
     front.compareMask = 0x00;
+    */
+
     VkStencilOpState back{};
-    back.compareOp = VK_COMPARE_OP_EQUAL;
-    back.failOp = VK_STENCIL_OP_ZERO;
-    back.passOp = VK_STENCIL_OP_KEEP;
-    back.depthFailOp = VK_STENCIL_OP_ZERO;
-    
-    back.compareMask = 0x00;
-    back.writeMask = 0x00;
+    back.compareOp = VK_COMPARE_OP_ALWAYS;
+    back.writeMask = 0xFF;
     back.reference = 1;
+    back.passOp = VK_STENCIL_OP_REPLACE;
+    back.failOp = VK_STENCIL_OP_KEEP;
+    back.depthFailOp = VK_STENCIL_OP_KEEP;
+    back.compareMask = 0xFF;
+
     pipelineBuilder.enableStencilTest(front, back);
 
 	//render format
@@ -2516,6 +2626,98 @@ MaterialInstance DepthMaterial::writeMaterial(VkDevice device, MaterialPass pass
 	writer.updateSet(device, matData.materialSet);
 
 	return matData;
+}
+
+void OutlineMaterial::buildPipelines(VulkanEngine* engine) {
+    VkPipelineLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+
+    // create new descriptor layout and push constant range
+    VkPushConstantRange matrixRange{};
+	matrixRange.offset = 0;
+	matrixRange.size = sizeof(GPUDrawPushConstants);
+	matrixRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    DescriptorLayoutBuilder layoutBuilder;
+    layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    materialLayout = layoutBuilder.build(engine->_device);
+
+    // set layouts and push constant
+    VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout, materialLayout };
+
+    layoutInfo.pushConstantRangeCount = 1;
+    layoutInfo.pPushConstantRanges = &matrixRange;
+    layoutInfo.setLayoutCount = 2;
+    layoutInfo.pSetLayouts = layouts;
+
+    // create and set pipeline layout
+    VkPipelineLayout newLayout;
+    vkCreatePipelineLayout(engine->_device, &layoutInfo, nullptr, &newLayout);
+
+    transparentPipeline.layout = newLayout;
+    opaquePipeline.layout = newLayout;
+
+    // shaders
+	VkShaderModule meshVertexShader;
+	if (!vkutil::loadShaderModule("../shaders/singleShaderColor.vert.spv", engine->_device, &meshVertexShader)) {
+		fmt::println("Error when building the triangle vertex shader module");
+	}
+
+    VkShaderModule meshFragShader;
+	if (!vkutil::loadShaderModule("../shaders/singleShaderColor.frag.spv", engine->_device, &meshFragShader)) {
+		fmt::println("Error when building the triangle fragment shader module");
+	}
+
+    // the pipeline know the shader modules per stage
+	PipelineBuilder pipelineBuilder;
+	pipelineBuilder._pipelineLayout = newLayout;
+	pipelineBuilder.setShaders(meshVertexShader, meshFragShader);
+	pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
+	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
+	pipelineBuilder.disableBlending();
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+    // enable stencil testing for read only
+    VkStencilOpState stencilState = {};
+    stencilState.compareOp = VK_COMPARE_OP_NOT_EQUAL; // Pass if stencil != 1
+    stencilState.reference = 1;
+    stencilState.compareMask = 0xFF;
+    stencilState.writeMask = 0x00;
+    stencilState.failOp = VK_STENCIL_OP_KEEP;
+    stencilState.depthFailOp = VK_STENCIL_OP_KEEP;
+    stencilState.passOp = VK_STENCIL_OP_KEEP; // Keep existing value
+
+    pipelineBuilder.enableStencilTest(stencilState, stencilState);
+
+	//render format
+	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+
+	// finally build the pipeline
+    opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+
+	// create the transparent variant
+	pipelineBuilder.enableBlendingAdditive();
+
+    // finally build the pipeline
+	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+	
+	vkDestroyShaderModule(engine->_device, meshFragShader, nullptr);
+	vkDestroyShaderModule(engine->_device, meshVertexShader, nullptr);
+}
+
+void OutlineMaterial::clearResources(VkDevice device) {
+	vkDestroyDescriptorSetLayout(device, materialLayout, nullptr);
+	vkDestroyPipelineLayout(device, transparentPipeline.layout, nullptr);
+
+	vkDestroyPipeline(device, transparentPipeline.pipeline, nullptr);
+	vkDestroyPipeline(device, opaquePipeline.pipeline, nullptr);
+}
+
+MaterialInstance OutlineMaterial::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
+    // Can leave empty since we're not creating any object nodes with this material,
+    // it applies automatically
 }
 
 void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {

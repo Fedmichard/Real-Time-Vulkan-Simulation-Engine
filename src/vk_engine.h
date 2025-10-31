@@ -130,6 +130,19 @@ struct DepthMaterial : Material {
         DescriptorAllocator2& descriptorAllocator) override;
 };
 
+struct OutlineMaterial : Material {
+    struct MaterialConstants {};
+
+    virtual void buildPipelines(VulkanEngine* engine);
+    virtual void clearResources(VkDevice device);
+
+    virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
+};
+
 struct EmitterNode : public Node {
 	std::shared_ptr<MeshAsset> mesh;
 
@@ -264,6 +277,7 @@ public:
     AllocatedImage _drawImage;
     AllocatedImage _resolveImage;
     AllocatedImage _depthImage;
+    // For  ImGUiViews
     AllocatedImage _depthViewImage;
     AllocatedImage _depthViewDepthImage;
     float renderScale = 1.0f;
@@ -313,6 +327,7 @@ public:
     OpenGLMaterial openglMaterial;
     GLTFMetallic_Roughness metalRoughMaterial;
     DepthMaterial depthMaterial;
+    OutlineMaterial outlineMaterial;
 
     // gltf
     DrawContext mainDrawContext;
@@ -366,6 +381,7 @@ public:
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
     void drawDepthImage(VkCommandBuffer cmd);
+    void drawOutlineImage(VkCommandBuffer cmd);
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
     bool is_visible(const RenderObject& obj, const glm::mat4& viewproj);
