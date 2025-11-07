@@ -44,6 +44,8 @@ struct OpenGLResources : MaterialResourcesBase {
 
 struct DepthResources : MaterialResourcesBase {};
 
+struct GlassResources : MaterialResourcesBase {};
+
 struct Material {
     MaterialPipeline opaquePipeline;
 	MaterialPipeline transparentPipeline;
@@ -132,6 +134,21 @@ struct DepthMaterial : Material {
 
 struct OutlineMaterial : Material {
     struct MaterialConstants {};
+
+    virtual void buildPipelines(VulkanEngine* engine);
+    virtual void clearResources(VkDevice device);
+
+    virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
+};
+
+struct GlassMaterial : Material {
+    struct MaterialConstants {
+
+    };
 
     virtual void buildPipelines(VulkanEngine* engine);
     virtual void clearResources(VkDevice device);

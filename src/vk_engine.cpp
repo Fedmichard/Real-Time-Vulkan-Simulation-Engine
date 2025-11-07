@@ -2720,6 +2720,22 @@ MaterialInstance OutlineMaterial::writeMaterial(VkDevice device, MaterialPass pa
     // it applies automatically
 }
 
+void GlassMaterial::buildPipelines(VulkanEngine* engine) {
+
+}
+
+void GlassMaterial::clearResources(VkDevice device) {
+	vkDestroyDescriptorSetLayout(device, materialLayout, nullptr);
+	vkDestroyPipelineLayout(device, transparentPipeline.layout, nullptr);
+
+	vkDestroyPipeline(device, transparentPipeline.pipeline, nullptr);
+	vkDestroyPipeline(device, opaquePipeline.pipeline, nullptr);
+}
+
+MaterialInstance GlassMaterial::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
+    
+}
+
 void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
     glm::mat4 nodeMatrix = topMatrix * worldTransform;
 
