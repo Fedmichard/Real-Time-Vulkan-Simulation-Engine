@@ -391,8 +391,6 @@ void VulkanEngine::run() {
 /**********************************
 *         Init Funcitons
 **********************************/
-
-// init a default triangle
 void VulkanEngine::initDefaultData() {
     // init data
     meshes = loadGltfMeshes(this,"..\\assets\\basicmesh.glb").value();
@@ -471,7 +469,6 @@ void VulkanEngine::initDefaultData() {
     createEmitterNode(sphereMesh, "White Sphere", glm::vec4{1.f, 1.f, 1.f, .0f}, glm::vec4{1.f, 0.f, 1.f, 1.f});
     createEmitterNode(nullptr, "Flashlight", glm::vec4{1.0f}, glm::vec4{1.f, 0.f, 0.f, 1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 12.5f);
     createEmitterNode(sphereMesh, "Red Spot", glm::vec4{1.0f}, glm::vec4{1.f}, glm::vec4{0.f, 0.f, -1.f, 0.f}, 25.5f);
-    // createEmitterNode(monkeyMesh, "Red");
 
     /* Mesh Nodes */
     // texture resources for material
@@ -743,7 +740,6 @@ void VulkanEngine::initDescriptors() {
 }
 
 void VulkanEngine::initPipelines() {
-    // initBackgroundPipelines();
     metalRoughMaterial.buildPipelines(this);
     emitterMaterial.buildPipelines(this);
     openglMaterial.buildPipelines(this);
@@ -886,7 +882,7 @@ std::shared_ptr<EmitterNode> VulkanEngine::createEmitterNode(std::shared_ptr<Mes
     node->mappedConstants->quadratic = 0.032f;
 
     node->position = position;
-    node->positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{position.x, position.y, position.z});
+    node->positionMatrix = glm::translate(glm::mat4{1.f}, glm::vec3{node->position.x, node->position.y, node->position.z});
 
     EmitterResources resources{};
     resources.dataBuffer = node->emitterConstants.buffer;
@@ -1364,112 +1360,6 @@ void VulkanEngine::createDepthViewImage(uint32_t width, uint16_t height) {
     depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
 
     VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthViewDepthImage.imageView));
-}
-
-// init background pipelines
-void VulkanEngine::initBackgroundPipelines() {
-    // global for all pipelines
-    VkPipelineLayoutCreateInfo computePipelineLayoutInfo{};
-    computePipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    computePipelineLayoutInfo.setLayoutCount = 1;
-    computePipelineLayoutInfo.pSetLayouts = &_drawImageDescriptorLayout;
-
-    // adding push constants
-    VkPushConstantRange pushConstant{};
-    pushConstant.offset = 0;
-    pushConstant.size = sizeof(ComputePushConstants);
-    pushConstant.stageFlags = VK_SHADER_STAGE_COMPUTE_BIT;
-
-    computePipelineLayoutInfo.pushConstantRangeCount = 1;
-    computePipelineLayoutInfo.pPushConstantRanges = &pushConstant;
-
-    VK_CHECK(vkCreatePipelineLayout(_device, &computePipelineLayoutInfo, nullptr, &_gradientPipelineLayout));
-
-    /* Gradient Shader */
-    VkShaderModule gradientShader;
-    if (!vkutil::loadShaderModule("../shaders/gradient.comp.spv", _device, &gradientShader)) {
-        fmt::print("Error When building the compute shader \n");
-    }
-
-    VkPipelineShaderStageCreateInfo stageInfo{};
-    stageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
-    stageInfo.stage = VK_SHADER_STAGE_COMPUTE_BIT;
-    stageInfo.module = gradientShader;
-    stageInfo.pName = "main";
-
-    VkComputePipelineCreateInfo computePipelineCreateInfo{};
-    computePipelineCreateInfo.sType = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-    computePipelineCreateInfo.layout = _gradientPipelineLayout;
-    computePipelineCreateInfo.stage = stageInfo;
-
-    ComputeEffect gradient;
-    gradient.layout = _gradientPipelineLayout;
-    gradient.name = "gradient";
-    gradient.data = {};
-
-    // default gradient data
-    gradient.data.data1 = glm::vec4(1, 0, 0, 1);
-    gradient.data.data2 = glm::vec4(0, 0, 1, 1);
-
-    VK_CHECK(vkCreateComputePipelines(_device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &gradient.pipeline));
-
-    /* skybox shader */
-    VkShaderModule skyShader;
-    if (!vkutil::loadShaderModule("../shaders/sky.comp.spv", _device, &skyShader)) {
-        fmt::print("Error when building the compute shader \n");
-    }
-
-    computePipelineCreateInfo.stage.module = skyShader;
-
-    ComputeEffect sky;
-    sky.layout = _gradientPipelineLayout;
-    sky.name = "sky";
-    sky.data = {};
-    
-    //default sky parameters
-    sky.data.data1 = glm::vec4(0.1, 0.2, 0.4 ,0.97);
-
-    VK_CHECK(vkCreateComputePipelines(_device, VK_NULL_HANDLE, 1, &computePipelineCreateInfo, nullptr, &sky.pipeline));
-    
-    backgroundEffects.push_back(gradient);
-    backgroundEffects.push_back(sky);
-
-    vkDestroyShaderModule(_device, gradientShader, nullptr);
-    vkDestroyShaderModule(_device, skyShader, nullptr);
-    _mainDeletionQueue.push_function([&]() {
-        vkDestroyPipelineLayout(_device, _gradientPipelineLayout, nullptr);
-        vkDestroyPipeline(_device, backgroundEffects[0].pipeline, nullptr);
-        vkDestroyPipeline(_device, backgroundEffects[1].pipeline, nullptr);
-    });
-}
-
-// draw our background
-void VulkanEngine::drawBackground(VkCommandBuffer commandBuffer) {
-    // clear the background
-    VkClearColorValue clearValue;
-    float flash = std::abs(std::sin(_frameNumber / 120.0f));
-    clearValue = { { 0.0f, 0.0f, flash, 1.0f } };
-
-    /* abstract later */
-    VkImageSubresourceRange clearRange;
-    clearRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    clearRange.layerCount = VK_REMAINING_ARRAY_LAYERS;
-    clearRange.baseArrayLayer = 0;
-    clearRange.levelCount = VK_REMAINING_MIP_LEVELS;
-    clearRange.baseMipLevel = 0;
-
-    ComputeEffect& effect = backgroundEffects[currentBackgroundIndex];
-
-    // bind the gradient drawing compute pipeline
-    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, backgroundEffects[currentBackgroundIndex].pipeline);
-
-        // bind the descriptor set containing the draw image for the compute pipeline
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, _gradientPipelineLayout, 0, 1, &_drawImageDescriptorSet, 0, nullptr);
-
-        vkCmdPushConstants(commandBuffer, _gradientPipelineLayout, VK_SHADER_STAGE_COMPUTE_BIT, 0, sizeof(ComputePushConstants), &effect.data);
-
-        // execute the compute pipeline dispatch. We are using 16x16 workgroup size so we need to divide by it
-        vkCmdDispatch(commandBuffer, std::ceil(_drawExtent.width / 16.0), std::ceil(_drawExtent.height / 16.0), 1);
 }
 
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
@@ -2733,7 +2623,7 @@ void GlassMaterial::clearResources(VkDevice device) {
 }
 
 MaterialInstance GlassMaterial::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
-    
+
 }
 
 void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
@@ -2845,7 +2735,7 @@ void VulkanEngine::updateScene() {
     emitterNodes["Flashlight"]->setCutOff(emitterPosZ);
     emitterNodes["Flashlight"]->setIntensity(1.f);
     emitterNodes["Flashlight"]->setDirection(glm::vec4{mainCamera.getForwardDirection(), 1.f});
-    emitterNodes["Red Spot"]->changePosition(glm::vec3{0, 8, 1});
+    emitterNodes["Red Spot"]->changePosition(glm::vec3{10, 15, 1});
     emitterNodes["Red Spot"]->setCutOff(emitterPosZ);
     emitterNodes["Red Spot"]->setColor(glm::vec3{0.f, 1.f, 0.f});
     emitterNodes["Red Spot"]->setDirection(glm::vec3{0, -1, 0});

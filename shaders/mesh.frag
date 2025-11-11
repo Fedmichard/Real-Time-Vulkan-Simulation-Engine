@@ -40,7 +40,7 @@ void main()  {
 	float sunDiff = max(dot(norm, sunDir), 0.1f);
 	vec3 sunDiffuse = sceneData.sunlightColor.xyz * sunDiff * sceneData.sunlightColor.w;
 
-	// sunlight specular { NOT BEING USED RN }
+	// sunlight specular
 	vec3 sunReflectDir = reflect(-sunDir, norm);
 	float sunSpec = pow(max(dot(viewDir, sunReflectDir), 0.0), 16.0f);
 	vec3 sunSpecular = sceneData.sunlightColor.xyz * sunSpec * specMap.xyz * materialData.colorFactors.w * sceneData.sunlightColor.w;
