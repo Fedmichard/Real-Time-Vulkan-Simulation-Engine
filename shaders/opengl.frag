@@ -20,10 +20,15 @@ void main()  {
 	vec3 sunDir = normalize(-sceneData.sunlightDirection.xyz);
 
 	// diffuse info
-	vec3 diffMap = texture(colorTex, inUV).xyz; // diffuse map
+	vec4 diffMap = texture(colorTex, inUV); // diffuse map
+	// if a fragments alpha value is less than 0.1 discard it (don't render)
+	// this is great but not really useful for rendering semi transparent objects
+	if (diffMap.a < 0.1) {
+		discard;
+	}
 
 	// ambient info
-	vec3 ambient = sceneData.sunlightColor.xyz * sceneData.ambientColor.xyz * diffMap;
+	vec3 ambient = sceneData.sunlightColor.xyz * sceneData.ambientColor.xyz * diffMap.xyz;
 	vec3 lighting = ambient;
 
 	// specular info
@@ -32,7 +37,7 @@ void main()  {
 
 	// sunlight diffuse
 	float sunDiff = max(dot(norm, sunDir), 0.0);
-	vec3 sunDiffuse = sceneData.sunlightColor.xyz * sunDiff * diffMap * sceneData.sunlightColor.w;
+	vec3 sunDiffuse = sceneData.sunlightColor.xyz * sunDiff * diffMap.xyz * sceneData.sunlightColor.w;
 
 	// sunlight specular
 	vec3 sunReflectDir = reflect(-sunDir, norm);
@@ -59,7 +64,7 @@ void main()  {
 			if (theta > sceneData.emitter[i].outerCutOff) {
 				// diffuse
 				float pntDiff = max(dot(norm, lightDir), 0.0);
-				vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap * sceneData.emitter[i].color.w * attenuation;
+				vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap.xyz * sceneData.emitter[i].color.w * attenuation;
 				
 				vec3 pntReflectDir = reflect(-lightDir, norm);
 				float pntSpec = pow(max(dot(viewDir, pntReflectDir), 0.0), 16.0f);
@@ -83,7 +88,7 @@ void main()  {
 
 			// diffuse
 			float pntDiff = max(dot(norm, lightDir), 0.0);
-			vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap * sceneData.emitter[i].color.w * attenuation;
+			vec3 pntDiffuse = sceneData.emitter[i].color.xyz * pntDiff * diffMap.xyz * sceneData.emitter[i].color.w * attenuation;
 
 			// specular
 			vec3 pntReflectDir = reflect(-lightDir, norm);
