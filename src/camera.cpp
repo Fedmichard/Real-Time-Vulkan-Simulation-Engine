@@ -7,9 +7,9 @@
 
 glm::mat4 Camera::getViewMatrix() const
 {
-    // to create a correct model view, we need to move the world in opposite
+    // to create a correct model view, we need to move the world in the opposite 
     // direction to the camera
-    //  so we will create the camera model matrix and invert
+    // so we will create the camera model matrix and invert
     glm::mat4 cameraTranslation = glm::translate(glm::mat4(1.f), position);
     glm::mat4 cameraRotation = getRotationMatrix();
     return glm::inverse(cameraTranslation * cameraRotation);
@@ -38,6 +38,8 @@ glm::vec3 Camera::getForwardDirection() const
 
 void Camera::processSDLEvent(SDL_Event& e)
 {
+    glm::mat4 cameraRotation = getRotationMatrix();
+    
     const float camSpeed = 0.0125f;
     if (e.type == SDL_KEYDOWN) {
         if (e.key.keysym.sym == SDLK_w) { velocity.z = -camSpeed; }
@@ -66,5 +68,6 @@ void Camera::processSDLEvent(SDL_Event& e)
 void Camera::update()
 {
     glm::mat4 cameraRotation = getRotationMatrix();
+
     position += glm::vec3(cameraRotation * glm::vec4(velocity * 0.5f, 0.f));
 }

@@ -297,6 +297,7 @@ void VulkanEngine::run() {
         auto start = std::chrono::system_clock::now();
 
         // Handle events on queue
+        // Aka handle key inputs
         while (SDL_PollEvent(&e) != 0) {
             // close the window when user alt-f4s or clicks the X button
             if (e.type == SDL_QUIT)

@@ -97,7 +97,6 @@ void main()  {
 
 			// final calculation
 			lighting += pntDiffuse + pntSpecular;
-
 		}
 	}
 
