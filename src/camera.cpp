@@ -67,7 +67,26 @@ void Camera::processSDLEvent(SDL_Event& e)
 
 void Camera::update()
 {
+    /*
     glm::mat4 cameraRotation = getRotationMatrix();
 
+    glm::vec3 moveVector(0.0f);
+
+    glm::vec3 forwardRaw = glm::vec3(0, 0, 1);
+    glm::vec3 upRaw = glm::vec3(0, 1, 0);
+    glm::vec3 rightRaw = glm::vec3(1, 0, 0);
+
+    glm::vec3 forward = glm::vec3(cameraRotation * glm::vec4(forwardRaw, 0.0f));
+    glm::vec3 up = glm::vec3(cameraRotation * glm::vec4(upRaw, 0.0f));
+    glm::vec3 right = glm::vec3(cameraRotation * glm::vec4(rightRaw, 0.0f));
+
+    moveVector += forward * velocity.z;
+    moveVector += right * velocity.x;
+    moveVector.y += velocity.y;
+
+    position += moveVector * 0.5f;
+    */
+    
+    glm::mat4 cameraRotation = getRotationMatrix();
     position += glm::vec3(cameraRotation * glm::vec4(velocity * 0.5f, 0.f));
 }

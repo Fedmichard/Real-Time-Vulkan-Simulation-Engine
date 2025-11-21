@@ -170,6 +170,13 @@ void PipelineBuilder::setDepthFormat(VkFormat format) {
     _renderInfo.depthAttachmentFormat = format;
 }
 
+/* render info */
+// depth format for renderpass attachment (depth testing)
+void PipelineBuilder::setStencilFormat(VkFormat format) {
+    _renderInfo.stencilAttachmentFormat = format;
+}
+
+
 /* depth testing */
 // disable depth test
 void PipelineBuilder::disableDepthtest() {

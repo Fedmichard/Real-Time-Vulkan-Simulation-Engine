@@ -29,6 +29,7 @@ public:
     void setMultisamplingNone();
     void setColorAttachmentFormat(VkFormat format);
     void setDepthFormat(VkFormat format);
+    void setStencilFormat(VkFormat format);
 
     // enable features
     void enableMultisampling(VkSampleCountFlagBits sampleCount);

@@ -562,6 +562,10 @@ void VulkanEngine::initVulkan() {
     // for it to properly work
     features.shaderStorageImageMultisample = VK_TRUE;
 
+    VkPhysicalDeviceDynamicRenderingUnusedAttachmentsFeaturesEXT dynamicRenderingUnusedAttachments{};
+    dynamicRenderingUnusedAttachments.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_UNUSED_ATTACHMENTS_FEATURES_EXT;
+    dynamicRenderingUnusedAttachments.pNext = nullptr;
+
     // use vkbootstrap to select a physical device
     vkb::PhysicalDeviceSelector selector { instance };
     vkb::PhysicalDevice physicalDevice = selector
@@ -1363,6 +1367,10 @@ void VulkanEngine::createDepthViewImage(uint32_t width, uint16_t height) {
     VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthViewDepthImage.imageView));
 }
 
+/*
+
+*/
+
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     // clock
     stats.drawcall_count = 0;
@@ -1727,6 +1735,13 @@ void VulkanEngine::drawOutlineImage(VkCommandBuffer cmd) {
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD; // load information in from previous pass
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 
+    VkRenderingAttachmentInfo depthAttachment{};
+    depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
+    depthAttachment.imageView = _depthImage.imageView;
+    depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+    depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+    depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+
     VkRenderingAttachmentInfo stencilAttachment{};
     stencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
     stencilAttachment.imageView = _depthImage.imageView;
@@ -1741,6 +1756,7 @@ void VulkanEngine::drawOutlineImage(VkCommandBuffer cmd) {
     renderInfo.layerCount = 1;
     renderInfo.colorAttachmentCount = 1;
     renderInfo.pColorAttachments = &colorAttachment;
+    renderInfo.pDepthAttachment = &depthAttachment;
     renderInfo.pStencilAttachment = &stencilAttachment;
 
     // allocate a new uniform buffer for the scene data
@@ -2066,9 +2082,8 @@ void VulkanEngine::destroyBuffer(const AllocatedBuffer& buffer) {
 }
 
 /******************************************************************************************************
-*                                              Others
+*                                              Materials
 ******************************************************************************************************/
-
 void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 	VkPipelineLayoutCreateInfo meshLayoutInfo{};
     meshLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
@@ -2125,6 +2140,7 @@ void GLTFMetallic_Roughness::buildPipelines(VulkanEngine* engine) {
 	//render format
 	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
 	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 
 	// finally build the pipeline
@@ -2231,6 +2247,7 @@ void EmitterMaterial::buildPipelines(VulkanEngine* engine) {
 	//render format
 	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
 	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 	// finally build the pipeline
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
@@ -2330,8 +2347,9 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
 	// pipelineBuilder.setMultisamplingNone();
     pipelineBuilder.enableMultisampling(engine->_maxSamples);
-	pipelineBuilder.disableBlending();
-	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
+	//pipelineBuilder.disableBlending();
+    pipelineBuilder.enableBlendingAlpha();
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
     // stencil testing configuration for enabling writes
     VkStencilOpState front{};
     // operation to decide what passes or fails
@@ -2367,6 +2385,7 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
 	//render format
 	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
 	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 	// finally build the pipeline
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
@@ -2471,6 +2490,7 @@ void DepthMaterial::buildPipelines(VulkanEngine* engine) {
 	//render format
 	pipelineBuilder.setColorAttachmentFormat(engine->_depthViewImage.imageFormat);
 	pipelineBuilder.setDepthFormat(engine->_depthViewDepthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 	// finally build the pipeline
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
@@ -2581,9 +2601,10 @@ void OutlineMaterial::buildPipelines(VulkanEngine* engine) {
 
     pipelineBuilder.enableStencilTest(stencilState, stencilState);
 
-	//render format
+	// render formats
 	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
 	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 	// finally build the pipeline
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
