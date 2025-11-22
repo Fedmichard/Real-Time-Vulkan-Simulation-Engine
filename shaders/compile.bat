@@ -8,4 +8,6 @@ C:/VulkanSDK/1.4.309.0/Bin/glslc.exe opengl.vert -o opengl.vert.spv
 C:/VulkanSDK/1.4.309.0/Bin/glslc.exe opengl.frag -o opengl.frag.spv
 C:/VulkanSDK/1.4.309.0/Bin/glslc.exe singleShaderColor.vert -o singleShaderColor.vert.spv
 C:/VulkanSDK/1.4.309.0/Bin/glslc.exe singleShaderColor.frag -o singleShaderColor.frag.spv
+C:/VulkanSDK/1.4.309.0/Bin/glslc.exe glass.vert -o glass.vert.spv
+C:/VulkanSDK/1.4.309.0/Bin/glslc.exe glass.frag -o glass.frag.spv
 pause

@@ -3,9 +3,9 @@
 
 class PipelineBuilder {
 public:
-    VkFormat _colorAttachmentformat;
-
     VkPipelineLayout _pipelineLayout;
+
+    VkFormat _colorAttachmentformat;
 
     std::vector<VkPipelineShaderStageCreateInfo> _shaderStages;
     VkPipelineInputAssemblyStateCreateInfo _inputAssembly;

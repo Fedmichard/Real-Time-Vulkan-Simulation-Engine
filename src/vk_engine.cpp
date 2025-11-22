@@ -130,6 +130,8 @@ void VulkanEngine::cleanup() {
 
         loadedScenes[0]->~LoadedGLTF();
 
+        glassMaterial.clearResources(_device);
+
         outlineMaterial.clearResources(_device);
 
         openglMaterial.clearResources(_device);
@@ -524,6 +526,17 @@ void VulkanEngine::initDefaultData() {
     resource31.metalTexture = _whiteImage;
     resource31.metalSampler = _defaultSamplerLinear;
     createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Anime Cube", openglMaterial, resource31, this);
+
+    GlassResources resourceGlass{};
+    /* LOAD IMAGE */
+    const std::string glassTexture = "..//assets//textures//blending_transparent_window.png";
+    data = stbi_load(glassTexture.c_str(), &w, &h, &ch, STBI_rgb_alpha);
+    AllocatedImage resourceGlassImage = createImage(data, VkExtent3D{ (uint32_t)w, (uint32_t)h, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
+    stbi_image_free(data);
+    /* LOAD IMAGE */
+    resourceGlass.texture = resourceGlassImage;
+    resourceGlass.sampler = _defaultSamplerLinear;
+    createNode<GlassMaterial::MaterialConstants>(cubeMesh2, "Glass Cube", glassMaterial, resourceGlass, this);
 }
 
 void VulkanEngine::initVulkan() {
@@ -750,6 +763,7 @@ void VulkanEngine::initPipelines() {
     openglMaterial.buildPipelines(this);
     depthMaterial.buildPipelines(this);
     outlineMaterial.buildPipelines(this);
+    glassMaterial.buildPipelines(this);
 }
 
 void VulkanEngine::initImgui() {
@@ -2347,9 +2361,8 @@ void OpenGLMaterial::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
 	// pipelineBuilder.setMultisamplingNone();
     pipelineBuilder.enableMultisampling(engine->_maxSamples);
-	//pipelineBuilder.disableBlending();
-    pipelineBuilder.enableBlendingAlpha();
-	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+	pipelineBuilder.disableBlending();
+	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
     // stencil testing configuration for enabling writes
     VkStencilOpState front{};
     // operation to decide what passes or fails
@@ -2502,7 +2515,7 @@ void DepthMaterial::buildPipelines(VulkanEngine* engine) {
 
     // finally build the pipeline
 	transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
-	
+
 	vkDestroyShaderModule(engine->_device, meshFragShader, nullptr);
 	vkDestroyShaderModule(engine->_device, meshVertexShader, nullptr);
 }
@@ -2633,7 +2646,62 @@ MaterialInstance OutlineMaterial::writeMaterial(VkDevice device, MaterialPass pa
 }
 
 void GlassMaterial::buildPipelines(VulkanEngine* engine) {
+    VkPipelineLayoutCreateInfo layoutInfo{};
+    layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
 
+    VkPushConstantRange matrixRange{};
+    matrixRange.offset = 0;
+    matrixRange.size = sizeof(GPUDrawPushConstants);
+    matrixRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+
+    DescriptorLayoutBuilder layoutBuilder;
+    layoutBuilder.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    layoutBuilder.addBinding(1, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT);
+    materialLayout = layoutBuilder.build(engine->_device);
+
+    VkDescriptorSetLayout layouts[] = { engine->_gpuSceneDataDescriptorLayout, materialLayout };
+
+    layoutInfo.pushConstantRangeCount = 1;
+    layoutInfo.pPushConstantRanges = &matrixRange;
+    layoutInfo.setLayoutCount = 2;
+    layoutInfo.pSetLayouts = layouts;
+
+    VkPipelineLayout layout;
+    vkCreatePipelineLayout(engine->_device, &layoutInfo, nullptr, &layout);
+
+    opaquePipeline.layout = layout;
+    transparentPipeline.layout = layout;
+
+    VkShaderModule vertexShader;
+    if (!vkutil::loadShaderModule("../shaders/glass.vert.spv", engine->_device, &vertexShader)) {
+        fmt::println("Error when building vertex shader");
+    }
+
+    VkShaderModule fragmentShader;
+    if (!vkutil::loadShaderModule("../shaders/glass.frag.spv", engine->_device, &fragmentShader)) {
+        fmt::println("Error when building fragment shader");
+    }
+
+    PipelineBuilder pipelineBuilder;
+    pipelineBuilder._pipelineLayout = layout;
+    pipelineBuilder.setShaders(vertexShader, fragmentShader);
+    pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+    pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
+    pipelineBuilder.setCullMode(false, VK_FRONT_FACE_CLOCKWISE);
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
+    pipelineBuilder.enableBlendingAlpha();
+    pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+
+    pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
+
+    // build pipelines, glass is transparent so we won't use opaque pipeline
+    opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+    transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
+
+    vkDestroyShaderModule(engine->_device, vertexShader, nullptr);
+    vkDestroyShaderModule(engine->_device, fragmentShader, nullptr);
 }
 
 void GlassMaterial::clearResources(VkDevice device) {
@@ -2645,7 +2713,24 @@ void GlassMaterial::clearResources(VkDevice device) {
 }
 
 MaterialInstance GlassMaterial::writeMaterial(VkDevice device, MaterialPass pass, const MaterialResourcesBase& resources, DescriptorAllocator2& descriptorAllocator) {
+    const GlassResources& res = static_cast<const GlassResources&>(resources);
 
+    MaterialInstance matData;
+    matData.passType = pass;
+    if (pass == MaterialPass::MainColor) {
+        matData.pipeline = &opaquePipeline;
+    } else {
+        matData.pipeline = &transparentPipeline;
+    }
+
+    matData.materialSet = descriptorAllocator.allocate(device, materialLayout);
+
+    writer.clear();
+    writer.writeBuffer(0, res.dataBuffer, sizeof(MaterialConstants), res.dataBufferOffset, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+    writer.writeImage(1, res.texture.imageView, res.sampler, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+    writer.updateSet(device, matData.materialSet);
+
+    return matData;
 }
 
 void MeshNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
@@ -2794,6 +2879,10 @@ void VulkanEngine::updateScene() {
     factors5->colorFactors = glm::vec4{1.0f, 0.5f, 0.31f, .5f};
     factors5->shininess = 32.0f;
     animeCube->Draw(glm::translate(glm::mat4{1.f}, {3.0f, 10.25f, -.30f}), mainDrawContext);
+
+    auto glassCube = sceneNodes["Glass Cube"];
+    auto factors6 = reinterpret_cast<GlassMaterial::MaterialConstants*>(glassCube->mappedConstants);
+    glassCube->Draw(glm::translate(glm::mat4{1.f}, {0.0f, 10.25f, -.30f}), mainDrawContext);
 
     // defaults
     glm::mat4 view = mainCamera.getViewMatrix();

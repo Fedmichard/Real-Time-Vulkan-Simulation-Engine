@@ -221,6 +221,7 @@ void PipelineBuilder::disableBlending() {
 
 // additive blending - adds the colors
 // the only thing that changes for blending is the F_destination
+// F = Source Factor (alpha value)
 void PipelineBuilder::enableBlendingAdditive() {
     // outColor = srcColor.rgb * srcColor.a + dstColor.rgb * 1.0
     // outColor = (SourceColor * F_source) + (DestinationColor * F_destination)
@@ -248,7 +249,7 @@ void PipelineBuilder::enableBlendingAdditive() {
 // we use this for creating glass material
 void PipelineBuilder::enableBlendingAlpha() {
     // outColor = srcColor.rgb * srcColor.a + dstColor.rgb * (1.0 - srcColor.a)
-    // outColor = (SourceColor * F_source) + (DestinationColor * F_destination)
+    // outColor = (SourceColor * F_source) + DestinationColor (1.0 - F_destination)
     _colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
     _colorBlendAttachment.blendEnable = VK_TRUE;
     _colorBlendAttachment.srcColorBlendFactor = VK_BLEND_FACTOR_SRC_ALPHA;

@@ -44,7 +44,10 @@ struct OpenGLResources : MaterialResourcesBase {
 
 struct DepthResources : MaterialResourcesBase {};
 
-struct GlassResources : MaterialResourcesBase {};
+struct GlassResources : MaterialResourcesBase {
+    AllocatedImage texture;
+    VkSampler sampler;
+};
 
 struct Material {
     MaterialPipeline opaquePipeline;
@@ -146,9 +149,7 @@ struct OutlineMaterial : Material {
 };
 
 struct GlassMaterial : Material {
-    struct MaterialConstants {
-
-    };
+    struct MaterialConstants {};
 
     virtual void buildPipelines(VulkanEngine* engine);
     virtual void clearResources(VkDevice device);
@@ -340,11 +341,12 @@ public:
 
     VkDescriptorSetLayout _singleImageDescriptorLayout;
 
+    GLTFMetallic_Roughness metalRoughMaterial;
     EmitterMaterial emitterMaterial;
     OpenGLMaterial openglMaterial;
-    GLTFMetallic_Roughness metalRoughMaterial;
     DepthMaterial depthMaterial;
     OutlineMaterial outlineMaterial;
+    GlassMaterial glassMaterial;
 
     // gltf
     DrawContext mainDrawContext;
