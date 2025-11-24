@@ -1348,7 +1348,7 @@ void VulkanEngine::createDepthViewImage(uint32_t width, uint16_t height) {
 
     // will use the same draw extent as draw image of course for our depth attachment
     _depthViewDepthImage.imageExtent = depthViewExtent;
-    _depthViewDepthImage.imageFormat = VK_FORMAT_D32_SFLOAT;
+    _depthViewDepthImage.imageFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
 
     VkImageUsageFlags depthImageDepthUsages{};
     depthImageDepthUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
