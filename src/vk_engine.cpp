@@ -480,21 +480,21 @@ void VulkanEngine::initDefaultData() {
     resources.colorSampler = _defaultSamplerLinear;
     resources.metalRoughImage = _whiteImage;
     resources.metalRoughSampler = _defaultSamplerLinear;
-    createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Yellow Sphere", metalRoughMaterial, resources, this);
+    createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Yellow Sphere", false, metalRoughMaterial, resources, this);
     
     PBRResources resources4{};
     resources4.colorImage = _whiteImage;
     resources4.colorSampler = _defaultSamplerLinear;
     resources4.metalRoughImage = _whiteImage;
     resources4.metalRoughSampler = _defaultSamplerLinear;
-    createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Sphere", metalRoughMaterial, resources4, this);
+    createNode<GLTFMetallic_Roughness::MaterialConstants>(sphereMesh, "Sphere", false, metalRoughMaterial, resources4, this);
 
     PBRResources resources2{};
     resources2.colorImage = _whiteImage;
     resources2.colorSampler = _defaultSamplerLinear;
     resources2.metalRoughImage = _whiteImage;
     resources2.metalRoughSampler = _defaultSamplerLinear;
-    createNode<GLTFMetallic_Roughness::MaterialConstants>(cubeMesh2, "Basic Cube", metalRoughMaterial, resources2, this);
+    createNode<GLTFMetallic_Roughness::MaterialConstants>(cubeMesh2, "Basic Cube", false, metalRoughMaterial, resources2, this);
 
     // opengl texture test
     OpenGLResources resources3{};
@@ -512,7 +512,7 @@ void VulkanEngine::initDefaultData() {
     resources3.sampler = _defaultSamplerLinear;
     resources3.metalTexture = resources3Metal;
     resources3.metalSampler = _defaultSamplerLinear;
-    createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Cube", openglMaterial, resources3, this);
+    createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Cube", false, openglMaterial, resources3, this);
 
     OpenGLResources resource31{};
     /* LOAD IMAGE */
@@ -525,18 +525,23 @@ void VulkanEngine::initDefaultData() {
     resource31.sampler = _defaultSamplerLinear;
     resource31.metalTexture = _whiteImage;
     resource31.metalSampler = _defaultSamplerLinear;
-    createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Anime Cube", openglMaterial, resource31, this);
+    createNode<OpenGLMaterial::MaterialConstants>(cubeMesh2, "Anime Cube", false, openglMaterial, resource31, this);
 
     GlassResources resourceGlass{};
     /* LOAD IMAGE */
-    const std::string glassTexture = "..//assets//textures//blending_transparent_window.png";
+    const std::string glassTexture = "..//assets//blending_transparent_window.png";
     data = stbi_load(glassTexture.c_str(), &w, &h, &ch, STBI_rgb_alpha);
-    AllocatedImage resourceGlassImage = createImage(data, VkExtent3D{ (uint32_t)w, (uint32_t)h, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
+    AllocatedImage glassImage = createImage(data, VkExtent3D{ (uint32_t)w, (uint32_t)h, 1 }, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_USAGE_SAMPLED_BIT);
     stbi_image_free(data);
     /* LOAD IMAGE */
-    resourceGlass.texture = resourceGlassImage;
+    resourceGlass.texture = glassImage;
     resourceGlass.sampler = _defaultSamplerLinear;
-    createNode<GlassMaterial::MaterialConstants>(cubeMesh2, "Glass Cube", glassMaterial, resourceGlass, this);
+    createNode<GlassMaterial::MaterialConstants>(cubeMesh2, "Glass Cube", true, glassMaterial, resourceGlass, this);
+    
+    GlassResources resourceGlass2{};
+    resourceGlass2.texture = glassImage;
+    resourceGlass2.sampler = _defaultSamplerLinear;
+    createNode<GlassMaterial::MaterialConstants>(cubeMesh2, "Glass Cube 2", true, glassMaterial, resourceGlass2, this);
 }
 
 void VulkanEngine::initVulkan() {
@@ -833,7 +838,7 @@ void VulkanEngine::initImgui() {
 *        Helper Functions
 **********************************/
 template<typename MaterialConstants, typename MaterialType, typename MaterialResources>
-std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const char* name, MaterialType& materialType, MaterialResources& resources, VulkanEngine* engine) {
+std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const char* name, bool transparent, MaterialType& materialType, MaterialResources& resources, VulkanEngine* engine) {
     auto node = std::make_shared<ObjectNode>();
     node->mesh = mesh;
 
@@ -854,10 +859,18 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const ch
     resources.dataBuffer = node->constants.buffer;
     resources.dataBufferOffset = 0;
 
+    MaterialPass t;
+
+    if (transparent == true) {
+        t = MaterialPass::Transparent;
+    } else {
+        t = MaterialPass::MainColor;
+    }
+
     // 3. Create descriptor-backed material instance
     node->materialInstance = materialType.writeMaterial(
         engine->_device,
-        MaterialPass::MainColor,
+        t,
         resources,
         engine->_descriptorAllocator
     );
@@ -1540,7 +1553,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
             
             vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
         }
- 
+
         // transparent objects
         for (auto& r : transparentDraws) {
             const auto& draw = mainDrawContext.TransparentSurfaces[r];
@@ -1624,6 +1637,16 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
         }
     });
 
+    // transparent render object culling
+    std::vector<uint32_t> transparentDraws;
+    transparentDraws.reserve(mainDrawContext.TransparentSurfaces.size());
+
+    for (uint32_t i = 0; i < mainDrawContext.TransparentSurfaces.size(); i++) {
+        if (is_visible(mainDrawContext.TransparentSurfaces[i], sceneData.viewproj)) {
+            transparentDraws.push_back(i);
+        }
+    }
+
     // frustum culling
     for (uint32_t i = 0; i < mainDrawContext.OpaqueSurfaces.size(); i++) {
         if (is_visible(mainDrawContext.OpaqueSurfaces[i], sceneData.viewproj)) {
@@ -1684,6 +1707,20 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
         // Loop through all opaque objects and draw them
         for (auto& r : opaqueDraws) {
             const auto& draw = mainDrawContext.OpaqueSurfaces[r];
+
+            // No need to check materials, just bind index buffer and push constants
+            vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+            GPUDrawPushConstants pushConstants;
+            pushConstants.vertexBuffer = draw.vertexBufferAddress;
+            pushConstants.worldMatrix = draw.transform;
+            vkCmdPushConstants(cmd, depthMaterial.opaquePipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+            
+            vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+        }
+        // Loop through all opaque objects and draw them
+        for (auto& r : transparentDraws) {
+            const auto& draw = mainDrawContext.TransparentSurfaces[r];
 
             // No need to check materials, just bind index buffer and push constants
             vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
@@ -2623,6 +2660,8 @@ void OutlineMaterial::buildPipelines(VulkanEngine* engine) {
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
 
 	// create the transparent variant
+	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+    // disable depth testing
 	pipelineBuilder.enableBlendingAdditive();
 
     // finally build the pipeline
@@ -2687,17 +2726,16 @@ void GlassMaterial::buildPipelines(VulkanEngine* engine) {
     pipelineBuilder.setShaders(vertexShader, fragmentShader);
     pipelineBuilder.setInputTopology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
     pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
-    pipelineBuilder.setCullMode(false, VK_FRONT_FACE_CLOCKWISE);
+    pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
     pipelineBuilder.enableMultisampling(engine->_maxSamples);
-    pipelineBuilder.enableBlendingAlpha();
     pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+    pipelineBuilder.enableBlendingAlpha();
 
     pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
 	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
     pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
     // build pipelines, glass is transparent so we won't use opaque pipeline
-    opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
     transparentPipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
 
     vkDestroyShaderModule(engine->_device, vertexShader, nullptr);
@@ -2882,7 +2920,11 @@ void VulkanEngine::updateScene() {
 
     auto glassCube = sceneNodes["Glass Cube"];
     auto factors6 = reinterpret_cast<GlassMaterial::MaterialConstants*>(glassCube->mappedConstants);
-    glassCube->Draw(glm::translate(glm::mat4{1.f}, {0.0f, 10.25f, -.30f}), mainDrawContext);
+    glassCube->Draw(glm::translate(glm::mat4{1.f}, {-8.0f, 12.f, -.30f}), mainDrawContext);
+
+    auto glassCube2 = sceneNodes["Glass Cube 2"];
+    auto factors67 = reinterpret_cast<GlassMaterial::MaterialConstants*>(glassCube->mappedConstants);
+    glassCube->Draw(glm::translate(glm::mat4{1.f}, {-11.0f, 13.f, -.30f}), mainDrawContext);
 
     // defaults
     glm::mat4 view = mainCamera.getViewMatrix();

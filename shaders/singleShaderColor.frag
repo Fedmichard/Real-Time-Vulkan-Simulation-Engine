@@ -2,8 +2,6 @@
 
 #extension GL_GOOGLE_include_directive : require
 
-layout (location = 0) in vec3 inFragPos;
-
 layout (location = 0) out vec4 outFragColor;
 
 void main() {

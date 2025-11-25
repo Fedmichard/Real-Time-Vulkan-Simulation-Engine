@@ -249,6 +249,7 @@ struct EngineStats {
 template<typename MaterialConstants, typename MaterialType, typename MaterialResources>
 std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh,
     const char* name,
+    bool transparent,
     MaterialType& materialType,
     MaterialResources& resources,
     VulkanEngine* engine);
