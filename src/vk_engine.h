@@ -254,6 +254,15 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh,
     MaterialResources& resources,
     VulkanEngine* engine);
 
+// 0, 1, 2, 3...
+enum PresentationMode {
+    COLOR,
+    NORMAL,
+    DEPTH,
+    UV,
+    LIGHTING,
+};
+
 class VulkanEngine {
 public:
     static VulkanEngine& Get();
@@ -373,7 +382,11 @@ public:
     float emitterPosY{ -5.0f };
     float emitterPosZ{ 12.5f };
 
+    float bloom{ 0.f };
+
     void updateScene();
+
+    PresentationMode view = COLOR;
 
     // initializations
     void initVulkan();

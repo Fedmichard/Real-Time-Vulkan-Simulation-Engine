@@ -126,6 +126,10 @@ void VulkanEngine::cleanup() {
             destroyBuffer(mesh->meshBuffers.vertexBuffer);
         }
 
+        sceneNodes.clear();
+
+        sceneLights.clear();
+
         emitterNodes.clear();
 
         loadedScenes[0]->~LoadedGLTF();
@@ -207,23 +211,31 @@ void VulkanEngine::draw() {
     vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
 
     drawGeometry(cmd);
-
     drawOutlineImage(cmd);
 
-    drawDepthImage(cmd);
+    switch (view) {
+    case DEPTH:
+        drawDepthImage(cmd);
+        break;
+    }
 
-    // transition the _drawImage.image for transfer src
-    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-    // transition _swapchainImages into transfer dst
+    // transition _swapchainImages into tr  ansfer dst
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-    // copy drawimage into swapchain image
-    vkutil::copyImageToImage(cmd, _resolveImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
+    // copy images into swapchain image
+    switch (view) {
+    case DEPTH:
+        // transition the _depthViewDepthImage.image for transfer src
+        vkutil::transitionImageLayout(cmd, _depthViewImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+        vkutil::copyImageToImage(cmd, _depthViewImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
+        break;
+    default:
+        // transition the _drawImage.image for transfer src
+        vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+        vkutil::copyImageToImage(cmd, _resolveImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
+        break;
+    }
     // now that we copied from our draw image into swapchain image we transition it again so we can draw it correct format for imgui
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-
-    // for presenting images to imgui
-    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL); 
-    vkutil::transitionImageLayout(cmd, _depthViewImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL); 
 
     drawImgui(cmd, _swapchainImageViews[swapchainImageIndex]);
 
@@ -334,45 +346,44 @@ void VulkanEngine::run() {
 
         ImGui::NewFrame();
 
-        if (ImGui::Begin("background")) {
-            /*
-            ImGui::SliderFloat("Render Scale",&renderScale, 0.3f, 1.f);
-			ComputeEffect& selected = backgroundEffects[currentBackgroundIndex];
-		
-			ImGui::Text("Selected effect: ", selected.name);
-		
-			ImGui::SliderInt("Effect Index", &currentBackgroundIndex, 0, backgroundEffects.size() - 1);
-		
-			ImGui::InputFloat4("data1",(float*)& selected.data.data1);
-			ImGui::InputFloat4("data2",(float*)& selected.data.data2);
-			ImGui::InputFloat4("data3",(float*)& selected.data.data3);
-			ImGui::InputFloat4("data4",(float*)& selected.data.data4);
-            */
+        if (ImGui::Begin("Left Panel")) {
+            ImGuiIO& io = ImGui::GetIO();
+
+            ImGui::Text("%f fps", 1000 / stats.frametime);
+            ImGui::Text("frametime %f ms", stats.frametime);
+            ImGui::Text("draw time %f ms", stats.mesh_draw_time);
+            ImGui::Text("triangles %i", stats.triangle_count);
+            ImGui::Text("draws %i", stats.drawcall_count);
+
+            if (ImGui::CollapsingHeader("Scene")) {
+                ImGui::SliderFloat("Sunlight Direction X: ", &sunlightDirectionX, -1, 1);
+                ImGui::SliderFloat("Sunlight Direction Y: ", &sunlightDirectionY, -1, 1);
+                ImGui::SliderFloat("Sunlight Direction Z: ", &sunlightDirectionZ, -1, 1);
+            }
+
+            if (ImGui::CollapsingHeader("Presentation")) {
+                if (ImGui::Button("Color")) {
+                    view = COLOR;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button("Depth")) {
+                    view = DEPTH;
+                }
+            }
             
-			ImGui::SliderFloat("Sunlight Direction X: ", &sunlightDirectionX, -1, 1);
-			ImGui::SliderFloat("Sunlight Direction Y: ", &sunlightDirectionY, -1, 1);
-			ImGui::SliderFloat("Sunlight Direction Z: ", &sunlightDirectionZ, -1, 1);
+            if (ImGui::CollapsingHeader("Post Processing")) {
+                ImGui::CheckboxFlags("OFF", &io.ConfigFlags, ImGuiConfigFlags_NavEnableKeyboard);
+                ImGui::CheckboxFlags("FXAA", &io.ConfigFlags, ImGuiConfigFlags_NavEnableKeyboard);
+                ImGui::CheckboxFlags("SMAA", &io.ConfigFlags, ImGuiConfigFlags_NavEnableKeyboard);
+                ImGui::CheckboxFlags("TAA", &io.ConfigFlags, ImGuiConfigFlags_NavEnableKeyboard);
+                ImGui::SliderFloat("Bloom", &bloom, 0.f, 100.f);
+            }
             
-			ImGui::SliderFloat("Blue Emitter X: ", &emitterPosX, -360, 360);
-			ImGui::SliderFloat("Blue Emitter Y: ", &emitterPosY, -360, 360);
-			ImGui::SliderFloat("Blue Emitter Z: ", &emitterPosZ, -360, 360);
-
-            // image views
-            ImGui::Text("Front Image Buffer:");
-            ImGui::Image(_normalImageId, {320, 180}); // normal image
-            ImGui::Text("Z-Buffer:");
-            ImGui::Image(_depthImageId, {320, 180}); // depth image
-
-            // stats
-            ImGui::Begin("Stats");
-
-                ImGui::Text("%f fps", 1000 / stats.frametime);
-                ImGui::Text("frametime %f ms", stats.frametime);
-                ImGui::Text("draw time %f ms", stats.mesh_draw_time);
-                ImGui::Text("triangles %i", stats.triangle_count);
-                ImGui::Text("draws %i", stats.drawcall_count);
-
-            ImGui::End();
+            if (ImGui::CollapsingHeader("Testing")) {
+                if (ImGui::Button("Capture")) {
+                    std::cout << "Photo Captured" << std::endl;
+                }
+            }
 		}
 
 		ImGui::End();
@@ -823,10 +834,6 @@ void VulkanEngine::initImgui() {
 
 	ImGui_ImplVulkan_Init(&initInfo);
 
-    // image views
-    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthViewImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
 	// add the destroy the imgui created structures
 	_mainDeletionQueue.push_function([=]() {
 		ImGui_ImplVulkan_Shutdown();
@@ -881,7 +888,7 @@ std::shared_ptr<ObjectNode> createNode(std::shared_ptr<MeshAsset> mesh, const ch
         s.material->data = node->materialInstance;
     }
 
-    node->localTransform = glm::mat4(1.0f);
+    node->localTransform = glm::mat4{ 1.f };
     node->worldTransform = glm::mat4{ 1.f };
 
     // 5. Cleanup
@@ -1394,10 +1401,6 @@ void VulkanEngine::createDepthViewImage(uint32_t width, uint16_t height) {
     VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthViewDepthImage.imageView));
 }
 
-/*
-
-*/
-
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     // clock
     stats.drawcall_count = 0;
@@ -1700,7 +1703,6 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
     // begin dynamic rendering
 	vkCmdBeginRendering(cmd, &renderInfo);
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, depthMaterial.opaquePipeline.pipeline);
-        
         // Bind the global descriptor set
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, depthMaterial.opaquePipeline.layout, 0, 1, &globalDescriptor, 0, nullptr);
 
@@ -1718,6 +1720,7 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
             
             vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
         }
+
         // Loop through all opaque objects and draw them
         for (auto& r : transparentDraws) {
             const auto& draw = mainDrawContext.TransparentSurfaces[r];
@@ -1842,6 +1845,21 @@ void VulkanEngine::drawOutlineImage(VkCommandBuffer cmd) {
                 pushConstants.vertexBuffer = draw.vertexBufferAddress;
                 pushConstants.worldMatrix = glm::scale(draw.transform, glm::vec3(1.05f));
                 vkCmdPushConstants(cmd, outlineMaterial.opaquePipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
+                
+                vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
+            }
+        }
+
+        for (const auto& r : transparentDraws) {
+            auto draw = mainDrawContext.TransparentSurfaces[r];
+
+            if (draw.material->pipeline->pipeline == openglMaterial.transparentPipeline.pipeline) {
+                vkCmdBindIndexBuffer(cmd, draw.indexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+                GPUDrawPushConstants pushConstants;
+                pushConstants.vertexBuffer = draw.vertexBufferAddress;
+                pushConstants.worldMatrix = glm::scale(draw.transform, glm::vec3(1.05f));
+                vkCmdPushConstants(cmd, outlineMaterial.transparentPipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(GPUDrawPushConstants), &pushConstants);
                 
                 vkCmdDrawIndexed(cmd, draw.indexCount, 1, draw.firstIndex, 0, 0);
             }
@@ -2108,10 +2126,6 @@ void VulkanEngine::recreateSwapChain() {
     createDrawImage(_drawExtent.width, _drawExtent.height);
     createResolveImage(_drawExtent.width, _drawExtent.height);
     createDepthViewImage(_windowExtent.width, _windowExtent.height);
-
-    // recreate image
-    _normalImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _resolveImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-    _depthImageId = ImGui_ImplVulkan_AddTexture(_defaultSamplerLinear, _depthViewImage.imageView, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
 
 	resizeReuqested = false;
 }
@@ -2638,7 +2652,7 @@ void OutlineMaterial::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
     pipelineBuilder.enableMultisampling(engine->_maxSamples);
 	pipelineBuilder.disableBlending();
-	pipelineBuilder.enableDepthTest(false, VK_COMPARE_OP_LESS);
+	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
     // enable stencil testing for read only
     VkStencilOpState stencilState = {};
     stencilState.compareOp = VK_COMPARE_OP_NOT_EQUAL; // Pass if stencil != 1
@@ -2808,7 +2822,7 @@ void ObjectNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
         def.transform = nodeMatrix;
         def.vertexBufferAddress = mesh->meshBuffers.vertexBufferAddress;
 
-        if (s.material->data.passType == MaterialPass::Transparent) {
+        if (this->materialInstance.passType == MaterialPass::Transparent) {
             ctx.TransparentSurfaces.push_back(def);
         } else {
             ctx.OpaqueSurfaces.push_back(def);
@@ -2833,7 +2847,7 @@ void EmitterNode::Draw(const glm::mat4& topMatrix, DrawContext& ctx) {
             def.transform = nodeMatrix;
             def.vertexBufferAddress = mesh->meshBuffers.vertexBufferAddress;
 
-            if (s.material->data.passType == MaterialPass::Transparent) {
+            if (this->materialInstance.passType == MaterialPass::Transparent) {
                 ctx.TransparentSurfaces.push_back(def);
             } else {
                 ctx.OpaqueSurfaces.push_back(def);
