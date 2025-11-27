@@ -42,7 +42,15 @@ struct OpenGLResources : MaterialResourcesBase {
     VkSampler metalSampler;
 };
 
+/* Debug Resources */
+
 struct DepthResources : MaterialResourcesBase {};
+
+struct UVResources : MaterialResourcesBase {};
+
+struct NormalResources : MaterialResourcesBase {};
+
+/* *************** */
 
 struct GlassResources : MaterialResourcesBase {
     AllocatedImage texture;
@@ -123,6 +131,32 @@ struct OpenGLMaterial : Material {
 };
 
 struct DepthMaterial : Material {
+    struct MaterialConstants {};
+
+	virtual void buildPipelines(VulkanEngine* engine);
+	virtual void clearResources(VkDevice device);
+
+	virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
+};
+
+struct UVMaterial : Material {
+    struct MaterialConstants {};
+
+	virtual void buildPipelines(VulkanEngine* engine);
+	virtual void clearResources(VkDevice device);
+
+	virtual MaterialInstance writeMaterial(
+        VkDevice device,
+        MaterialPass pass,
+        const MaterialResourcesBase& resources,
+        DescriptorAllocator2& descriptorAllocator) override;
+};
+
+struct NormalMaterial : Material {
     struct MaterialConstants {};
 
 	virtual void buildPipelines(VulkanEngine* engine);
@@ -306,8 +340,15 @@ public:
     AllocatedImage _resolveImage;
     AllocatedImage _depthImage;
     // For  ImGUiViews
+    // depth view
     AllocatedImage _depthViewImage;
     AllocatedImage _depthViewDepthImage;
+    // uv view
+    AllocatedImage _uvViewImage;
+    AllocatedImage _uvViewDepthImage;
+    // normal view
+    AllocatedImage _normalViewImage;
+    AllocatedImage _normalViewDepthImage;
     float renderScale = 1.0f;
 
     // compute pipeline layout
@@ -355,6 +396,8 @@ public:
     EmitterMaterial emitterMaterial;
     OpenGLMaterial openglMaterial;
     DepthMaterial depthMaterial;
+    UVMaterial uvMaterial;
+    NormalMaterial normalMaterial;
     OutlineMaterial outlineMaterial;
     GlassMaterial glassMaterial;
 
@@ -395,6 +438,9 @@ public:
     void createDrawImage(uint32_t width, uint32_t height);
     void createResolveImage(uint32_t width, uint32_t height);
     void createDepthViewImage(uint32_t width, uint16_t height);
+    void createUVViewImage(uint32_t width, uint16_t height);
+    void createNormalViewImage(uint32_t width, uint16_t height);
+
     void initCommands();
     void initSyncStructures();
     void initDescriptors();
@@ -414,6 +460,8 @@ public:
     void drawImgui(VkCommandBuffer cmd, VkImageView targetImageView);
     void drawGeometry(VkCommandBuffer cmd);
     void drawDepthImage(VkCommandBuffer cmd);
+    void drawUVImage(VkCommandBuffer cmd);
+    void drawNormalImage(VkCommandBuffer cmd);
     void drawOutlineImage(VkCommandBuffer cmd);
     void initDefaultData(); // default vertex and index 
     void recreateSwapChain(); // for resizing
