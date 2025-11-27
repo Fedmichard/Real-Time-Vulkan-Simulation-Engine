@@ -339,20 +339,7 @@ public:
     AllocatedImage _drawImage;
     AllocatedImage _resolveImage;
     AllocatedImage _depthImage;
-    // For  ImGUiViews
-    // depth view
-    AllocatedImage _depthViewImage;
-    AllocatedImage _depthViewDepthImage;
-    // uv view
-    AllocatedImage _uvViewImage;
-    AllocatedImage _uvViewDepthImage;
-    // normal view
-    AllocatedImage _normalViewImage;
-    AllocatedImage _normalViewDepthImage;
     float renderScale = 1.0f;
-
-    // compute pipeline layout
-    VkPipelineLayout _gradientPipelineLayout;
 
     // allocate descriptor sets
     DescriptorAllocator2 _descriptorAllocator;
@@ -369,14 +356,6 @@ public:
     VkCommandPool _immPool;
     VkCommandBuffer _immBuffer;
 
-    // array of compute pipelines we will be drawing and the push constants (data1, data2,...)
-    std::vector<ComputeEffect> backgroundEffects;
-    int currentBackgroundIndex{0};
-
-    // pipelines
-    VkPipeline _meshPipeline;
-    VkPipelineLayout _meshPipelineLayout;
-
     // scene meshes
     std::vector<std::shared_ptr<MeshAsset>> meshes;
     std::unordered_map<std::string, std::shared_ptr<MeshAsset>> meshesNames;
@@ -392,6 +371,7 @@ public:
 
     VkDescriptorSetLayout _singleImageDescriptorLayout;
 
+    // Materials
     GLTFMetallic_Roughness metalRoughMaterial;
     EmitterMaterial emitterMaterial;
     OpenGLMaterial openglMaterial;
@@ -415,8 +395,8 @@ public:
     EngineStats stats;
 
     // imgui
-    ImTextureRef _normalImageId;
-    ImTextureRef _depthImageId;
+    PresentationMode view = COLOR;
+    
     float sunlightDirectionX{ -0.2f };
     float sunlightDirectionY{ -1.0f };
     float sunlightDirectionZ{ -0.3f };
@@ -428,8 +408,6 @@ public:
     float bloom{ 0.f };
 
     void updateScene();
-
-    PresentationMode view = COLOR;
 
     // initializations
     void initVulkan();

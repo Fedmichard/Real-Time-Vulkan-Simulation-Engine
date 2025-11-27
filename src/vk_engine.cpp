@@ -59,10 +59,18 @@ void VulkanEngine::init() {
     _isInitialized = true;
 
     // load scene
+    
     std::string sponzaPath = { "..\\assets\\sponza_palace.glb" };
     auto sponzaFile = loadGltf(this, sponzaPath);
     assert(sponzaFile.has_value());
     loadedScenes["sponza"] = *sponzaFile;
+    
+    /*
+    std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
+    auto gmodFile = loadGltf(this, gmodPath);
+    assert(gmodFile.has_value());
+    loadedScenes["gmod"] = *gmodFile; 
+    */
 
     /*
     std::string bistroPath = { "..\\assets\\Bistro\\Textures\\untitled.glb" };
@@ -209,17 +217,8 @@ void VulkanEngine::draw() {
     vkutil::transitionImageLayout(cmd, _drawImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition to draw geometry for resolve image too
     vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-    // transition image for presenting depth values
-    vkutil::transitionImageLayout(cmd, _depthViewImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-    // transition image for presenting UV values
-    vkutil::transitionImageLayout(cmd, _uvViewImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
-    // transition image for presenting UV values
-    vkutil::transitionImageLayout(cmd, _normalViewImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
     // transition depth attachment image
     vkutil::transitionImageLayout(cmd, _depthImage.image, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL);
-
-    drawGeometry(cmd);
-    drawOutlineImage(cmd);
 
     switch (view) {
     case DEPTH:
@@ -231,31 +230,16 @@ void VulkanEngine::draw() {
     case NORMAL:
         drawNormalImage(cmd);
         break;
+    default:
+        drawGeometry(cmd);
+        drawOutlineImage(cmd);
+        break;
     }
 
     // transition _swapchainImages into tr  ansfer dst
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-    // copy images into swapchain image
-    switch (view) {
-    case DEPTH:
-        // transition the _depthViewDepthImage.image for transfer src
-        vkutil::transitionImageLayout(cmd, _depthViewImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-        vkutil::copyImageToImage(cmd, _depthViewImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
-        break;
-    case UV:
-        vkutil::transitionImageLayout(cmd, _uvViewImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-        vkutil::copyImageToImage(cmd, _uvViewImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
-        break;
-    case NORMAL:
-        vkutil::transitionImageLayout(cmd, _normalViewImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-        vkutil::copyImageToImage(cmd, _normalViewImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
-        break;
-    default:
-        // transition the _drawImage.image for transfer src
-        vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
-        vkutil::copyImageToImage(cmd, _resolveImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
-        break;
-    }
+    vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
+    vkutil::copyImageToImage(cmd, _resolveImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
     // now that we copied from our draw image into swapchain image we transition it again so we can draw it correct format for imgui
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
 
@@ -665,30 +649,9 @@ void VulkanEngine::initSwapchain() {
     createSwapchain(_windowExtent.width, _windowExtent.height);
     createDrawImage(_windowExtent.width, _windowExtent.height);
     createResolveImage(_windowExtent.width, _windowExtent.height);
-    createDepthViewImage(_windowExtent.width, _windowExtent.height);
-    createUVViewImage(_windowExtent.width, _windowExtent.height);
-    createNormalViewImage(_windowExtent.width, _windowExtent.height);
 
     // add to deletion queues
     _mainDeletionQueue.push_function([=]() {
-        vkDestroyImageView(_device, _normalViewImage.imageView, nullptr);
-        vmaDestroyImage(_allocator, _normalViewImage.image, _normalViewImage.allocation);
-
-        vkDestroyImageView(_device, _normalViewDepthImage.imageView, nullptr);
-        vmaDestroyImage(_allocator, _normalViewDepthImage.image, _normalViewDepthImage.allocation);
-
-        vkDestroyImageView(_device, _uvViewDepthImage.imageView, nullptr);
-        vmaDestroyImage(_allocator, _uvViewDepthImage.image, _uvViewDepthImage.allocation);
-
-        vkDestroyImageView(_device, _uvViewImage.imageView, nullptr);
-        vmaDestroyImage(_allocator, _uvViewImage.image, _uvViewImage.allocation);
-
-        vkDestroyImageView(_device, _depthViewDepthImage.imageView, nullptr);
-        vmaDestroyImage(_allocator, _depthViewDepthImage.image, _depthViewDepthImage.allocation);
-
-        vkDestroyImageView(_device, _depthViewImage.imageView, nullptr);
-        vmaDestroyImage(_allocator, _depthViewImage.image, _depthViewImage.allocation);
-        
         vkDestroyImageView(_device, _resolveImage.imageView, nullptr);
         vmaDestroyImage(_allocator, _resolveImage.image, _resolveImage.allocation);
 
@@ -1366,249 +1329,7 @@ void VulkanEngine::createResolveImage(uint32_t width, uint32_t height) {
     VK_CHECK(vkCreateImageView(_device, &resolveImgView, nullptr, &_resolveImage.imageView));
 }
 
-void VulkanEngine::createDepthViewImage(uint32_t width, uint16_t height) {
-    VkExtent3D depthViewExtent;
-    depthViewExtent.width = _windowExtent.width;
-    depthViewExtent.height = _windowExtent.height;
-    depthViewExtent.depth = 1;
-    
-    _depthViewImage.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
-    _depthViewImage.imageExtent = depthViewExtent;
-
-    VkImageUsageFlags depthImageUsages{};
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
-	depthImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
-    depthImageUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
-
-    VkImageCreateInfo depthInfo{};
-    depthInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    depthInfo.imageType = VK_IMAGE_TYPE_2D;
-    depthInfo.format = _depthViewImage.imageFormat;
-    depthInfo.extent = _depthViewImage.imageExtent;
-    depthInfo.mipLevels = 1;
-    depthInfo.arrayLayers = 1;
-    depthInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    depthInfo.usage = depthImageUsages;
-
-    VmaAllocationCreateInfo depthAlloc{};
-    depthAlloc.usage = VMA_MEMORY_USAGE_GPU_ONLY;
-    depthAlloc.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    vmaCreateImage(_allocator, &depthInfo, &depthAlloc, &_depthViewImage.image, &_depthViewImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthView{};
-    depthView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthView.image = _depthViewImage.image;
-    depthView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthView.format = _depthViewImage.imageFormat;
-    depthView.subresourceRange.baseMipLevel = 0;
-    depthView.subresourceRange.levelCount = 1;
-    depthView.subresourceRange.baseArrayLayer = 0;
-    depthView.subresourceRange.layerCount = 1;
-    depthView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
-    vkCreateImageView(_device, &depthView, nullptr, &_depthViewImage.imageView);
-
-    // will use the same draw extent as draw image of course for our depth attachment
-    _depthViewDepthImage.imageExtent = depthViewExtent;
-    _depthViewDepthImage.imageFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
-
-    VkImageUsageFlags depthImageDepthUsages{};
-    depthImageDepthUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-    depthImageDepthUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
-
-    VkImageCreateInfo depthImageInfo{};
-    depthImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    depthImageInfo.imageType = VK_IMAGE_TYPE_2D;
-    depthImageInfo.format = _depthViewDepthImage.imageFormat;
-    depthImageInfo.extent = depthViewExtent;
-    depthImageInfo.mipLevels = 1;
-    depthImageInfo.arrayLayers = 1;
-    depthImageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    depthImageInfo.usage = depthImageDepthUsages;
-
-    vmaCreateImage(_allocator, &depthImageInfo, &depthAlloc, &_depthViewDepthImage.image, &_depthViewDepthImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthImageView{};
-    depthImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthImageView.image = _depthViewDepthImage.image;
-    depthImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthImageView.format = _depthViewDepthImage.imageFormat;
-    depthImageView.subresourceRange.baseMipLevel = 0;
-    depthImageView.subresourceRange.levelCount = 1;
-    depthImageView.subresourceRange.baseArrayLayer = 0;
-    depthImageView.subresourceRange.layerCount = 1;
-    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-
-    VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_depthViewDepthImage.imageView));
-}
-
-void VulkanEngine::createUVViewImage(uint32_t width, uint16_t height) {
-    VkExtent3D depthViewExtent;
-    depthViewExtent.width = _windowExtent.width;
-    depthViewExtent.height = _windowExtent.height;
-    depthViewExtent.depth = 1;
-    
-    _uvViewImage.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
-    _uvViewImage.imageExtent = depthViewExtent;
-
-    VkImageUsageFlags depthImageUsages{};
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
-	depthImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
-    depthImageUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
-
-    VkImageCreateInfo depthInfo{};
-    depthInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    depthInfo.imageType = VK_IMAGE_TYPE_2D;
-    depthInfo.format = _uvViewImage.imageFormat;
-    depthInfo.extent = _uvViewImage.imageExtent;
-    depthInfo.mipLevels = 1;
-    depthInfo.arrayLayers = 1;
-    depthInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    depthInfo.usage = depthImageUsages;
-
-    VmaAllocationCreateInfo depthAlloc{};
-    depthAlloc.usage = VMA_MEMORY_USAGE_GPU_ONLY;
-    depthAlloc.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    vmaCreateImage(_allocator, &depthInfo, &depthAlloc, &_uvViewImage.image, &_uvViewImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthView{};
-    depthView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthView.image = _uvViewImage.image;
-    depthView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthView.format = _uvViewImage.imageFormat;
-    depthView.subresourceRange.baseMipLevel = 0;
-    depthView.subresourceRange.levelCount = 1;
-    depthView.subresourceRange.baseArrayLayer = 0;
-    depthView.subresourceRange.layerCount = 1;
-    depthView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
-    vkCreateImageView(_device, &depthView, nullptr, &_uvViewImage.imageView);
-
-    // will use the same draw extent as draw image of course for our depth attachment
-    _uvViewDepthImage.imageExtent = depthViewExtent;
-    _uvViewDepthImage.imageFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
-
-    VkImageUsageFlags depthImageDepthUsages{};
-    depthImageDepthUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-    depthImageDepthUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
-
-    VkImageCreateInfo depthImageInfo{};
-    depthImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    depthImageInfo.imageType = VK_IMAGE_TYPE_2D;
-    depthImageInfo.format = _uvViewDepthImage.imageFormat;
-    depthImageInfo.extent = depthViewExtent;
-    depthImageInfo.mipLevels = 1;
-    depthImageInfo.arrayLayers = 1;
-    depthImageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    depthImageInfo.usage = depthImageDepthUsages;
-
-    vmaCreateImage(_allocator, &depthImageInfo, &depthAlloc, &_uvViewDepthImage.image, &_uvViewDepthImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthImageView{};
-    depthImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthImageView.image = _uvViewDepthImage.image;
-    depthImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthImageView.format = _uvViewDepthImage.imageFormat;
-    depthImageView.subresourceRange.baseMipLevel = 0;
-    depthImageView.subresourceRange.levelCount = 1;
-    depthImageView.subresourceRange.baseArrayLayer = 0;
-    depthImageView.subresourceRange.layerCount = 1;
-    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-
-    VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_uvViewDepthImage.imageView));
-}
-
-void VulkanEngine::createNormalViewImage(uint32_t width, uint16_t height) {
-    VkExtent3D depthViewExtent;
-    depthViewExtent.width = _windowExtent.width;
-    depthViewExtent.height = _windowExtent.height;
-    depthViewExtent.depth = 1;
-    
-    _normalViewImage.imageFormat = VK_FORMAT_B8G8R8A8_UNORM;
-    _normalViewImage.imageExtent = depthViewExtent;
-
-    VkImageUsageFlags depthImageUsages{};
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-	depthImageUsages |= VK_IMAGE_USAGE_STORAGE_BIT; // for compute shaders
-	depthImageUsages |= VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT; // draw geometry onto it
-    depthImageUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
-
-    VkImageCreateInfo depthInfo{};
-    depthInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    depthInfo.imageType = VK_IMAGE_TYPE_2D;
-    depthInfo.format = _normalViewImage.imageFormat;
-    depthInfo.extent = _normalViewImage.imageExtent;
-    depthInfo.mipLevels = 1;
-    depthInfo.arrayLayers = 1;
-    depthInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    depthInfo.usage = depthImageUsages;
-
-    VmaAllocationCreateInfo depthAlloc{};
-    depthAlloc.usage = VMA_MEMORY_USAGE_GPU_ONLY;
-    depthAlloc.requiredFlags = VkMemoryPropertyFlags(VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-
-    vmaCreateImage(_allocator, &depthInfo, &depthAlloc, &_normalViewImage.image, &_normalViewImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthView{};
-    depthView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthView.image = _normalViewImage.image;
-    depthView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthView.format = _normalViewImage.imageFormat;
-    depthView.subresourceRange.baseMipLevel = 0;
-    depthView.subresourceRange.levelCount = 1;
-    depthView.subresourceRange.baseArrayLayer = 0;
-    depthView.subresourceRange.layerCount = 1;
-    depthView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-
-    vkCreateImageView(_device, &depthView, nullptr, &_normalViewImage.imageView);
-
-    // will use the same draw extent as draw image of course for our depth attachment
-    _normalViewDepthImage.imageExtent = depthViewExtent;
-    _normalViewDepthImage.imageFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
-
-    VkImageUsageFlags depthImageDepthUsages{};
-    depthImageDepthUsages |= VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
-    depthImageDepthUsages |= VK_IMAGE_USAGE_SAMPLED_BIT;
-
-    VkImageCreateInfo depthImageInfo{};
-    depthImageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    depthImageInfo.imageType = VK_IMAGE_TYPE_2D;
-    depthImageInfo.format = _normalViewDepthImage.imageFormat;
-    depthImageInfo.extent = depthViewExtent;
-    depthImageInfo.mipLevels = 1;
-    depthImageInfo.arrayLayers = 1;
-    depthImageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    depthImageInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
-    depthImageInfo.usage = depthImageDepthUsages;
-
-    vmaCreateImage(_allocator, &depthImageInfo, &depthAlloc, &_normalViewDepthImage.image, &_normalViewDepthImage.allocation, nullptr);
-
-    VkImageViewCreateInfo depthImageView{};
-    depthImageView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    depthImageView.image = _normalViewDepthImage.image;
-    depthImageView.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    depthImageView.format = _normalViewDepthImage.imageFormat;
-    depthImageView.subresourceRange.baseMipLevel = 0;
-    depthImageView.subresourceRange.levelCount = 1;
-    depthImageView.subresourceRange.baseArrayLayer = 0;
-    depthImageView.subresourceRange.layerCount = 1;
-    depthImageView.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
-
-    VK_CHECK(vkCreateImageView(_device, &depthImageView, nullptr, &_normalViewDepthImage.imageView));
-}
-
+/* DRAW CALLS */
 void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
     // clock
     stats.drawcall_count = 0;
@@ -1722,7 +1443,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
                     vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,  draw.material->pipeline->pipeline);
                     vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 0, 1, &globalDescriptor, 0, nullptr);
                     
-                    //set dynamic viewport and scissor
+                    // set dynamic viewport and scissor
                     VkViewport viewport = {};
                     viewport.x = 0;
                     viewport.y = 0;
@@ -1778,7 +1499,7 @@ void VulkanEngine::drawGeometry(VkCommandBuffer cmd) {
                     vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS,  draw.material->pipeline->pipeline);
                     vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, draw.material->pipeline->layout, 0, 1, &globalDescriptor, 0, nullptr);
                     
-                    //set dynamic viewport and scissor
+                    // set dynamic viewport and scissor
                     VkViewport viewport = {};
                     viewport.x = 0;
                     viewport.y = 0;
@@ -1867,16 +1588,17 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
 
     VkRenderingAttachmentInfo colorAttachment{};
     colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-    colorAttachment.imageView = _depthViewImage.imageView;
+    colorAttachment.imageView = _drawImage.imageView;
     colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.resolveMode = VK_RESOLVE_MODE_AVERAGE_BIT;
+    colorAttachment.resolveImageView = _resolveImage.imageView;
+    colorAttachment.resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    // colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 
     VkRenderingAttachmentInfo depthAttachment{};
     depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-    depthAttachment.imageView = _depthViewDepthImage.imageView;
+    depthAttachment.imageView = _depthImage.imageView;
     depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -1913,6 +1635,25 @@ void VulkanEngine::drawDepthImage(VkCommandBuffer cmd) {
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, depthMaterial.opaquePipeline.pipeline);
         // Bind the global descriptor set
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, depthMaterial.opaquePipeline.layout, 0, 1, &globalDescriptor, 0, nullptr);
+
+        // set dynamic viewport and scissor
+        VkViewport viewport = {};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = _drawExtent.width;
+        viewport.height = _drawExtent.height;
+        viewport.minDepth = 0.f;
+        viewport.maxDepth = 1.f;
+
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+        VkRect2D scissor = {};
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
+        scissor.extent.width = _drawExtent.width;
+        scissor.extent.height = _drawExtent.height;
+
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
 
         // Loop through all opaque objects and draw them
         for (auto& r : opaqueDraws) {
@@ -1989,17 +1730,18 @@ void VulkanEngine::drawUVImage(VkCommandBuffer cmd) {
 
     VkRenderingAttachmentInfo colorAttachment{};
     colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-    colorAttachment.imageView = _uvViewImage.imageView;
+    colorAttachment.imageView = _drawImage.imageView;
     colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    // colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+    colorAttachment.resolveMode = VK_RESOLVE_MODE_AVERAGE_BIT;
+    colorAttachment.resolveImageView = _resolveImage.imageView;
+    colorAttachment.resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR; // clear whatever was in it before
+    colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE; 
 
     VkRenderingAttachmentInfo depthAttachment{};
     depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-    depthAttachment.imageView = _uvViewDepthImage.imageView;
-    depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
+    depthAttachment.imageView = _depthImage.imageView;
+    depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
     depthAttachment.clearValue.depthStencil.depth = 1.0f;
@@ -2035,6 +1777,25 @@ void VulkanEngine::drawUVImage(VkCommandBuffer cmd) {
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, uvMaterial.opaquePipeline.pipeline);
         // Bind the global descriptor set
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, uvMaterial.opaquePipeline.layout, 0, 1, &globalDescriptor, 0, nullptr);
+
+        // set dynamic viewport and scissor
+        VkViewport viewport = {};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = _drawExtent.width;
+        viewport.height = _drawExtent.height;
+        viewport.minDepth = 0.f;
+        viewport.maxDepth = 1.f;
+
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+        VkRect2D scissor = {};
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
+        scissor.extent.width = _drawExtent.width;
+        scissor.extent.height = _drawExtent.height;
+
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
 
         // Loop through all opaque objects and draw them
         for (auto& r : opaqueDraws) {
@@ -2111,16 +1872,17 @@ void VulkanEngine::drawNormalImage(VkCommandBuffer cmd) {
 
     VkRenderingAttachmentInfo colorAttachment{};
     colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-    colorAttachment.imageView = _normalViewImage.imageView;
+    colorAttachment.imageView = _drawImage.imageView;
     colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+    colorAttachment.resolveMode = VK_RESOLVE_MODE_AVERAGE_BIT;
+    colorAttachment.resolveImageView = _resolveImage.imageView;
+    colorAttachment.resolveImageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
     colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-    // colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
     colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
-    // colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 
     VkRenderingAttachmentInfo depthAttachment{};
     depthAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO;
-    depthAttachment.imageView = _normalViewDepthImage.imageView;
+    depthAttachment.imageView = _depthImage.imageView;
     depthAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
     depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
     depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
@@ -2157,6 +1919,25 @@ void VulkanEngine::drawNormalImage(VkCommandBuffer cmd) {
         vkCmdBindPipeline(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, normalMaterial.opaquePipeline.pipeline);
         // Bind the global descriptor set
         vkCmdBindDescriptorSets(cmd, VK_PIPELINE_BIND_POINT_GRAPHICS, normalMaterial.opaquePipeline.layout, 0, 1, &globalDescriptor, 0, nullptr);
+        
+        // set dynamic viewport and scissor
+        VkViewport viewport = {};
+        viewport.x = 0;
+        viewport.y = 0;
+        viewport.width = _drawExtent.width;
+        viewport.height = _drawExtent.height;
+        viewport.minDepth = 0.f;
+        viewport.maxDepth = 1.f;
+
+        vkCmdSetViewport(cmd, 0, 1, &viewport);
+
+        VkRect2D scissor = {};
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
+        scissor.extent.width = _drawExtent.width;
+        scissor.extent.height = _drawExtent.height;
+
+        vkCmdSetScissor(cmd, 0, 1, &scissor);
 
         // Loop through all opaque objects and draw them
         for (auto& r : opaqueDraws) {
@@ -2560,8 +2341,6 @@ void VulkanEngine::recreateSwapChain() {
     destroyImage(_drawImage);
     destroyImage(_resolveImage);
     destroyImage(_depthImage);
-    destroyImage(_depthViewImage);
-    destroyImage(_depthViewDepthImage);
 
     // get the new window size and set new resolution
     int w, h;
@@ -2577,7 +2356,6 @@ void VulkanEngine::recreateSwapChain() {
 	createSwapchain(_windowExtent.width, _windowExtent.height);
     createDrawImage(_drawExtent.width, _drawExtent.height);
     createResolveImage(_drawExtent.width, _drawExtent.height);
-    createDepthViewImage(_windowExtent.width, _windowExtent.height);
 
 	resizeReuqested = false;
 }
@@ -2999,14 +2777,14 @@ void DepthMaterial::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
 	// pipelineBuilder.setMultisamplingNone();
-    pipelineBuilder.enableMultisampling(VK_SAMPLE_COUNT_1_BIT);
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
 	pipelineBuilder.disableBlending();
 	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
 
 	//render format
-	pipelineBuilder.setColorAttachmentFormat(engine->_depthViewImage.imageFormat);
-	pipelineBuilder.setDepthFormat(engine->_depthViewDepthImage.imageFormat);
-    pipelineBuilder.setStencilFormat(engine->_depthViewDepthImage.imageFormat);
+	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 	// finally build the pipeline
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
@@ -3285,14 +3063,14 @@ void UVMaterial::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
 	// pipelineBuilder.setMultisamplingNone();
-    pipelineBuilder.enableMultisampling(VK_SAMPLE_COUNT_1_BIT);
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
 	pipelineBuilder.disableBlending();
 	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
 
 	//render format
-	pipelineBuilder.setColorAttachmentFormat(engine->_uvViewImage.imageFormat);
-	pipelineBuilder.setDepthFormat(engine->_uvViewDepthImage.imageFormat);
-    pipelineBuilder.setStencilFormat(engine->_uvViewDepthImage.imageFormat);
+	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 	// finally build the pipeline
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
@@ -3369,14 +3147,14 @@ void NormalMaterial::buildPipelines(VulkanEngine* engine) {
 	pipelineBuilder.setPolygonMode(VK_POLYGON_MODE_FILL);
 	pipelineBuilder.setCullMode(VK_CULL_MODE_NONE, VK_FRONT_FACE_CLOCKWISE);
 	// pipelineBuilder.setMultisamplingNone();
-    pipelineBuilder.enableMultisampling(VK_SAMPLE_COUNT_1_BIT);
+    pipelineBuilder.enableMultisampling(engine->_maxSamples);
 	pipelineBuilder.disableBlending();
 	pipelineBuilder.enableDepthTest(true, VK_COMPARE_OP_LESS);
 
 	//render format
-	pipelineBuilder.setColorAttachmentFormat(engine->_normalViewImage.imageFormat);
-	pipelineBuilder.setDepthFormat(engine->_normalViewDepthImage.imageFormat);
-    pipelineBuilder.setStencilFormat(engine->_normalViewDepthImage.imageFormat);
+	pipelineBuilder.setColorAttachmentFormat(engine->_drawImage.imageFormat);
+	pipelineBuilder.setDepthFormat(engine->_depthImage.imageFormat);
+    pipelineBuilder.setStencilFormat(engine->_depthImage.imageFormat);
 
 	// finally build the pipeline
     opaquePipeline.pipeline = pipelineBuilder.buildPipeline(engine->_device);
