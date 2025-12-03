@@ -65,6 +65,7 @@ void VulkanEngine::init() {
     assert(sponzaFile.has_value());
     loadedScenes["sponza"] = *sponzaFile;
     
+    
     /*
     std::string gmodPath = { "..\\assets\\gm_flatgrass.glb" };
     auto gmodFile = loadGltf(this, gmodPath);
@@ -3265,7 +3266,7 @@ void VulkanEngine::updateScene() {
     mainCamera.update();
     
     // load scenes
-    loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
     
     // time values
     static auto startTime = std::chrono::high_resolution_clock::now();
