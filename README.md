@@ -25,7 +25,6 @@ An onging C++17 Vulkan renderer.
 <img width="2220" height="1345" alt="image" src="https://github.com/user-attachments/assets/544d9d3b-4896-47b3-92af-472305594e1e" />
 
 ## Roadmap
-- [ ] GPU Driven Rendering
 - [ ] GPU Instancing
 - [x] Lighting
 - [ ] Shadows
@@ -36,7 +35,6 @@ An onging C++17 Vulkan renderer.
     - [ ] TAA
     - [ ] SMAA
     - [ ] FXAA
-    - [ ] SSAA
 - [ ] UI Display
     - [ ] Scene Changer
     - [ ] Scene Graph View
@@ -48,8 +46,6 @@ An onging C++17 Vulkan renderer.
     - [ ] Wireframe View
     - [x] Scene Statistics
     - [x] Anti-aliasing Selection
-- [ ] GPU-Based Simulations
-- [ ] Engine Architecture Refactoring
      
 ## Installation and Compiling
 * CMake VERSION 3.26
