@@ -27,8 +27,9 @@ An onging C++17 Vulkan renderer.
 ## Roadmap
 - [ ] GPU Driven Rendering
 - [ ] GPU Instancing
-- [ ] PBR Lighting and Shadings
-- [ ] Deferred Shading
+- [x] Lighting
+- [ ] Shadows
+- [ ] Shading
 - [ ] Occlusion Culling
 - [ ] Anti-aliasing
     - [x] MSAA
@@ -40,12 +41,13 @@ An onging C++17 Vulkan renderer.
     - [ ] Scene Changer
     - [ ] Scene Graph View
     - [ ] Dynamically Import Textures and Objects Into a Scene
-    - [ ] Debug Visualization
+    - [x] Debug Visualization
     - [x] Depth Buffer View
-    - [ ] Normal Map View
-    - [ ] UV Coordinate View
+    - [x] Normal Map View
+    - [x] UV Coordinate View
+    - [ ] Wireframe View
     - [x] Scene Statistics
-    - [ ] Anti-aliasing Selection
+    - [x] Anti-aliasing Selection
 - [ ] GPU-Based Simulations
 - [ ] Engine Architecture Refactoring
      
