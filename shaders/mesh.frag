@@ -30,6 +30,7 @@ void main()  {
 	vec3 lighting = ambient;
 
 	// specular info
+	// aka metallic map
 	vec4 specMap = texture(metalRoughTex, inUV); // specular map
 	if (specMap.a < 0.1) {
 		discard;
