@@ -3266,7 +3266,9 @@ void VulkanEngine::updateScene() {
     mainCamera.update();
     
     // load scenes
-    loadedScenes["gmod"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    loadedScenes["sponza"]->Draw(glm::mat4{ 1.f }, mainDrawContext);
+    
+    
     
     // time values
     static auto startTime = std::chrono::high_resolution_clock::now();
