@@ -2833,7 +2833,7 @@ MaterialInstance DepthMaterial::writeMaterial(VkDevice device, MaterialPass pass
 
 	return matData;
 }
-
+// need to review materials and pipelines, eventually need to remake materials actually no since I'll restart soon
 void OutlineMaterial::buildPipelines(VulkanEngine* engine) {
     VkPipelineLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
