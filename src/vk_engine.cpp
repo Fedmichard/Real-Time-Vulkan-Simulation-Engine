@@ -204,6 +204,7 @@ void VulkanEngine::draw() {
     vkResetCommandBuffer(cmd, 0);
     VkCommandBufferBeginInfo beginInfo = vkinit::commandBufferBeginInfo(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
     
+    // unsignal fence before we draw to prevent issues
     VK_CHECK(vkResetFences(_device, 1, &getCurrentFrame()._renderFence));
 
     // now we can record draw commands into buffer
@@ -237,7 +238,10 @@ void VulkanEngine::draw() {
         break;
     }
 
-    // transition _swapchainImages into tr  ansfer dst
+    // Post processing after drawing geometry
+    // we take the resolve image and run it through a different pass
+
+    // transition _swapchainImages into transfer dst
     vkutil::transitionImageLayout(cmd, _swapchainImages[swapchainImageIndex], VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
     vkutil::transitionImageLayout(cmd, _resolveImage.image, VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL);
     vkutil::copyImageToImage(cmd, _resolveImage.image, _swapchainImages[swapchainImageIndex], _drawExtent, _swapchainExtent);
@@ -287,6 +291,7 @@ void VulkanEngine::draw() {
     submit.pCommandBufferInfos = &cmdInfo;
 
     // submit draw commands to graphics queue
+    // we attach the fence optionally so that it is signaled once the gpu is finished working
     VK_CHECK(vkQueueSubmit2(_graphicsQueue, 1, &submit, getCurrentFrame()._renderFence));
 
     // prepare present
@@ -2833,8 +2838,7 @@ MaterialInstance DepthMaterial::writeMaterial(VkDevice device, MaterialPass pass
 
 	return matData;
 }
-// need to review materials and pipelines, eventually need to remake materials actually no since I'll restart soon
-// was my firt day aesome sawuce
+
 void OutlineMaterial::buildPipelines(VulkanEngine* engine) {
     VkPipelineLayoutCreateInfo layoutInfo{};
     layoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
